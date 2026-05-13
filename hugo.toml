@@ -1,0 +1,34 @@
+baseURL = 'https://lvdousha26.github.io/'
+languageCode = 'zh-CN'
+title = '绿豆沙的博客'
+theme = 'hugo-theme-reimu'
+
+defaultContentLanguage = 'zh-CN'
+[languages]
+[languages.en]
+languageName = 'English'
+weight = 1
+[languages.zh-CN]
+languageName = '简体中文'
+weight = 1
+hasCJKLanguage = true
+[languages.zh-TW]
+languageName = '繁體中文'
+weight = 1
+hasCJKLanguage = true
+[languages.ja]
+languageName = '日本語'
+weight = 1
+hasCJKLanguage = true
+
+[markup.goldmark.extensions.passthrough]
+enable = true
+delimiters.block = [["\\[", "\\]"], ["$$", "$$"]]
+delimiters.inline = [["\\(", "\\)"], ["$", "$"]]
+
+[markup.highlight]
+guessSyntax = true
+noClasses = false
+
+[outputs]
+home = ["HTML", "RSS"]
