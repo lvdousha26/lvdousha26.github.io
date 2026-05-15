@@ -301,7 +301,7 @@ comment:
     zh-TW: 說些什麼吧！
     ja: コメントを残す
     pt-BR: Deixe um comentário
-  default: waline # default comment system, when you enable multiple comment systems
+  default: giscus # default comment system, when you enable multiple comment systems
 
 # valine comment system. https://valine.js.org
 # version 1.5.1
@@ -362,12 +362,12 @@ gitalk:
 
 # https://giscus.app/zh-CN
 giscus:
-  enable: false
-  repo:
-  repoId:
-  category:
-  categoryId:
-  mapping: mapping
+  enable: true
+  repo: lvdousha26/lvdousha26.github.io
+  repoId: R_kgDOOF-9tA
+  category: Announcements
+  categoryId: DIC_kwDOOF-9tM4C9HLY
+  mapping: pathname
   strict: 0
   reactionsEnabled: 1
   emitMetadata: 0
