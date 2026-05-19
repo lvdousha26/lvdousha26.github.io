@@ -14,7 +14,7 @@ categories:
 tags:
   - Git
   - 教程
-  - 工具
+  - 小工具
 ---
 
 ## 为什么要学 Git
