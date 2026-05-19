@@ -14,7 +14,7 @@
             class="lazyload"
           />
         {{- else -}}
-          {{- $covers := partial "helpers/randomCover.html" . -}}
+          {{- $covers := partial "helpers/randomCover.html" (dict "covers" .Site.Data.covers "seed" .File.Path) -}}
           {{- if $covers -}}
             <img
               data-src="{{ $covers }}"
@@ -65,7 +65,7 @@
             class="lazyload"
           />
         {{- else -}}
-          {{- $covers := partial "helpers/randomCover.html" . -}}
+          {{- $covers := partial "helpers/randomCover.html" (dict "covers" .Site.Data.covers "seed" .File.Path) -}}
           {{- if $covers -}}
             <img
               data-src="{{ $covers }}"

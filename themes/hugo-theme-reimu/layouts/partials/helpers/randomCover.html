@@ -1,3 +1,4 @@
-{{- $covers := .Site.Data.covers -}}
-{{- $cover := index $covers (math.Rand | mul (len $covers) | math.Floor | int) -}}
+{{- $covers := shuffle .covers -}}
+{{- $index := mod (hash.FNV32a .seed) (len $covers) -}}
+{{- $cover := index $covers (int $index) -}}
 {{- return $cover -}}
