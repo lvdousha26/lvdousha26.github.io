@@ -1,2 +1,6 @@
 {{- $id := hash.FNV32a .seed -}}
-{{- return (printf "https://img.paulzzh.com/touhou/random?site=konachan&size=pc&_=%d" $id) -}}
+{{- if mod $id 2 -}}
+  {{- return (printf "https://img.paulzzh.com/touhou/random?site=konachan&size=pc&_=%d" $id) -}}
+{{- else -}}
+  {{- return (printf "https://img.xjh.me/random_img.php?type=bg&ctype=acg&return=302&_=%d" $id) -}}
+{{- end -}}
