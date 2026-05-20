@@ -1,6 +1,6 @@
 ---
-title: "AutoDL 免费算力白嫖指南：14 天实例与自动开关机"
-description: "手把手教你利用 AutoDL 平台的自动开关机功能，在免费额度内高效跑深度学习实验"
+title: "AutoDL 14 天自动开关机"
+description: "防止14天实例被autodl释放"
 keywords: "autodl,gpu,深度学习,免费算力,教程"
 
 date: 2026-05-20T00:00:00+08:00
@@ -19,60 +19,13 @@ tags:
   - 小工具
 ---
 
-## 什么是 AutoDL
 
-[AutoDL](https://autodl.com/) 是国内最流行的 GPU 云平台之一，主打按量计费和性价比。对新用户提供**14 天免费实例**（含一张显卡），对学生尤其友好。
 
-核心优势：
+没卡就是这么苦逼...
 
-- 按小时计费，关机不收费（仅收少量存储费）
-- 社区镜像丰富，PyTorch / TensorFlow 开箱即用
-- 支持 SSH、JupyterLab、VS Code 远程开发
-- 国内访问速度快，数据上传下载方便
 
-<!--more-->
 
-## 注册与领券
-
-1. 打开 https://autodl.com → 注册账号
-2. 完成学生认证（学生邮箱），领取免费额度
-3. 新用户自动获得 14 天免费实例资格
-
-进入控制台后，首页能看到你的余额和可用实例。
-
-## 创建实例
-
-```bash
-# 关键配置
-区域：就近选择（北京/上海/广州）
-GPU：A100-40G / RTX 4090 / RTX 3090（按需选择）
-镜像：选社区镜像，如 "PyTorch 2.x + Ubuntu 22.04"
-计费：按量计费
-```
-
-创建后实例立即启动，获得 SSH 地址和端口号。
-
-## 连接实例
-
-```bash
-# SSH 连接（最常用）
-ssh -p 端口号 root@地区.autodl.com
-
-# JupyterLab
-# 在控制台点击 JupyterLab 按钮，自动打开
-
-# VS Code Remote
-# 在 VS Code 安装 Remote-SSH 扩展后配置
-# ~/.ssh/config：
-Host autodl
-    HostName 地区.autodl.com
-    Port 端口号
-    User root
-```
-
-## 自动开关机：省钱关键
-
-这是本文的核心。AutoDL 实例**关机后不收取 GPU 费用**，只收极少的存储费（几毛钱/天）。
+AutoDL 实例**关机后不收取 GPU 费用**，只收极少的存储费（几毛钱/天）。
 
 ### 平台内置自动关机
 
