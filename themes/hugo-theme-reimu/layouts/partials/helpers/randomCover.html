@@ -1,6 +1,8 @@
 {{- $id := hash.FNV32a .seed -}}
+{{- $url := "" -}}
 {{- if mod $id 2 -}}
-  {{- return (printf "https://img.paulzzh.com/touhou/random?site=konachan&size=pc&_=%d" $id) -}}
+  {{- $url = printf "https://img.paulzzh.com/touhou/random?site=konachan&size=pc&_=%d" $id -}}
 {{- else -}}
-  {{- return (printf "https://img.paulzzh.com/touhou/random?site=yandere&size=pc&_=%d" $id) -}}
+  {{- $url = printf "https://img.paulzzh.com/touhou/random?site=yandere&size=pc&_=%d" $id -}}
 {{- end -}}
+{{- return $url -}}
