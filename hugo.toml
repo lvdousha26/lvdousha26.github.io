@@ -30,5 +30,10 @@ delimiters.inline = [["\\(", "\\)"], ["$", "$"]]
 guessSyntax = true
 noClasses = false
 
+[security.http]
+urls = ['https://cnmiw\.com/.*', 'https://setu\.iw233\.top/.*']
+methods = ['(?i)GET']
+mediaTypes = ['application/json', 'image/.*']
+
 [outputs]
 home = ["HTML", "RSS"]

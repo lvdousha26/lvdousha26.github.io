@@ -11,26 +11,29 @@
             <div class="post-categories-cover">
               {{- if $v.cover -}}
                 <img
-                  data-src="{{ $v.cover | relURL }}"
-                  data-sizes="auto"
+                  src="{{ $v.cover | relURL }}"
                   alt="{{ $v.categories }}"
-                  class="lazyload"
+                  class="cover-img"
+                  loading="eager"
+                  onload="this.classList.add('loaded')"
                 />
               {{- else -}}
                 {{- $cover := partial "helpers/randomCover.html" (dict "seed" $v.categories) -}}
                 {{- if $cover -}}
                   <img
-                    data-src="{{ $cover }}"
-                    data-sizes="auto"
+                    src="{{ $cover }}"
                     alt="{{ $v.categories }}"
-                    class="lazyload"
+                    class="cover-img"
+                    loading="eager"
+                    onload="this.classList.add('loaded')"
                   />
                 {{- else -}}
                   <img
-                    data-src="{{ $ctx.Site.Params.banner | relURL }}"
-                    data-sizes="auto"
+                    src="{{ $ctx.Site.Params.banner | relURL }}"
                     alt="{{ $v.categories }}"
-                    class="lazyload"
+                    class="cover-img"
+                    loading="eager"
+                    onload="this.classList.add('loaded')"
                   />
                 {{- end -}}
               {{- end -}}
