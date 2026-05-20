@@ -1,5 +1,5 @@
 ---
-title: "SSH 从入门到熟练：远程连接完全指南"
+title: "SSH 入门"
 description: "面向初学者的 SSH 实用教程，涵盖密钥认证、端口转发和常用配置"
 keywords: "ssh,远程连接,服务器,安全,教程"
 

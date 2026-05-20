@@ -1,5 +1,5 @@
 ---
-title: "Vim 从入门到熟练：终端编辑器生存指南"
+title: "Vim 入门"
 description: "面向初学者的 Vim 实用教程，掌握核心操作后编辑效率翻倍"
 keywords: "vim,编辑器,终端,linux,教程"
 

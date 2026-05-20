@@ -1,5 +1,5 @@
 ---
-title: "Git 从入门到熟练：版本控制实用指南"
+title: "Git 入门"
 description: "面向初学者的 Git 实用教程，涵盖核心概念、常用命令和工作流程"
 keywords: "git,github,version control,版本控制,教程"
 

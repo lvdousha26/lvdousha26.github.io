@@ -1,5 +1,5 @@
 ---
-title: "WSL 从入门到熟练：Windows 上的 Linux 开发环境"
+title: "WSL 入门"
 description: "面向初学者的 WSL 实用教程，在 Windows 上无缝使用 Linux 的完整指南"
 keywords: "wsl,windows,linux,开发环境,教程"
 

@@ -1,5 +1,5 @@
 ---
-title: "Bash 从入门到熟练：命令行效率指南"
+title: "Bash 入门"
 description: "面向初学者的 Bash 实用教程，涵盖基础语法、常用命令和脚本技巧"
 keywords: "bash,shell,命令行,linux,教程"
 

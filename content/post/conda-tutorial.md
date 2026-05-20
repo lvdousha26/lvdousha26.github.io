@@ -1,5 +1,5 @@
 ---
-title: "Conda 从入门到熟练：Python 环境管理指南"
+title: "Conda 入门"
 description: "面向初学者的 Conda 实用教程，掌握虚拟环境、包管理和项目隔离"
 keywords: "conda,anaconda,python,环境管理,教程"
 

@@ -1,5 +1,5 @@
 ---
-title: "uv 从入门到熟练：下一代 Python 包管理器"
+title: "uv 入门"
 description: "面向初学者的 uv 实用教程，用 Rust 写的 pip 替代品，快 10-100 倍"
 keywords: "uv,python,包管理器,pip,教程"
 

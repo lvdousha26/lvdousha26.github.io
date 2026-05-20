@@ -1,5 +1,5 @@
 ---
-title: "PyTorch 从入门到熟练：深度学习框架实战指南"
+title: "PyTorch 入门"
 description: "面向初学者的 PyTorch 实用教程，覆盖张量操作、自动求导、数据加载和模型训练"
 keywords: "pytorch,深度学习,神经网络,教程"
 
