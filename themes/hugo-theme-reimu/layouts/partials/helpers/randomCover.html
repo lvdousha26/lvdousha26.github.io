@@ -1,4 +1,2 @@
-{{- $covers := shuffle .covers -}}
-{{- $index := mod (hash.FNV32a .seed) (len $covers) -}}
-{{- $cover := index $covers (int $index) -}}
-{{- return $cover -}}
+{{- $id := hash.FNV32a .seed -}}
+{{- return (printf "https://img.paulzzh.com/touhou/random?site=konachan&size=pc&_=%d" $id) -}}

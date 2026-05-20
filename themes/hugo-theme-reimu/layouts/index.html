@@ -17,7 +17,7 @@
                   class="lazyload"
                 />
               {{- else -}}
-                {{- $cover := partial "helpers/randomCover.html" (dict "covers" $ctx.Site.Data.covers "seed" $v.categories) -}}
+                {{- $cover := partial "helpers/randomCover.html" (dict "seed" $v.categories) -}}
                 {{- if $cover -}}
                   <img
                     data-src="{{ $cover }}"
