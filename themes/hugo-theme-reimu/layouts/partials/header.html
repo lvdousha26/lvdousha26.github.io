@@ -178,7 +178,7 @@
             <h1 id="site-title" data-aos="{{ .Site.Params.animation.options.header.title }}">{{ $title }}</h1>
           </span>
           <script>
-            (function(){var t=document.getElementById('site-title');if(!t)return;var s=t.textContent;t.textContent='';var i=0;function n(){if(i<s.length){t.textContent+=s.charAt(i);i++;setTimeout(n,80+Math.random()*60)}}n()})();
+            (function(){var t=document.getElementById('site-title');if(!t)return;var s=t.textContent;var o=!1;function e(){if(o)return;o=!0;t.textContent='';var i=0;function n(){if(i<s.length){t.textContent+=s.charAt(i);i++;setTimeout(n,80+60*Math.random())}}n()}if(t.classList.contains('aos-animate'))e();else{var m=new MutationObserver(function(){if(t.classList.contains('aos-animate')){m.disconnect();e()}});m.observe(t,{attributes:!0,attributeFilter:['class']});setTimeout(function(){m.disconnect();e()},2e3)}})();
           </script>
         {{- end -}}
       {{- end -}}
