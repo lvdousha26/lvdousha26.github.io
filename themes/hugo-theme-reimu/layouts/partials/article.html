@@ -13,6 +13,10 @@
     </div>
     {{- partial "post/summary.html" . -}}
     <div class="hr-line"></div>
+    {{- $coverURL := partial "helpers/randomCover.html" (dict "seed" .File.Path) -}}
+    {{- if $coverURL -}}
+      <a href="{{ $coverURL }}" target="_blank" class="cover-source-link" title="查看头图原图">🎴</a>
+    {{- end -}}
     {{- partial "post/gallery.html" . -}}
     <div class="e-content article-entry" itemprop="articleBody">
       {{- if .Params.outdated -}}

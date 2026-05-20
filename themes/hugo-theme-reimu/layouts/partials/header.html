@@ -175,8 +175,11 @@
   
         {{- if $title -}}
           <span id="logo">
-            <h1 data-aos="{{ .Site.Params.animation.options.header.title }}">{{ $title }}</h1>
+            <h1 id="site-title" data-aos="{{ .Site.Params.animation.options.header.title }}">{{ $title }}</h1>
           </span>
+          <script>
+            (function(){var t=document.getElementById('site-title');if(!t)return;var s=t.textContent;t.textContent='';var i=0;function n(){if(i<s.length){t.textContent+=s.charAt(i);i++;setTimeout(n,80+Math.random()*60)}}n()})();
+          </script>
         {{- end -}}
       {{- end -}}
   
