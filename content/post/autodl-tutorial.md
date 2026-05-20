@@ -1,7 +1,7 @@
 ---
-title: "AutoDL 14 天自动开关机"
-description: "防止14天实例被autodl释放"
-keywords: "autodl,gpu,深度学习,免费算力,教程"
+title: "AutoDL 14 天自动续命脚本"
+description: "用 API 定时重建实例，防止 14 天免费实例被释放"
+keywords: "autodl,gpu,深度学习,免费算力,API,脚本"
 
 date: 2026-05-20T00:00:00+08:00
 lastmod: 2026-05-20T00:00:00+08:00
@@ -14,138 +14,218 @@ categories:
 tags:
   - AutoDL
   - GPU
-  - 深度学习
+  - Python
   - 教程
   - 小工具
 ---
 
+AutoDL 免费实例**14 天自动释放**，到期直接删实例，系统盘数据全没。最省心的方法：写个脚本，每 13 天用 API 重建一次实例，重置倒计时。
 
+<!--more-->
 
-没卡就是这么苦逼...
-
-
-
-AutoDL 实例**关机后不收取 GPU 费用**，只收极少的存储费（几毛钱/天）。
-
-### 平台内置自动关机
-
-在控制台实例详情页 → 找到「自动关机」设置：
+## 整体思路
 
 ```
-关机条件：
-- 无任务运行超过 N 分钟自动关机
-- 固定时间点自动关机
-
-推荐设置：
-- 无任务 30 分钟自动关机（防止忘了关白烧钱）
-- 每天 23:00 定时关机（如果不需要通宵跑）
+新实例(第1天) → 跑实验 → 第13天触发脚本
+  → 备份数据到文件存储
+  → API 创建新实例（同配置）
+  → 从文件存储恢复数据
+  → API 释放旧实例
+  → 新实例接替，倒计时重置为14天
 ```
 
-设置后即使忘了关，也不会一直烧钱。
+用文件存储(NFS)持久化数据，系统盘只放临时环境。重建后挂载回去就行。
 
-### 利用 14 天免费期最大化利用率
+## 获取 API Token
 
-14 天免费实例的关键策略：
-
-```
-每天 8:00 自动开机 → 跑一天实验 → 23:00 自动关机
-相当于：14 天 × 15 小时 = 210 小时免费 GPU
-如果 24 小时不关机：14 天 × 24 小时 = 336 小时
-但每天的 8 小时睡眠时间 GPU 空转 = 浪费 112 小时
-```
-
-省下的额度可以用来开更好的卡（比如把 3090 换成 4090）。
-
-### 手动开关机
+控制台 → 账号设置 → 开发者 Token，复制下来。
 
 ```bash
-# 网页控制台：实例列表 → 点击开关按钮
-
-# 命令行（通过 AutoDL CLI）
-pip install autodl
-autodl login
-autodl instance start <实例ID>
-autodl instance stop <实例ID>
+# 存为环境变量
+export AUTODL_TOKEN="你的token"
 ```
 
-## 定时任务：自动开机后执行训练
+## 核心脚本
 
-关机后系统不会保存进程状态，所以开机后需要手动启动训练。可以用 `crontab` 让开机后自动执行：
+```python
+#!/usr/bin/env python3
+"""AutoDL 14天自动续命 — 重建实例并恢复环境"""
+import requests, os, time, json
+
+TOKEN = os.environ["AUTODL_TOKEN"]
+HOST = "https://api.autodl.com"
+HEADERS = {"Authorization": TOKEN, "Content-Type": "application/json"}
+
+# ======== 按你的实例改这里 ========
+REGION = "beijingDC2"          # 地区
+GPU_SPEC = "pro6000-p"         # GPU规格ID（见API文档附录）
+IMAGE_ID = "image-xxxxxxxxx"   # 镜像UUID（私有镜像列表里查）
+INSTANCE_NAME = "auto-renew"
+DATA_CENTER = ["beijingDC2"]   # 可多选
+CUDA_MIN = 113                 # CUDA >= 11.3
+GPU_COUNT = 1
+DISK_EXPAND = 0               # 系统盘扩容(GB)
+START_CMD = "sleep 1"          # 开机后自动执行的命令
+# =================================
+
+
+def _post(path, data=None):
+    r = requests.post(f"{HOST}{path}", headers=HEADERS, json=data or {})
+    return r.json()
+
+
+def get_old_instance():
+    """查当前实例列表，取最新一个"""
+    r = _post("/api/v1/dev/instance/pro/list")
+    items = r.get("data", {}).get("list", [])
+    if not items:
+        raise Exception("没找到实例，先去控制台手动创建一个")
+    return items[0]
+
+
+def release_instance(uuid):
+    """先关机，再释放"""
+    _post("/api/v1/dev/instance/pro/power_off", {"instance_uuid": uuid})
+    time.sleep(10)
+    _post("/api/v1/dev/instance/pro/release", {"instance_uuid": uuid})
+    print(f"  已释放 {uuid}")
+
+
+def create_instance():
+    """用预设配置创建新实例"""
+    data = {
+        "data_center_list": DATA_CENTER,
+        "req_gpu_amount": GPU_COUNT,
+        "expand_system_disk_by_gb": DISK_EXPAND,
+        "gpu_spec_uuid": GPU_SPEC,
+        "image_uuid": IMAGE_ID,
+        "cuda_v_from": CUDA_MIN,
+        "instance_name": INSTANCE_NAME,
+        "start_command": START_CMD,
+    }
+    r = _post("/api/v1/dev/instance/pro/create", data)
+    info = r.get("data", {})
+    uuid = info.get("instance_uuid")
+    print(f"  新实例 {uuid} 创建成功")
+    return info
+
+
+def wait_until_running(uuid, timeout=300):
+    """等实例开机就绪"""
+    for _ in range(timeout // 10):
+        r = _post("/api/v1/dev/instance/pro/status", {"instance_uuid": uuid})
+        status = r.get("data", {}).get("status")
+        if status == "running":
+            return True
+        time.sleep(10)
+    raise Exception("实例启动超时")
+
+
+def main():
+    print("=== AutoDL 14天续命 ===")
+
+    print("[1/4] 查旧实例...")
+    old = get_old_instance()
+    old_uuid = old["instance_uuid"]
+    print(f"  旧实例: {old_uuid}")
+
+    print("[2/4] 创建新实例...")
+    new_info = create_instance()
+    new_uuid = new_info["instance_uuid"]
+
+    print("[3/4] 等新实例就绪...")
+    wait_until_running(new_uuid)
+    # 新实例开机后可通过 START_CMD 自动挂载文件存储、拉代码
+    # 例如: START_CMD = "bash /root/setup.sh"
+
+    print("[4/4] 释放旧实例...")
+    release_instance(old_uuid)
+
+    print(f"=== 完成，新实例 {new_uuid}，倒计时重置 ===")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## 环境恢复
+
+镜像里固化的环境不用动。每次 `pip install` 的包会丢，所以在 `START_CMD` 或 setup 脚本里搞定：
 
 ```bash
-# 在实例内编辑 crontab
+#!/bin/bash
+# setup.sh — 新实例首次启动时执行
+
+# 挂载文件存储（提前在控制台创建好）
+# 挂载后数据目录直接可用
+
+# 装依赖（镜像已有 conda/pytorch 就跳过）
+pip install transformers datasets accelerate -q
+
+# 拉最新代码
+cd /root && git clone git@github.com:you/project.git
+```
+
+把 `START_CMD` 改成 `"bash /root/setup.sh"`，每次重建自动跑一遍。
+
+## 文件存储 — 数据不丢的关键
+
+系统盘随实例释放，**文件存储(NFS)是独立的**，实例删了数据还在。新实例挂载同一个文件存储即可。
+
+控制台 → 文件存储 → 创建 → 记下挂载路径。在 `setup.sh` 里：
+
+```bash
+# AutoDL 文件存储已自动挂载到 /root/autodl-fs
+# 把训练输出、checkpoint、数据集放这里
+ln -s /root/autodl-fs/checkpoints /root/project/checkpoints
+ln -s /root/autodl-fs/datasets /root/project/data
+```
+
+## 定时执行
+
+在**本地**（不是实例上）设 cron，每 13 天跑一次：
+
+```bash
+# 编辑 crontab
 crontab -e
 
-# 添加开机自启动任务
-@reboot sleep 30 && cd /root/project && python train.py
+# 每月 1 号和 14 号凌晨 3 点执行
+0 3 1,14 * * AUTODL_TOKEN=xxx python3 /home/you/autodl-renew.py >> /home/you/autodl-renew.log 2>&1
 ```
 
-或者用 `tmux` / `screen` 保持会话：
+也可以用 GitHub Actions 免费跑：
 
-```bash
-# 创建一个 tmux 会话跑训练
-tmux new -s training
-cd /root/project
-python train.py
-
-# 按 Ctrl+B 然后 D 分离会话
-# 即使 SSH 断开训练也不会中断
-
-# 重新连接后恢复
-tmux attach -t training
+```yaml
+# .github/workflows/autodl-renew.yml
+name: AutoDL 14天续命
+on:
+  schedule:
+    - cron: "0 3 1,14 * *"
+  workflow_dispatch:
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install requests && python3 autodl-renew.py
+        env:
+          AUTODL_TOKEN: ${{ secrets.AUTODL_TOKEN }}
 ```
 
-## 数据传输
+## 注意事项
 
-```bash
-# 从本地上传文件到实例
-scp -P 端口号 ./data.zip root@地区.autodl.com:/root/
-
-# 从实例下载结果
-scp -P 端口号 root@地区.autodl.com:/root/results/ ./local_results/
-
-# 挂载阿里云盘 / 百度网盘（部分镜像内置支持）
-# 参考具体镜像的文档说明
-```
-
-## 实验数据持久化
-
-关机后系统盘数据保留，但 AutoDL 的免费实例到期后会销毁。重要数据务必提前备份：
-
-```bash
-# 1. 训练过程中的 checkpoint 下载到本地
-rsync -avz -e "ssh -p 端口号" root@地区.autodl.com:/root/project/checkpoints/ ./local_backup/
-
-# 2. 代码推送到 GitHub
-git push origin main
-
-# 3. 大文件存到对象存储（OSS / COS / S3）
-# 参考各厂商 SDK 上传
-```
-
-## 免费实例到期后
-
-14 天到期后：
-
-| 方案 | 费用 |
-|------|------|
-| 按量续费 | RTX 3090 ~2 元/小时，3090 ~3 元/小时 |
-| 抢特价实例 | 偶尔有 0.99 元/小时的特价卡 |
-| 注册新账号 | 再白嫖 14 天（不推荐，可能被封） |
-| 用免费额度 | 学生认证送的券大概够跑几十小时 |
-
-精打细算的话，学生身份送的额度足够做一个完整的课程项目或竞赛。
+- **文件存储是唯一持久化的地方**，系统盘数据不备份必丢
+- 新实例 SSH 地址会变，IP/端口每次都不同，看控制台或 API 返回
+- API 创建实例用的是**按量计费**，创建后就开始扣费，旧实例要立刻释放
+- GPU 规格 ID 查 API 文档附录，不同卡对应不同 `gpu_spec_uuid`
+- 免费额度是**按账号算的**，一个账号同时只能有一个免费实例
 
 ## 常用速查
 
-| 操作 | 方法 |
-|------|------|
-| 创建实例 | 控制台 → 选区/选卡/选镜像 → 创建 |
-| SSH 登录 | `ssh -p 端口 root@地区.autodl.com` |
-| 上传文件 | `scp -P 端口 file root@host:/path` |
-| 自动关机 | 控制台实例详情 → 设置无任务关机 |
-| 手动关机 | 控制台或 `autodl instance stop` |
-| tmux 持久化 | `tmux new -s name` → Ctrl+B D 分离 |
-| 数据备份 | scp/rsync 下载 + git push |
-
-AutoDL 是目前国内对学生最友好的 GPU 平台之一。用好自动开关机和 tmux，能在大作业和竞赛里省下不少奶茶钱。
+| 操作 | 命令/地址 |
+|------|----------|
+| 获取 Token | 控制台 → 设置 → 开发者 Token |
+| API 文档 | https://www.autodl.com/docs/instance_pro_api/ |
+| GPU 规格 ID | 查 API 文档附录 |
+| 镜像 UUID | 控制台 → 私有镜像 → 镜像详情 |
+| 查看余额 | POST `/api/v1/dev/wallet/balance` |
