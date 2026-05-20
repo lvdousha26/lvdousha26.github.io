@@ -3,3 +3,4 @@
 /public
 /resources*NVM_SYMLINK*
 node_cache
+resources/_gen/
