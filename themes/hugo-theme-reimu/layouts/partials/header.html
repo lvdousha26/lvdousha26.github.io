@@ -1,6 +1,4 @@
 {{- $params := .Site.Params -}}
-{{- /* Read random cover from Scratch (set in baseof.html) — matches the 🎴 button in article.html */ -}}
-{{- $randomCover := .Scratch.Get "randomCover" -}}
 <div id="header-nav">
   <nav id="main-nav" aria-label="Primary navigation">
     {{- range .Site.Params.menu -}}
@@ -121,9 +119,6 @@
       {{- else if eq .Site.Params.cover false -}}
         <picture></picture>
         <img style="visibility:hidden"></img>
-      {{- else if $randomCover -}}
-        <picture></picture>
-        <img fetchpriority="high" src="{{ $randomCover }}" alt="{{ .Title }}">
       {{- else -}}
         <picture>
           {{- if .Site.Params.banner_srcset.enable -}}
