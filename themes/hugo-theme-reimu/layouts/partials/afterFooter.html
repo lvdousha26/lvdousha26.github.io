@@ -422,22 +422,28 @@
 
 {{- /* Client-side random cover: fetch from MirlKoi API on every page load */ -}}
 <script>
-  function loadRandomCover() {
+  (function() {
+    var coverUrl = '';
     var img = document.querySelector('#header img[fetchpriority="high"]');
     var btn = document.querySelector('.cover-source-link');
     if (!img && !btn) return;
-    var url = 'https://idnm.de/api.php?sort=CDNiw233&type=json&_=' + Date.now();
-    fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+
+    // Fetch random image from API
+    var apiUrl = 'https://idnm.de/api.php?sort=CDNiw233&type=json&_=' + Date.now();
+    fetch(apiUrl).then(function(r) { return r.json(); }).then(function(data) {
       var pic = data && data.pic && data.pic[0];
       if (pic) {
+        coverUrl = pic;
         if (img) img.src = pic;
-        if (btn) btn.href = pic;
       }
     }).catch(function() {});
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadRandomCover);
-  } else {
-    loadRandomCover();
-  }
+
+    // Click handler for the button (works even before API responds)
+    if (btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (coverUrl) window.open(coverUrl, '_blank');
+      });
+    }
+  })();
 </script>
