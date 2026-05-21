@@ -1,6 +1,8 @@
 {{- $id := hash.FNV32a .seed -}}
 {{- $url := "" -}}
 
+{{- /* Step 1: Get CDN URL from API */ -}}
+{{- $picURL := "" -}}
 {{- /* Primary: idnm.de (备用站) */ -}}
 {{- $apiURL := printf "https://idnm.de/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
 {{- $resp := resources.GetRemote $apiURL -}}
@@ -11,14 +13,14 @@
     {{- if and $parsed (isset $parsed "pic") -}}
       {{- $pics := index $parsed "pic" -}}
       {{- with index $pics 0 -}}
-        {{- $url = . -}}
+        {{- $picURL = . -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
 
 {{- /* Fallback: cnmiw.com (原站) if primary failed */ -}}
-{{- if not $url -}}
+{{- if not $picURL -}}
   {{- $apiURL := printf "https://cnmiw.com/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
   {{- $resp := resources.GetRemote $apiURL -}}
   {{- if $resp -}}
@@ -28,10 +30,21 @@
       {{- if and $parsed (isset $parsed "pic") -}}
         {{- $pics := index $parsed "pic" -}}
         {{- with index $pics 0 -}}
-          {{- $url = . -}}
+          {{- $picURL = . -}}
         {{- end -}}
       {{- end -}}
     {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Step 2: Download image and serve locally (cache once, use forever) */ -}}
+{{- if $picURL -}}
+  {{- $img := resources.GetRemote $picURL -}}
+  {{- if $img -}}
+    {{- $ext := path.Ext $picURL -}}
+    {{- if not $ext -}}{{- $ext = ".jpg" -}}{{- end -}}
+    {{- $local := $img | resources.Copy (printf "images/covers/%s%s" $id $ext) -}}
+    {{- $url = $local.RelPermalink -}}
   {{- end -}}
 {{- end -}}
 
