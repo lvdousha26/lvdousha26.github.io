@@ -13,7 +13,7 @@
     </div>
     {{- partial "post/summary.html" . -}}
     <div class="hr-line"></div>
-    {{- $coverURL := partial "helpers/randomCover.html" (dict "seed" .File.Path) -}}
+        {{- $coverURL := .Scratch.Get "randomCover" -}}
     {{- if $coverURL -}}
       <a href="{{ $coverURL }}" target="_blank" class="cover-source-link" title="查看头图原图">🎴</a>
     {{- end -}}

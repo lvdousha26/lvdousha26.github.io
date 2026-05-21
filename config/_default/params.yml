@@ -603,7 +603,7 @@ player:
   # if you enable meting, you must enable aplayer first
   aplayer:
     # https://github.com/DIYgod/APlayer
-    enable: true
+    enable: false
     options:
       audio: []
       fixed: true
@@ -618,7 +618,7 @@ player:
   meting:
     # https://github.com/metowolf/MetingJS
     # if you want to use meting, please enable aplayer first
-    enable: true
+    enable: false
     meting_api: # custom api
     options:
       id: 2265921590

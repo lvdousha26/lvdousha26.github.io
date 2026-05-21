@@ -1,9 +1,6 @@
 {{- $params := .Site.Params -}}
-{{- /* Compute random cover for posts — matches the 🎴 button in article.html */ -}}
-{{- $randomCover := "" -}}
-{{- if in .Site.Params.mainSections .Type -}}
-  {{- $randomCover = partial "helpers/randomCover.html" (dict "seed" .File.Path) -}}
-{{- end -}}
+{{- /* Read random cover from Scratch (set in baseof.html) — matches the 🎴 button in article.html */ -}}
+{{- $randomCover := .Scratch.Get "randomCover" -}}
 <div id="header-nav">
   <nav id="main-nav" aria-label="Primary navigation">
     {{- range .Site.Params.menu -}}

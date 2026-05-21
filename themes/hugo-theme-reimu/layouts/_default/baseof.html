@@ -22,6 +22,12 @@
     {{- if .Site.Params.injector.body_begin -}}
       {{- .Site.Params.injector.body_begin | safeHTML -}}
     {{- end -}}
+    {{- /* Compute random cover ONCE per page — header and article share the same value */ -}}
+    {{- $randomCover := "" -}}
+    {{- if in .Site.Params.mainSections .Type -}}
+      {{- $randomCover = partial "helpers/randomCover.html" (dict "seed" .File.Path) -}}
+    {{- end -}}
+    {{- .Scratch.Set "randomCover" $randomCover -}}
     {{- partialCached "loader.html" . -}}
     <div id="container">
       <div id="wrap">
