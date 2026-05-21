@@ -3,8 +3,8 @@ title: "Codeforces Round 1098 (Div. 2) 题解"
 description: "A 贪心/B 追逐游戏/C 数位构造/D 十字划分/E 序列组合计数/F 树路径二分"
 keywords: "Codeforces,题解,算法,竞赛"
 
-date: 2026-05-21T22:00:00+08:00
-lastmod: 2026-05-21T22:00:00+08:00
+date: 2026-05-21T17:00:00+08:00
+lastmod: 2026-05-21T17:00:00+08:00
 
 math: true
 mermaid: false
