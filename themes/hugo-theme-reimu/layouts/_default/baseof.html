@@ -22,6 +22,12 @@
     {{- if .Site.Params.injector.body_begin -}}
       {{- .Site.Params.injector.body_begin | safeHTML -}}
     {{- end -}}
+    {{- /* Pool of reliable image URLs, JS picks one per page load — served locally, JS picks one on each page load */ -}}
+    {{- $covers := slice -}}
+    {{- if and (.IsPage) (in .Site.Params.mainSections .Type) -}}
+      {{- $covers = partial "helpers/randomCover.html" (dict "seed" "global" "count" 3) -}}
+    {{- end -}}
+    {{- .Scratch.Set "covers" $covers -}}
     {{- partialCached "loader.html" . -}}
     <div id="container">
       <div id="wrap">

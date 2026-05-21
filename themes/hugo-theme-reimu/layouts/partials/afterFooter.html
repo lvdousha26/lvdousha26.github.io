@@ -34,7 +34,7 @@
 {{- partial "helpers/ts.html" (dict "source" "js/pjax_main.ts" "pjax" true "ctx" .) -}}
 
 {{- if $params.algolia_search.enable -}}
-  <script>
+  <script data-pjax>
     var ALGOLIA_CONFIG = {
       logo: '{{ "images/algolia_logo.svg" | relURL }}',
       algolia: {
@@ -59,7 +59,7 @@
 
 {{- if $params.firework.enable -}}
   {{- partial "helpers/js.html" (dict "raw" $js.firework "src" (index (partial "helpers/vendorCdn.html" (dict "item" $js.firework "ctx" $site)) 0) "integrity" (index (partial "helpers/vendorCdnIntegrity.html" (dict "item" $js.firework)) 0)) -}}
-<script>
+<script data-pjax>
   if (window.firework) {
     const options = JSON.parse({{ $params.firework.options | jsonify }});
     options.excludeElements = options.excludeelements;
@@ -75,7 +75,7 @@
 {{- end -}}
 
 {{- if $params.live2d.enable -}}
-<script>
+<script data-pjax>
   function initLive2d() {
     live2d.init('{{ index (partial "helpers/vendorCdn.html" (dict "item" $js.live2d.base "ctx" $site)) 0 }}', {themeTipsPath: ""});
   }
@@ -324,7 +324,7 @@
   {{- partial "helpers/ts.html" (dict "source" "js/sw.ts" "ctx" . "inline" false "target" "sw.js") -}}
   {{- partial "helpers/ts.html" (dict "source" "js/service_worker.ts" "ctx" .) -}}
 {{- else -}}
-  <script>
+  <script data-pjax>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         for (let registration of registrations) {
@@ -335,7 +335,7 @@
   </script>
 {{- end -}}
 
-<script>
+<script data-pjax>
   const reimuCopyright = String.raw`
    ______     ______     __     __    __     __  __    
   /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
@@ -355,7 +355,7 @@
 {{- if $params.player.aplayer.enable -}}
   {{- partial "helpers/js.html" (dict "raw" $js.aplayer "src" (index (partial "helpers/vendorCdn.html" (dict "item" $js.aplayer "ctx" $site)) 0) "integrity" (index (partial "helpers/vendorCdnIntegrity.html" (dict "item" $js.aplayer)) 0)) -}}
   {{- if not $params.player.meting.enable -}}
-    <script>
+    <script data-pjax>
       if (window.matchMedia('(max-width: 959px)').matches) {
       const aplayer = _$('#aplayer');
         if (aplayer) {
@@ -387,11 +387,11 @@
 
 {{- if $params.player.meting.enable -}}
   {{- if $params.player.meting.meting_api -}}
-    <script>
+    <script data-pjax>
       var meting_api = '{{ $params.player.meting.meting_api }}';
     </script>
   {{- end -}}
-  <script>
+  <script data-pjax>
     if (window.matchMedia('(max-width: 959px)').matches) {
       const meting = _$('meting-js');
       if (meting) {
@@ -420,30 +420,30 @@
   </script>
 {{- end -}}
 
-{{- /* Client-side random cover: fetch from MirlKoi API on every page load */ -}}
-<script>
+{{- /* Client-side random cover: pick from build-time pre-fetched local images */ -}}
+{{- $covers := .Scratch.Get "covers" -}}
+{{- if $covers -}}
+<script data-pjax>
   (function() {
-    var coverUrl = '';
+    var covers = {{ $covers | jsonify | safeJS }};
+    if (!covers || !covers.length) return;
+
+    var idx = Math.floor(Math.random() * covers.length);
+    var coverUrl = covers[idx];
+
     var img = document.querySelector('#header img[fetchpriority="high"]');
+    if (img) {
+      img.src = coverUrl;
+      img.style.visibility = 'visible';
+    }
+
     var btn = document.querySelector('.cover-source-link');
-    if (!img && !btn) return;
-
-    // Fetch random image from API
-    var apiUrl = 'https://idnm.de/api.php?sort=CDNiw233&type=json&_=' + Date.now();
-    fetch(apiUrl).then(function(r) { return r.json(); }).then(function(data) {
-      var pic = data && data.pic && data.pic[0];
-      if (pic) {
-        coverUrl = pic;
-        if (img) img.src = pic;
-      }
-    }).catch(function() {});
-
-    // Click handler for the button (works even before API responds)
     if (btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault();
-        if (coverUrl) window.open(coverUrl, '_blank');
+        window.open(coverUrl, '_blank');
       });
     }
   })();
 </script>
+{{- end -}}

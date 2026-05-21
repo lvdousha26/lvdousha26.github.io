@@ -1,2 +1,9 @@
-{{- /* Client-side random cover: Hugo returns empty, JS fetches from API on page load */ -}}
-{{- return "" -}}
+{{- /* Return a pool of reliable image URLs. JS picks one randomly on each page load. */ -}}
+{{- $urls := slice
+  "https://picsum.photos/1920/1080?random=1"
+  "https://picsum.photos/1920/1080?random=2"
+  "https://picsum.photos/1920/1080?random=3"
+  "https://picsum.photos/1920/1080?random=4"
+  "https://picsum.photos/1920/1080?random=5"
+-}}
+{{- return $urls -}}
