@@ -1,6 +1,8 @@
 {{- $id := hash.FNV32a .seed -}}
-{{- $apiURL := printf "https://idnm.de/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
 {{- $url := "" -}}
+
+{{- /* Primary: idnm.de (备用站) */ -}}
+{{- $apiURL := printf "https://idnm.de/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
 {{- $resp := resources.GetRemote $apiURL -}}
 {{- if $resp -}}
   {{- $body := $resp.Content -}}
@@ -14,4 +16,23 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
+
+{{- /* Fallback: cnmiw.com (原站) if primary failed */ -}}
+{{- if not $url -}}
+  {{- $apiURL := printf "https://cnmiw.com/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
+  {{- $resp := resources.GetRemote $apiURL -}}
+  {{- if $resp -}}
+    {{- $body := $resp.Content -}}
+    {{- if $body -}}
+      {{- $parsed := $body | transform.Unmarshal -}}
+      {{- if and $parsed (isset $parsed "pic") -}}
+        {{- $pics := index $parsed "pic" -}}
+        {{- with index $pics 0 -}}
+          {{- $url = . -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
 {{- return $url -}}

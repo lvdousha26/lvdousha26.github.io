@@ -1,4 +1,9 @@
 {{- $params := .Site.Params -}}
+{{- /* Compute random cover for posts — matches the 🎴 button in article.html */ -}}
+{{- $randomCover := "" -}}
+{{- if in .Site.Params.mainSections .Type -}}
+  {{- $randomCover = partial "helpers/randomCover.html" (dict "seed" .File.Path) -}}
+{{- end -}}
 <div id="header-nav">
   <nav id="main-nav" aria-label="Primary navigation">
     {{- range .Site.Params.menu -}}
@@ -119,6 +124,9 @@
       {{- else if eq .Site.Params.cover false -}}
         <picture></picture>
         <img style="visibility:hidden"></img>
+      {{- else if $randomCover -}}
+        <picture></picture>
+        <img fetchpriority="high" src="{{ $randomCover }}" alt="{{ .Title }}">
       {{- else -}}
         <picture>
           {{- if .Site.Params.banner_srcset.enable -}}

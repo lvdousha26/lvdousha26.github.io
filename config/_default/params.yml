@@ -1,4 +1,4 @@
-########################################
+
 # Basic Configuration
 ########################################
 
@@ -27,7 +27,7 @@ dateFormat: "2006-01-02"
 timeFormat: "2006-01-02 15:04:05"
 
 author: lvdousha
-description: "绿豆沙的博客"
+description: "绿豆沙の小窝"
 subtitle: "qwq"
 
 banner: "reimu-water.jpg"
