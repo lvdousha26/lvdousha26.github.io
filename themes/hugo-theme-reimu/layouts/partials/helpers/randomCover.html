@@ -1,10 +1,13 @@
 {{- $id := hash.FNV32a .seed -}}
 {{- $apiURL := printf "https://cnmiw.com/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
 {{- $url := "" -}}
-{{- with resources.GetRemote $apiURL -}}
-  {{- with . | transform.Unmarshal -}}
-    {{- if isset . "pic" -}}
-      {{- $pics := index . "pic" -}}
+{{- $resp := resources.GetRemote $apiURL -}}
+{{- if $resp -}}
+  {{- $body := $resp.Content -}}
+  {{- if $body -}}
+    {{- $parsed := $body | transform.Unmarshal -}}
+    {{- if and $parsed (isset $parsed "pic") -}}
+      {{- $pics := index $parsed "pic" -}}
       {{- with index $pics 0 -}}
         {{- $url = . -}}
       {{- end -}}
