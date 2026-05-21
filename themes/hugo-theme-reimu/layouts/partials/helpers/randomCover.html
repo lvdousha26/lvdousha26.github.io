@@ -1,9 +1,10 @@
-{{- /* Return a pool of reliable image URLs. JS picks one randomly on each page load. */ -}}
+{{- /* Return a pool of image API URLs (redirect-based, works in <img> tags, no CORS issues). */ -}}
+{{- /* These APIs redirect to a random image on each request — China-friendly. */ -}}
 {{- $urls := slice
-  "https://picsum.photos/1920/1080?random=1"
-  "https://picsum.photos/1920/1080?random=2"
-  "https://picsum.photos/1920/1080?random=3"
-  "https://picsum.photos/1920/1080?random=4"
-  "https://picsum.photos/1920/1080?random=5"
+  "https://api.btstu.cn/sjbz/api.php?lx=dongman"
+  "https://api.btstu.cn/sjbz/api.php?lx=meizi"
+  "https://api.btstu.cn/sjbz/api.php?lx=suiji"
+  "https://www.loliapi.com/bg/"
+  "https://t.alcy.cc/moe/"
 -}}
 {{- return $urls -}}
