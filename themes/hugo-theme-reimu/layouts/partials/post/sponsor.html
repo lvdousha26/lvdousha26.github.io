@@ -4,7 +4,7 @@
     <div class="sponsor-title">{{ i18n "sponsor" }}</div>
     <div class="sponsor-icon {{ if .Site.Params.sponsor.icon.rotate }}rotate{{ end }}"></div>
   </div>
-  {{- $languageCode := .Site.Language.LanguageCode -}}
+  {{- $languageCode := .Site.Language.Locale -}}
   {{- $tip := .Site.Params.sponsor.tip -}}
   {{- $realTip := "" -}}
   {{- if reflect.IsMap $tip -}}

@@ -1,5 +1,5 @@
 baseURL = 'https://lvdousha26.github.io/'
-languageCode = 'zh-CN'
+locale = 'zh-CN'
 title = '绿豆沙の小窝'
 theme = 'hugo-theme-reimu'
 
