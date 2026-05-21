@@ -420,7 +420,7 @@
   </script>
 {{- end -}}
 
-{{- /* Client-side random cover: JS picks a URL from the pool, <img> loads it via redirect (no CORS). */ -}}
+{{- /* Client-side random cover: JS picks from the pool, sets header img src. */ -}}
 {{- $covers := .Scratch.Get "covers" -}}
 {{- if $covers -}}
 <script data-pjax>
@@ -432,11 +432,11 @@
     if (!img) return;
 
     var retries = 0;
-    var maxRetries = covers.length - 1;
+    var maxRetries = covers.length; // try all covers before giving up
     var currentIdx = Math.floor(Math.random() * covers.length);
 
     function setCover() {
-      if (retries >= maxRetries) return; // all APIs exhausted
+      if (retries >= maxRetries) return; // all exhausted, keep current src
       img.src = covers[currentIdx];
       img.style.visibility = 'visible';
     }
