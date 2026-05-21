@@ -14,6 +14,10 @@
     {{- partial "post/summary.html" . -}}
     <div class="hr-line"></div>
         {{- $coverURL := .Scratch.Get "randomCover" -}}
+    {{- /* Fallback: on listing pages, each article computes its own cover */ -}}
+    {{- if not $coverURL -}}
+      {{- $coverURL = partial "helpers/randomCover.html" (dict "seed" .File.Path) -}}
+    {{- end -}}
     {{- if $coverURL -}}
       <a href="{{ $coverURL }}" target="_blank" class="cover-source-link" title="查看头图原图">🎴</a>
     {{- end -}}
