@@ -1,9 +1,72 @@
-{{- /* Inline SVG gradient data URIs — always work, no external deps, no CORS. */ -}}
-{{- $urls := slice
+{{- $id := hash.FNV32a .seed -}}
+{{- $count := .count | default 1 -}}
+{{- $urls := slice -}}
+{{- $headers := dict "User-Agent" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" -}}
+
+{{- /* Fallback SVG gradient data URIs (always work, no network needed) */ -}}
+{{- $fallbacks := slice
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzJiMGI0NiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzliNTliNiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIGZpbGw9InVybCgjZykiLz48L3N2Zz4="
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzBjMzQ4MyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2EyYjZkZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIGZpbGw9InVybCgjZykiLz48L3N2Zz4="
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2U2NWMwMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Y5ZDQyMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIGZpbGw9InVybCgjZykiLz48L3N2Zz4="
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzEzNGU1ZSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzcxYjI4MCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIGZpbGw9InVybCgjZykiLz48L3N2Zz4="
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2ViMzM0OSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Y0NWM0MyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiIGZpbGw9InVybCgjZykiLz48L3N2Zz4="
 -}}
+
+{{- /* In CI (GitHub Actions), try the MirlKoi API for real images */ -}}
+{{- if os.Getenv "CI" -}}
+  {{- range $i := seq $count -}}
+    {{- $picURL := "" -}}
+
+    {{- /* Primary API */ -}}
+    {{- $apiURL := printf "https://idnm.de/api.php?sort=CDNiw233&type=json&_=%d_%d" $id $i -}}
+    {{- with $resp := resources.GetRemote $apiURL (dict "headers" $headers) -}}
+      {{- $body := .Content -}}
+      {{- if $body -}}
+        {{- $parsed := $body | transform.Unmarshal -}}
+        {{- if and $parsed (isset $parsed "pic") -}}
+          {{- with index (index $parsed "pic") 0 -}}
+            {{- $picURL = . -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- /* Fallback API */ -}}
+    {{- if not $picURL -}}
+      {{- $apiURL := printf "https://cnmiw.com/api.php?sort=CDNiw233&type=json&_=%d_%d" $id $i -}}
+      {{- with $resp := resources.GetRemote $apiURL (dict "headers" $headers) -}}
+        {{- $body := .Content -}}
+        {{- if $body -}}
+          {{- $parsed := $body | transform.Unmarshal -}}
+          {{- if and $parsed (isset $parsed "pic") -}}
+            {{- with index (index $parsed "pic") 0 -}}
+              {{- $picURL = . -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- /* Download image and serve locally */ -}}
+    {{- if $picURL -}}
+      {{- with $img := resources.GetRemote $picURL (dict "headers" $headers) -}}
+        {{- $ext := path.Ext $picURL -}}
+        {{- if not $ext -}}{{- $ext = ".jpg" -}}{{- end -}}
+        {{- $local := . | resources.Copy (printf "images/covers/%d_%d%s" $id $i $ext) -}}
+        {{- $urls = $urls | append $local.RelPermalink -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- /* Fallback to gradient if API failed */ -}}
+    {{- if not $picURL -}}
+      {{- $urls = $urls | append (index $fallbacks (mod $i (len $fallbacks))) -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- /* Local dev: use SVG gradients directly (no network calls) */ -}}
+  {{- range $i := seq $count -}}
+    {{- $urls = $urls | append (index $fallbacks (mod $i (len $fallbacks))) -}}
+  {{- end -}}
+{{- end -}}
+
 {{- return $urls -}}
