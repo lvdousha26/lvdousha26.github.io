@@ -1,5 +1,5 @@
 {{- $id := hash.FNV32a .seed -}}
-{{- $apiURL := printf "https://cnmiw.com/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
+{{- $apiURL := printf "https://idnm.de/api.php?sort=CDNiw233&type=json&_=%d" $id -}}
 {{- $url := "" -}}
 {{- $resp := resources.GetRemote $apiURL -}}
 {{- if $resp -}}
@@ -13,8 +13,5 @@
       {{- end -}}
     {{- end -}}
   {{- end -}}
-{{- end -}}
-{{- if not $url -}}
-  {{- $url = printf "https://cnmiw.com/api.php?sort=CDNiw233&_=%d" $id -}}
 {{- end -}}
 {{- return $url -}}
