@@ -33,7 +33,7 @@
   </nav>
   {{- if and hugo.IsMultilingual (ne "404" .Type) -}}
     {{- $i18nMap := dict -}}
-    {{- range hugo.Languages -}}
+    {{- range .Site.Languages -}}
       {{- $i18nMap = merge $i18nMap (dict .Lang .Label) -}}
     {{- end -}}
     <nav id="i18n-nav" aria-label="Language selection">
@@ -43,7 +43,7 @@
           <span id="selected-lang">{{ index $i18nMap $.Language.Lang }}</span>
         </div>
         <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
-          {{- range hugo.Languages -}}
+          {{- range .Site.Languages -}}
             <li data-value="{{ .Lang }}" role="option" {{ if eq $.Language.Lang .Lang }}class="selected" arial-selected="true"{{ else }}arial-selected="false"{{ end }} >{{ .Label }}</li>
           {{- end -}}
         </ul>
