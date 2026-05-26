@@ -24,7 +24,7 @@
     {{- end -}}
     {{- /* MirlKoi redirect endpoints — JS picks randomly, img loads via 302 redirect */ -}}
     {{- $covers := slice -}}
-    {{- if and (.IsPage) (in .Site.Params.mainSections .Type) -}}
+    {{- if ne .Type "404" -}}
       {{- $covers = partial "helpers/randomCover.html" (dict "seed" "global" "count" 5) -}}
     {{- end -}}
     {{- .Scratch.Set "covers" $covers -}}
