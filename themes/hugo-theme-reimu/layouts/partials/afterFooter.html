@@ -420,7 +420,7 @@
   </script>
 {{- end -}}
 
-{{- /* Client-side random cover: JS picks from the pool, sets header img src. */ -}}
+{{- /* Client-side random cover: MirlKoi redirect API → 302 → random image on each load. */ -}}
 {{- $covers := .Scratch.Get "covers" -}}
 {{- if $covers -}}
 <script data-pjax>
@@ -432,12 +432,12 @@
     if (!img) return;
 
     var retries = 0;
-    var maxRetries = covers.length; // try all covers before giving up
-    var currentIdx = Math.floor(Math.random() * covers.length);
+    var maxRetries = covers.length;
 
     function setCover() {
-      if (retries >= maxRetries) return; // all exhausted, keep current src
-      img.src = covers[currentIdx];
+      if (retries >= maxRetries) return;
+      // cache-buster: each attempt gets a fresh random image from the API
+      img.src = covers[currentIdx] + '&_=' + Math.random().toString(36).slice(2);
       img.style.visibility = 'visible';
     }
 
@@ -447,13 +447,15 @@
       setCover();
     };
 
+    var currentIdx = Math.floor(Math.random() * covers.length);
     setCover();
 
     var btn = document.querySelector('.cover-source-link');
     if (btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault();
-        window.open(covers[currentIdx], '_blank');
+        // open with same API endpoint (redirects to a fresh random image)
+        window.open(covers[currentIdx] + '&_=' + Math.random().toString(36).slice(2), '_blank');
       });
     }
   })();

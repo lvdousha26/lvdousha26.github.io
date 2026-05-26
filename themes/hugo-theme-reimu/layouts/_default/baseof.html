@@ -22,10 +22,10 @@
     {{- if .Site.Params.injector.body_begin -}}
       {{- .Site.Params.injector.body_begin | safeHTML -}}
     {{- end -}}
-    {{- /* Pre-fetch 5 random covers from MirlKoi API, served locally, JS picks one per page load */ -}}
+    {{- /* MirlKoi redirect endpoints — JS picks randomly, img loads via 302 redirect */ -}}
     {{- $covers := slice -}}
     {{- if and (.IsPage) (in .Site.Params.mainSections .Type) -}}
-      {{- $covers = partial "helpers/randomCover.html" (dict "seed" "global" "count" 5) -}}
+      {{- $covers = partial "helpers/randomCover.html" (dict "seed" "global" "count" 2) -}}
     {{- end -}}
     {{- .Scratch.Set "covers" $covers -}}
     {{- partialCached "loader.html" . -}}
