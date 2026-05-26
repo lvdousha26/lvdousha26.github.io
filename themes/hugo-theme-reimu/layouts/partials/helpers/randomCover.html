@@ -1,9 +1,2 @@
-{{- /* MirlKoi redirect endpoints: 302 → random image, works in <img> directly, no CORS */ -}}
-{{- $urls := slice
-  "https://cnmiw.com/api.php?sort=CDNiw233"
-  "https://cnmiw.com/api.php?sort=random"
-  "https://cnmiw.com/api.php?sort=iw233"
-  "https://cnmiw.com/api.php?sort=top"
-  "https://idnm.de/api.php?sort=CDNiw233"
--}}
-{{- return $urls -}}
+{{- /* Return site banner as default cover for nav/index thumbnails */ -}}
+{{- return .Site.Params.banner -}}

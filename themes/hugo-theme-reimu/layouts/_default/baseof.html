@@ -22,12 +22,18 @@
     {{- if .Site.Params.injector.body_begin -}}
       {{- .Site.Params.injector.body_begin | safeHTML -}}
     {{- end -}}
-    {{- /* MirlKoi redirect endpoints — JS picks randomly, img loads via 302 redirect */ -}}
-    {{- $covers := slice -}}
+    {{- /* MirlKoi redirect endpoints for header banner — JS picks randomly via 302 redirect */ -}}
     {{- if ne .Type "404" -}}
-      {{- $covers = partial "helpers/randomCover.html" (dict "seed" "global" "count" 5) -}}
+      {{- .Scratch.Set "covers" (slice
+        "https://cnmiw.com/api.php?sort=CDNiw233"
+        "https://cnmiw.com/api.php?sort=random"
+        "https://cnmiw.com/api.php?sort=iw233"
+        "https://cnmiw.com/api.php?sort=top"
+        "https://idnm.de/api.php?sort=CDNiw233"
+      ) -}}
+    {{- else -}}
+      {{- .Scratch.Set "covers" (slice) -}}
     {{- end -}}
-    {{- .Scratch.Set "covers" $covers -}}
     {{- partialCached "loader.html" . -}}
     <div id="container">
       <div id="wrap">
