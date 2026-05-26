@@ -1,5 +1,6 @@
 name: Deploy Hugo to GitHub Pages
 
+# Trigger on push to main and manual dispatch
 on:
   push:
     branches: [main]
