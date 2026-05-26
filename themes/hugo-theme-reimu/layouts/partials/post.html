@@ -49,8 +49,10 @@
           class="lazyload"
         />
       {{- else -}}
+          {{- $seed := $page.File.Path | default $page.Title -}}
+          {{- $cover := partial "helpers/randomCover.html" (dict "seed" $seed) -}}
           <img
-            data-src="{{ $ctx.Site.Params.banner | relURL }}"
+            data-src="{{ $cover }}"
             data-sizes="auto"
             alt="{{ $page.Title }}"
             class="lazyload"

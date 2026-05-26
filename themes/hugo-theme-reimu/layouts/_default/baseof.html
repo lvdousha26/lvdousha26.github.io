@@ -23,7 +23,7 @@
       {{- .Site.Params.injector.body_begin | safeHTML -}}
     {{- end -}}
     {{- /* MirlKoi redirect endpoints for header banner — JS picks randomly via 302 redirect */ -}}
-    {{- if ne .Type "404" -}}
+    {{- if and (ne .Type "404") (not .IsHome) -}}
       {{- .Scratch.Set "covers" (slice
         "https://cnmiw.com/api.php?sort=CDNiw233"
         "https://cnmiw.com/api.php?sort=random"
