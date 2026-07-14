@@ -420,6 +420,23 @@
   </script>
 {{- end -}}
 
+<script data-pjax>
+(function() {
+  var fallbacks = ['https://t.alcy.cc/fj', 'https://api.yppp.net/api.php', 'https://t.alcy.cc/mp'];
+  document.addEventListener('error', function(e) {
+    var img = e.target;
+    if (!img || img.tagName !== 'IMG' || !img.classList.contains('random-cover-img')) return;
+    var retries = parseInt(img.getAttribute('data-retry')) || 0;
+    if (retries >= fallbacks.length) return;
+    img.setAttribute('data-retry', retries + 1);
+    var fb = fallbacks[retries];
+    var seed = (img.getAttribute('data-src') || '').split('seed=')[1] || '';
+    var newUrl = fb + '?seed=' + seed + '&r=' + Math.random().toString(36).slice(2);
+    img.setAttribute('data-src', newUrl);
+    if (img.classList.contains('lazyloaded')) { img.src = newUrl; }
+  }, true);
+})();
+</script>
 
 {{- /* Client-side random cover: MirlKoi redirect API → 302 → random image on each load. */ -}}
 {{- $covers := .Scratch.Get "covers" -}}

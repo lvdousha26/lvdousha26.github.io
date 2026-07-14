@@ -1,3 +1,9 @@
-{{- /* Return yppp API URL with cache-busting seed */ -}}
+{{- /* Return random cover API URL with cache-busting seed */ -}}
+{{- $apis := slice
+  "https://api.yppp.net/api.php"
+  "https://t.alcy.cc/fj"
+  "https://t.alcy.cc/mp"
+-}}
 {{- $seed := .seed | default "default" -}}
-{{- return printf "https://api.yppp.net/api.php?seed=%s" $seed -}}
+{{- $idx := mod (hash.FNV32a $seed) (len $apis) -}}
+{{- return printf "%s?seed=%s" (index $apis $idx) $seed -}}
