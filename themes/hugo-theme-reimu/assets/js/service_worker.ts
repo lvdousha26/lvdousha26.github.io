@@ -18,7 +18,7 @@ if ("serviceWorker" in navigator && window.siteConfig.swPath) {
   }
 
   navigator.serviceWorker
-    .register(siteConfig.swPath)
+    .register(window.siteConfig.swPath)
     .then((registration) => {
       console.log("Service Worker 注册成功: ", registration);
       if (registration.waiting) {

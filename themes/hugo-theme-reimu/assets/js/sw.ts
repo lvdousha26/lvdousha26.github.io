@@ -19,7 +19,18 @@ const cacheDomain = [
 // 安装时预加载必要内容
 self.addEventListener("install", (event: ExtendableEvent) => {
   console.log(`Service Worker ${VERSION} installing.`);
-  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(preCache)));
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(VERSION).then((cache) =>
+      Promise.allSettled(
+        preCache.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn(`Service Worker: failed to cache ${url}`, err);
+          })
+        )
+      )
+    )
+  );
 });
 
 async function cacheRequest(request, options?) {
