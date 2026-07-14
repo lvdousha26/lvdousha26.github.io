@@ -50,6 +50,15 @@ async function respondRequest(request, options?) {
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
+
+  // Proxy sinaimg.cn with Referer to avoid ORB/403
+  if (url.hostname.endsWith('.sinaimg.cn') || url.hostname === 'sinaimg.cn') {
+    event.respondWith(
+      fetch(new Request(event.request, { referrer: 'https://weibo.com/' } as RequestInit))
+    );
+    return;
+  }
+
   // 检查请求的域名是否在 CacheDomain 中
   if (cacheDomain.includes(url.hostname)) {
     event.respondWith(respondRequest(event.request));
@@ -72,8 +81,9 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(
         cacheNames.map((cacheName) => {
           if (VERSION !== cacheName) {
             console.log(`Service Worker: deleting old cache ${cacheName}`);
@@ -81,7 +91,8 @@ self.addEventListener("activate", (event) => {
           }
         })
       );
-    })
+      await (self as any).clients.claim();
+    })()
   );
   console.log(`Service Worker ${VERSION} activated.`);
 });
