@@ -420,6 +420,38 @@
   </script>
 {{- end -}}
 
+{{- /* Client-side random cover: fetch JSON API → assign images to post covers. */ -}}
+<script data-pjax>
+(function() {
+  var coverImgs = document.querySelectorAll('.random-cover-img');
+  if (!coverImgs.length) return;
+
+  var count = Math.min(coverImgs.length, 100);
+  var apiUrl = 'https://api.cnmiw.com/api.php?sort=iw233&type=json&num=' + count;
+
+  function assignCovers(urls) {
+    if (!urls || !urls.length) return;
+    var shuffled = urls.sort(function() { return Math.random() - 0.5; });
+    coverImgs.forEach(function(img, i) {
+      var url = shuffled[i % shuffled.length];
+      img.setAttribute('data-src', url);
+      if (img.classList.contains('lazyloaded')) {
+        img.setAttribute('src', url);
+      }
+    });
+  }
+
+  fetch(apiUrl)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      assignCovers(data);
+    })
+    .catch(function() {
+      console.log('iw233 API unavailable, using fallback covers');
+    });
+})();
+</script>
+
 {{- /* Client-side random cover: MirlKoi redirect API → 302 → random image on each load. */ -}}
 {{- $covers := .Scratch.Get "covers" -}}
 {{- if $covers -}}
