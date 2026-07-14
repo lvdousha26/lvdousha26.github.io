@@ -433,7 +433,8 @@
     var seed = (img.getAttribute('data-src') || '').split('seed=')[1] || '';
     var newUrl = fb + '?seed=' + seed + '&r=' + Math.random().toString(36).slice(2);
     img.setAttribute('data-src', newUrl);
-    if (img.classList.contains('lazyloaded')) { img.src = newUrl; }
+    if (img.src) { img.src = ''; img.src = newUrl; }
+    else if (img.classList.contains('lazyloaded')) { img.src = newUrl; }
   }, true);
 })();
 </script>
