@@ -420,6 +420,43 @@
   </script>
 {{- end -}}
 
+{{- /* Post cover images: via Service Worker → api.cnmiw.com JSON → sinaimg CDN with Referer */ -}}
+<script data-pjax>
+(function() {
+  var coverImgs = document.querySelectorAll('.random-cover-img');
+  if (!coverImgs.length) return;
+
+  var count = Math.min(coverImgs.length, 100);
+
+  function assignCovers(urls) {
+    if (!urls || !urls.length) return;
+    var shuffled = urls.sort(function() { return Math.random() - 0.5; });
+    coverImgs.forEach(function(img, i) {
+      var u = shuffled[i % shuffled.length];
+      img.setAttribute('data-src', u);
+      if (img.classList.contains('lazyloaded')) {
+        img.src = u;
+      }
+    });
+  }
+
+  function loadCovers() {
+    fetch('/api/iw233?num=' + count)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        assignCovers(data.pic || data);
+      })
+      .catch(function() {});
+  }
+
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    loadCovers();
+  } else if (navigator.serviceWorker) {
+    navigator.serviceWorker.ready.then(function() { loadCovers(); });
+  }
+})();
+</script>
+
 {{- /* Client-side random cover: MirlKoi redirect API → 302 → random image on each load. */ -}}
 {{- $covers := .Scratch.Get "covers" -}}
 {{- if $covers -}}
