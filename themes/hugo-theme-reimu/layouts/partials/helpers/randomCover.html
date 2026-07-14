@@ -1,10 +1,3 @@
-{{- /* Return a random MirlKoi redirect URL — API returns 302 → random image each load */ -}}
-{{- $urls := slice
-  "https://cnmiw.com/api.php?sort=CDNiw233"
-  "https://cnmiw.com/api.php?sort=random"
-  "https://cnmiw.com/api.php?sort=iw233"
-  "https://cnmiw.com/api.php?sort=top"
-  "https://idnm.de/api.php?sort=CDNiw233"
--}}
+{{- /* Return yppp API URL with cache-busting seed */ -}}
 {{- $seed := .seed | default "default" -}}
-{{- return index $urls (mod (hash.FNV32a $seed) (len $urls)) -}}
+{{- return printf "https://api.yppp.net/api.php?seed=%s" $seed -}}
