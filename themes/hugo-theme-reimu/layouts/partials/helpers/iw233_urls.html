@@ -1,0 +1,10 @@
+{{- /* Fetch iw233 image URLs once per build via partialCached */ -}}
+{{- $apiUrl := "https://api.cnmiw.com/api.php?sort=iw233&type=json&num=30" -}}
+{{- $urls := slice -}}
+{{- with resources.GetRemote $apiUrl -}}
+  {{- $json := .Content | transform.Unmarshal -}}
+  {{- if $json.pic -}}
+    {{- $urls = $json.pic -}}
+  {{- end -}}
+{{- end -}}
+{{- return $urls -}}

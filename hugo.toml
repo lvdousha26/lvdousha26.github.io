@@ -48,7 +48,7 @@ guessSyntax = true
 noClasses = false
 
 [security.http]
-urls = ['https://cnmiw\.com/.*', 'https://idnm\.de/.*', 'https://setu\.iw233\.top/.*']
+urls = ['https://cnmiw\.com/.*', 'https://idnm\.de/.*', 'https://setu\.iw233\.top/.*', 'https://api\.cnmiw\.com/.*']
 methods = ['(?i)GET']
 mediaTypes = ['application/json', 'image/.*']
 
