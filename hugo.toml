@@ -3,6 +3,10 @@ locale = 'zh-CN'
 title = '绿豆沙の小窝'
 theme = 'hugo-theme-reimu'
 
+[params]
+# Fixed header background image; prevents the theme's random cover API fallback.
+banner = 'https://d-sketon.github.io/astro-theme-reimu/assets/images/background.webp'
+
 defaultContentLanguage = 'zh-CN'
 defaultContentLanguageInSubDir = false
 
