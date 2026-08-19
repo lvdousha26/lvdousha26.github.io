@@ -156,7 +156,12 @@ html, body, #container {
 
 body {
   width: 100%;
-  background: var(--color-background);
+  background-color: var(--color-background);
+  background-image: url("https://d-sketon.github.io/astro-theme-reimu/assets/images/background.webp");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   text-size-adjust: 100%;
@@ -216,7 +221,7 @@ a, .main-nav-icon, .popup-btn-close, button {
   height: 100%;
   width: 100%;
   transition: 1s;
-  background: var(--color-background);
+  background: transparent;
 }
 
 #main {
