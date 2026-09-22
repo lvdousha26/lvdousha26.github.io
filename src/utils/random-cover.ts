@@ -7,25 +7,30 @@
  *   - t.alcy.cc 返回 webp(约 100~700KB)
  *   - cnmiw.com / idnm.de 单图 2.5MB 以上或已 404, 故不收录
  */
-export const COVER_APIS = ['https://t.alcy.cc/fj', 'https://t.alcy.cc/mp']
-
-/** 服务端渲染用的初始封面地址; seed 保证每篇文章 URL 不同, 冷启动时不会共用同一张缓存图 */
-export function coverSrc(seed: string): string {
-  return `${COVER_APIS[0]}?seed=${encodeURIComponent(seed)}`
-}
+const COVER_APIS = ['https://t.alcy.cc/fj', 'https://t.alcy.cc/mp']
 
 /**
- * 让 img 加载一张随机封面:
- * 追一个随机参数以便每次刷新换图(API 响应带 30 天缓存), 当前接口失败则轮换到下一个。
+ * 封面地址。seed 不决定图片内容, 只用来让每篇文章的 URL 不同;
+ * 换图的随机性来自接口的 302 —— 它不带缓存头, 每次请求都指向新的随机图。
+ *
+ * 服务端与客户端必须生成逐字节相同的字符串: 否则 img.src 会被重新赋值,
+ * 浏览器多取一次图, 表现为封面闪一下。
  */
+export function coverSrc(seed: string, apiIndex = 0): string {
+  return `${COVER_APIS[apiIndex]}?seed=${encodeURIComponent(seed)}`
+}
+
+/** 仅在地址变化时赋值, 避免重复赋值触发多余请求 */
+function setIfChanged(el: HTMLImageElement, src: string) {
+  if (el.src !== src) el.src = src
+}
+
+/** 让 img 加载一张随机封面; 当前接口失败则轮换到下一个 */
 function loadRandomCover(img: HTMLImageElement, seed: string, onLoad?: (src: string) => void) {
   let apiIndex = 0
   let failures = 0
 
-  const load = () => {
-    const params = new URLSearchParams({ seed, _: Math.random().toString(36).slice(2) })
-    img.src = `${COVER_APIS[apiIndex]}?${params}`
-  }
+  const load = () => setIfChanged(img, coverSrc(seed, apiIndex))
 
   img.addEventListener('error', () => {
     if (failures++ >= COVER_APIS.length * 2) return
@@ -41,6 +46,7 @@ function loadRandomCover(img: HTMLImageElement, seed: string, onLoad?: (src: str
  * 处理页面上所有随机封面 img。可重复调用:
  * 同一个 img 只会被初始化一次, 因此多个组件各自引脚本也不会重复加载。
  * img 上的 data-mirror 指向另一个元素 id 时, 该元素会跟随同一张图(用于详情页的模糊背景)。
+ * 服务端已渲染好同一地址, 所以正常路径下这里不会改动 src, 只负责接口失败时的回退。
  */
 export function initRandomCovers() {
   document.querySelectorAll<HTMLImageElement>('img[data-random-cover]').forEach((img) => {
@@ -50,7 +56,7 @@ export function initRandomCovers() {
     const mirrorId = img.dataset.mirror
     const mirror = mirrorId ? document.getElementById(mirrorId) : null
     loadRandomCover(img, img.dataset.seed ?? '', (src) => {
-      if (mirror instanceof HTMLImageElement) mirror.src = src
+      if (mirror instanceof HTMLImageElement) setIfChanged(mirror, src)
     })
   })
 }

@@ -56,7 +56,7 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
         data-mirror='blurImage'
         src={coverSrc(seed)}
       />
-      {/* 先与主图同 URL, 命中同一份缓存; 主图换成新随机图后再镜像过来 */}
+      {/* 与主图同地址, 浏览器只取一次图; 主图因接口失败换源时会把新地址镜像过来 */}
       <img
         alt=''
         fetchpriority='high'
