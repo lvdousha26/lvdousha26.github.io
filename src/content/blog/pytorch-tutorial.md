@@ -5,9 +5,9 @@ publishDate: 2026-05-19T00:00:00+08:00
 updatedDate: 2026-05-19T00:00:00+08:00
 tags:
   - "PyTorch"
-  - "深度学习"
-  - "教程"
-  - "小工具"
+  - "Deep Learning"
+  - "Tutorials"
+  - "Tools"
 ---
 
 ## 为什么选 PyTorch

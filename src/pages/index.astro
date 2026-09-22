@@ -1,14 +1,16 @@
 ---
 import { Image } from 'astro:assets'
 
-import { Quote } from 'astro-pure/advanced'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
-import { Button, Icon, Label } from 'astro-pure/user'
+import { Icon, Label } from 'astro-pure/user'
 import PostPreview from '@/components/PostPreview.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
-import config from '@/site-config'
+import BlogStats from '@/components/home/BlogStats.astro'
+import GitHubActivityCalendar from '@/components/home/GitHubActivityCalendar.astro'
+import { Button } from '@/components/user'
+import config, { siteMeta } from '@/site-config'
 
 const languages = ['C++', 'Python', 'Java', 'TypeScript']
 const frontend = ['Vue', 'Astro', 'HTML', 'CSS']
@@ -53,13 +55,13 @@ if (!images[imagePath])
     </section>
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
-      <Section title='关于'>
+      <Section title='About'>
         <p class='text-muted-foreground'>数据科学大三，打过 OI。</p>
-        <Button title='更多关于我' class='w-fit self-end' href='/about' variant='ahead' />
+        <Button title='More about me' class='w-fit self-end' href='/about' variant='ahead' />
       </Section>
       {
         allPostsByDate.length > 0 && (
-          <Section title='文章'>
+          <Section title='Blog'>
             <ul class='flex flex-col gap-y-1.5 sm:gap-y-2'>
               {allPostsByDate.map((p) => (
                 <li class='flex flex-col gap-x-2 sm:flex-row'>
@@ -67,17 +69,21 @@ if (!images[imagePath])
                 </li>
               ))}
             </ul>
-            <Button title='更多文章' class='w-fit self-end' href='/blog' variant='ahead' />
+            <Button title='More posts' class='w-fit self-end' href='/blog' variant='ahead' />
           </Section>
         )
       }
 
-      <Section title='技能'>
-        <SkillLayout title='语言' skills={languages} />
-        <SkillLayout title='前端' skills={frontend} />
-        <SkillLayout title='后端' skills={backend} />
+      <Section title='Skills'>
+        <SkillLayout title='Languages' skills={languages} />
+        <SkillLayout title='Frontend' skills={frontend} />
+        <SkillLayout title='Backend' skills={backend} />
       </Section>
+
+      <Section title='Statistics'>
+        <BlogStats blogStartDate={new Date(siteMeta.birthday)} />
+      </Section>
+      <GitHubActivityCalendar username={siteMeta.githubUsername} />
     </div>
-    <Quote class='mt-12' />
   </main>
 </PageLayout>

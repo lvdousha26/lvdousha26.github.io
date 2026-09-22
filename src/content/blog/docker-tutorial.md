@@ -5,10 +5,10 @@ publishDate: 2026-05-20T00:00:00+08:00
 updatedDate: 2026-05-20T00:00:00+08:00
 tags:
   - "Docker"
-  - "容器"
-  - "部署"
-  - "教程"
-  - "小工具"
+  - "Container"
+  - "Deployment"
+  - "Tutorials"
+  - "Tools"
 ---
 
 实话说，我当初接触 Docker 也是一头雾水。什么镜像、容器、Dockerfile，看了好几篇教程才勉强跑起来一个 nginx。后来工作里用多了，发现核心概念其实一只手数得过来。这篇尽量用大白话讲清楚。

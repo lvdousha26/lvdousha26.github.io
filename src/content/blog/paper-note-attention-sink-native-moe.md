@@ -3,9 +3,9 @@ title: "论文阅读笔记：Attention Sink 与注意力层里的原生 MoE"
 description: "ICML 2026：把 sink 的注意力权重看成门控，注意力头就成了专家，注意力层本就是 MoE；由此解释 head collapse 并用负载均衡损失缓解"
 publishDate: 2026-09-22T21:00:00+08:00
 tags:
-  - "论文笔记"
+  - "Paper Notes"
   - "LLM"
-  - "注意力机制"
+  - "Attention"
   - "MoE"
   - "ICML"
 ---

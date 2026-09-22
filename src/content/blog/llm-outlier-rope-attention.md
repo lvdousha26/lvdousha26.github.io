@@ -5,9 +5,9 @@ publishDate: 2026-09-22T20:00:00+08:00
 tags:
   - "LLM"
   - "RoPE"
-  - "量化"
-  - "注意力机制"
-  - "转载"
+  - "Quantization"
+  - "Attention"
+  - "Repost"
 ---
 
 > 本文转载并精简自公众号「青稞AI」的《大模型为什么会产生“离群值”？深度解析 RoPE 与注意力机制》。

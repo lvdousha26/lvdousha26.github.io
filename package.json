@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:check": "astro check --watch & astro dev",
+    "data:contrib": "node scripts/fetch-contributions.mjs",
     "build": "astro-pure check && astro check && astro build",
     "preview": "astro preview",
     "sync": "astro sync",

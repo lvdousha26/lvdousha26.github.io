@@ -5,8 +5,8 @@ publishDate: 2026-05-19T00:00:00+08:00
 updatedDate: 2026-05-19T00:00:00+08:00
 tags:
   - "SSH"
-  - "教程"
-  - "小工具"
+  - "Tutorials"
+  - "Tools"
 ---
 
 ## 什么是 SSH

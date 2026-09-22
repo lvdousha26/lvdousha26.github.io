@@ -6,9 +6,9 @@ updatedDate: 2026-05-20T00:00:00+08:00
 tags:
   - "Postman"
   - "API"
-  - "调试"
-  - "教程"
-  - "小工具"
+  - "Debugging"
+  - "Tutorials"
+  - "Tools"
 ---
 
 后端给个接口文档，你用 curl 一遍遍手动敲 URL、拼 JSON、看返回——也不是不行，但 Postman 把这事做得舒服很多。保存请求、切换环境、写断言、导出文档，都在一个界面里。

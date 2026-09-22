@@ -5,9 +5,9 @@ publishDate: 2026-05-20T00:00:00+08:00
 updatedDate: 2026-05-20T00:00:00+08:00
 tags:
   - "Redis"
-  - "缓存"
-  - "数据库"
-  - "后端"
+  - "Caching"
+  - "Database"
+  - "Backend"
 ---
 
 Redis 很快。非常快。

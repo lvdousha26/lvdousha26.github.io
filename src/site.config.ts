@@ -158,5 +158,13 @@ export const integ: IntegrationUserConfig = {
   }
 }
 
+/** Extra site metadata, kept outside the strict theme schema. */
+export const siteMeta = {
+  /** Start date for the "Days Online" counter */
+  birthday: '2025-03-10',
+  /** Contribution graph data source, also read by scripts/fetch-contributions.mjs */
+  githubUsername: 'lvdousha26'
+}
+
 const config = { ...theme, integ } as Config
 export default config

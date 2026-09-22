@@ -5,10 +5,10 @@ publishDate: 2026-05-20T00:00:00+08:00
 updatedDate: 2026-05-20T00:00:00+08:00
 tags:
   - "Zotero"
-  - "文献管理"
-  - "论文"
-  - "教程"
-  - "小工具"
+  - "Reference Management"
+  - "Papers"
+  - "Tutorials"
+  - "Tools"
 ---
 
 Zotero 本体只是个文献数据库。真正让它好用的是插件。这篇先讲基本操作，重点讲插件怎么装、哪些值得装、怎么配。

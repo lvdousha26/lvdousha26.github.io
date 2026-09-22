@@ -5,12 +5,12 @@ publishDate: 2026-05-21T17:00:00+08:00
 updatedDate: 2026-05-21T17:00:00+08:00
 tags:
   - "Codeforces"
-  - "题解"
-  - "贪心"
-  - "树"
-  - "组合数学"
+  - "Solutions"
+  - "Greedy"
+  - "Trees"
+  - "Combinatorics"
   - "DP"
-  - "算法竞赛"
+  - "Competitive Programming"
 ---
 
 这场是 WDOI 团队出的东方主题 round。6 道题（C、E 各有 easy/hard），整体难度梯度不错，适合 Div. 2 选手。

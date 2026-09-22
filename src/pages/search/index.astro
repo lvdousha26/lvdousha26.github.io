@@ -1,17 +1,17 @@
 ---
 import { PFSearch } from 'astro-pure/components/pages'
-import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import { Button } from '@/components/user'
 import { integ } from '@/site-config'
 
 const meta = {
-  description: '搜索全站文章',
+  description: 'Search all posts on this site',
   title: 'Search'
 }
 ---
 
 <PageLayout {meta}>
-  <Button title='返回' href='/blog' variant='back' />
+  <Button title='Back' href='/blog' variant='back' />
   <main class='mt-6 lg:mt-10'>
     <div id='content-header' class='animate'>
       <h1 class='mb-6 text-3xl font-medium'>Search</h1>
@@ -21,11 +21,11 @@ const meta = {
       {
         integ.pagefind ? (
           <>
-            <p>输入关键词以搜索本站文章。</p>
+            <p>Type a keyword to search posts on this site.</p>
             <PFSearch />
           </>
         ) : (
-          <p>Pagefind 已禁用。</p>
+          <p>Pagefind is disabled.</p>
         )
       }
     </div>

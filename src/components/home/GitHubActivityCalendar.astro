@@ -1,0 +1,154 @@
+---
+// Ported from Axi-Theme (date-fns → 原生 UTC 日期运算), 并在实时接口失败时回退到本地快照。
+// https://github.com/Axi404/Axi-Theme/blob/main/src/components/home/GitHubActivityCalendar.astro
+import fallbackSnapshot from '@/data/contributions.json'
+
+interface ActivityDay {
+  date: string
+  count: number
+  level: number
+}
+
+interface CalendarData {
+  contributions: ActivityDay[]
+  total: { lastYear: number }
+}
+
+interface Props {
+  username: string
+}
+
+const { username } = Astro.props as Props
+
+const DAY_MS = 86_400_000
+
+async function fetchCalendar(user: string): Promise<CalendarData> {
+  const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${user}?y=last`)
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  const data = (await response.json()) as CalendarData
+  if (!Array.isArray(data.contributions) || data.contributions.length === 0) {
+    throw new Error('响应里没有 contributions')
+  }
+  return data
+}
+
+let calendar: CalendarData
+try {
+  calendar = await fetchCalendar(username)
+} catch (error) {
+  console.warn(`[contrib] 实时拉取失败（${(error as Error).message}），改用本地快照`)
+  calendar = fallbackSnapshot as CalendarData
+}
+
+const activities = calendar.contributions
+const totalCount = calendar.total.lastYear
+
+const parseDay = (iso: string) => new Date(`${iso}T00:00:00Z`)
+const formatDay = (date: Date) => date.toISOString().slice(0, 10)
+
+// 以周日为第一行逐日铺满，顺带补齐数据源可能缺的日期
+const byDate = new Map(activities.map((day) => [day.date, day]))
+const first = parseDay(activities[0].date)
+const last = parseDay(activities[activities.length - 1].date)
+const gridStart = new Date(first.getTime() - first.getUTCDay() * DAY_MS)
+
+const cells: (ActivityDay | null)[] = []
+for (let time = gridStart.getTime(); time <= last.getTime(); time += DAY_MS) {
+  if (time < first.getTime()) {
+    cells.push(null)
+    continue
+  }
+  const date = formatDay(new Date(time))
+  cells.push(byDate.get(date) ?? { date, count: 0, level: 0 })
+}
+
+const weeks: (ActivityDay | null)[][] = []
+for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const monthLabels: { weekIndex: number; label: string }[] = []
+weeks.forEach((week, weekIndex) => {
+  const firstOfWeek = week.find((day): day is ActivityDay => day !== null)
+  if (!firstOfWeek) return
+  const label = MONTHS[parseDay(firstOfWeek.date).getUTCMonth()]
+  if (weekIndex === 0 || monthLabels.at(-1)?.label !== label) monthLabels.push({ weekIndex, label })
+})
+
+const blockSize = 12
+const blockMargin = 4
+const blockRadius = 2
+const labelHeight = 22
+const width = weeks.length * (blockSize + blockMargin) - blockMargin
+const height = labelHeight + (blockSize + blockMargin) * 7 - blockMargin
+const activityYear = parseDay(activities[0].date).getUTCFullYear()
+
+const LEVEL_FILL = [
+  'fill-[#ebedf0] dark:fill-[#161b22]',
+  'fill-[#c6e48b] dark:fill-[#0e4429]',
+  'fill-[#7bc96f] dark:fill-[#006d32]',
+  'fill-[#239a3b] dark:fill-[#26a641]',
+  'fill-[#196127] dark:fill-[#39d353]'
+]
+---
+
+<div class='w-full overflow-x-auto' style='max-width: 90vw;'>
+  <svg class='block' width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <g>
+      {
+        monthLabels.map(({ label, weekIndex }) => (
+          <text
+            x={(blockSize + blockMargin) * weekIndex}
+            y={0}
+            dominant-baseline='hanging'
+            fill='currentColor'
+          >
+            {label}
+          </text>
+        ))
+      }
+    </g>
+    {
+      weeks.map((week, wi) => (
+        <g transform={`translate(${(blockSize + blockMargin) * wi}, 0)`}>
+          {week.map((activity, di) =>
+            activity ? (
+              <rect
+                class:list={['stroke-foreground/10 hover:opacity-80', LEVEL_FILL[activity.level]]}
+                x={0}
+                y={labelHeight + (blockSize + blockMargin) * di}
+                width={blockSize}
+                height={blockSize}
+                rx={blockRadius}
+                ry={blockRadius}
+                data-date={activity.date}
+                data-level={activity.level}
+              >
+                <title>{`${activity.count} contributions on ${activity.date}`}</title>
+              </rect>
+            ) : null
+          )}
+        </g>
+      ))
+    }
+  </svg>
+</div>
+<footer class='flex items-center justify-between text-sm'>
+  <div>{totalCount} contributions in {activityYear} ~ {activityYear + 1}</div>
+  <div class='flex items-center gap-1'>
+    <span>Less</span>
+    {
+      [0, 1, 2, 3, 4].map((level) => (
+        <svg width={blockSize} height={blockSize}>
+          <rect
+            width={blockSize}
+            height={blockSize}
+            rx={blockRadius}
+            ry={blockRadius}
+            class={LEVEL_FILL[level]}
+          />
+        </svg>
+      ))
+    }
+    <span>More</span>
+  </div>
+</footer>

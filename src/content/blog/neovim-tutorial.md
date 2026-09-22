@@ -6,9 +6,9 @@ updatedDate: 2026-05-20T00:00:00+08:00
 tags:
   - "Neovim"
   - "Vim"
-  - "编辑器"
-  - "教程"
-  - "小工具"
+  - "Editor"
+  - "Tutorials"
+  - "Tools"
 ---
 
 很多人第一次进 Vim 不知道怎么退出。这篇带你从安装走到舒服写字。

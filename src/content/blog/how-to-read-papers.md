@@ -4,9 +4,9 @@ description: "从选论文到做笔记，一套适合本科生的论文阅读方
 publishDate: 2026-05-19T00:00:00+08:00
 updatedDate: 2026-05-19T00:00:00+08:00
 tags:
-  - "论文"
-  - "学术"
-  - "教程"
+  - "Papers"
+  - "Academia"
+  - "Tutorials"
 ---
 
 ## 为什么本科生也要读论文

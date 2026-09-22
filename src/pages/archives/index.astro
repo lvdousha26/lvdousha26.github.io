@@ -1,7 +1,7 @@
 ---
 import { getBlogCollection, groupCollectionsByYear, sortMDByDate } from 'astro-pure/server'
-import { Button } from 'astro-pure/user'
 import PostPreview from '@/components/PostPreview.astro'
+import { Button } from '@/components/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 
 export const prerender = true
@@ -11,20 +11,20 @@ const allPostsByDate = sortMDByDate(allPosts)
 const allPostsByYear = groupCollectionsByYear(allPostsByDate)
 
 const meta = {
-  description: '按年份归档的全部文章',
+  description: 'All posts archived by year',
   title: 'Archives'
 }
 ---
 
 <PageLayout {meta}>
-  <Button title='返回' href='/blog' variant='back' />
+  <Button title='Back' href='/blog' variant='back' />
 
   <main class='mt-6 lg:mt-10'>
     <div id='content-header' class='animate'>
       <h1 class='mb-6 text-3xl font-medium'>Archives</h1>
     </div>
 
-    {allPosts.length === 0 && <p>还没有文章。</p>}
+    {allPosts.length === 0 && <p>No posts yet.</p>}
 
     <section id='content' class='animate' aria-label='Blog post list'>
       {
@@ -36,7 +36,7 @@ const meta = {
             >
               <samp>{year}</samp>
             </h2>
-            <p class='px-5 text-muted-foreground'>{posts.length} 篇</p>
+            <p class='px-5 text-muted-foreground'>{posts.length} posts</p>
             <ul class='flex flex-col text-start'>
               {posts.map((p) => (
                 <PostPreview post={p} class='border-0 bg-transparent py-2' />

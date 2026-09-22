@@ -4,10 +4,10 @@ description: "手把手教你用 Hugo 和 GitHub Pages 免费搭建个人博客�
 publishDate: 2026-05-19T00:00:00+08:00
 updatedDate: 2026-05-19T00:00:00+08:00
 tags:
-  - "博客"
+  - "Blog"
   - "Hugo"
-  - "教程"
-  - "小工具"
+  - "Tutorials"
+  - "Tools"
 ---
 
 ## 为什么选 Hugo + GitHub Pages

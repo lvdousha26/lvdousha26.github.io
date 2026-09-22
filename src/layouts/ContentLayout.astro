@@ -1,9 +1,10 @@
 ---
 import { BackToTop } from 'astro-pure/components/pages'
 import type { SiteMeta } from 'astro-pure/types'
-import { Button, Icon } from 'astro-pure/user'
+import { Icon } from 'astro-pure/user'
 import { cn } from 'astro-pure/utils'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import { Button } from '@/components/user'
 import { integ } from '@/site-config'
 
 interface Props {
@@ -16,7 +17,7 @@ const { meta, highlightColor, back = '/', ...props } = Astro.props
 ---
 
 <PageLayout {meta} {highlightColor} {...props}>
-  <Button title='返回' href={back} variant='back' />
+  <Button title='Back' href={back} variant='back' />
   <main class='mt-6 items-start gap-x-10 md:flex'>
     {/* Sidebar */}
     <aside

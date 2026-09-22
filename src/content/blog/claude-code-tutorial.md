@@ -7,8 +7,8 @@ tags:
   - "Claude Code"
   - "AI"
   - "CLI"
-  - "教程"
-  - "小工具"
+  - "Tutorials"
+  - "Tools"
 ---
 
 Claude Code 是 Anthropic 出的命令行 AI 编程工具。直接在终端里让它读代码、改 bug、写功能。不像 Copilot 只补全，它是真正的对话式协作。

@@ -5,8 +5,8 @@ publishDate: 2025-05-19T00:00:00+08:00
 updatedDate: 2025-05-19T00:00:00+08:00
 tags:
   - "OI"
-  - "游记"
-  - "洛谷"
+  - "Travel Log"
+  - "Luogu"
 ---
 
 > 本文搬运自[我的洛谷博客](https://www.luogu.com.cn/)，原文写于 2019 年。
