@@ -124,7 +124,7 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
             </div>
             {data.tags.length > 0 && (
               <object title='Tags' aria-label='Tags' aria-labelledby='Tags'>
-                <ul class='tag-list mt-1 flex gap-2'>
+                <ul class='tag-list mt-1 flex flex-wrap gap-2'>
                   {data.tags.map((tag: string) => (
                     <li>
                       <Button as='a' title={tag} href={`/tags/${tag}`} variant='pill' />
