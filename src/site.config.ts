@@ -48,10 +48,10 @@ export const theme: ThemeUserConfig = {
   /** Configure the header of your site. */
   header: {
     menu: [
-      { title: '博客', link: '/blog' },
-      { title: '归档', link: '/archives' },
-      { title: '友链', link: '/links' },
-      { title: '关于', link: '/about' }
+      { title: 'Blog', link: '/blog' },
+      { title: 'Archives', link: '/archives' },
+      { title: 'Links', link: '/links' },
+      { title: 'About', link: '/about' }
     ]
   },
 
@@ -116,7 +116,8 @@ export const integ: IntegrationUserConfig = {
   // [Typography]
   // https://unocss.dev/presets/typography
   typography: {
-    class: 'prose text-base',
+    // 不带 text-base: 它会带上 line-height:1.5rem, 覆盖 typography 默认的 1.75
+    class: 'prose prose-headings:font-medium',
     // The style of blockquote font `normal` / `italic` (default to italic in typography)
     blockquoteStyle: 'italic',
     // The style of inline code block `code` / `modern` (default to code in typography)

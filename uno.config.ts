@@ -187,6 +187,7 @@ export default defineConfig({
     'rounded-b-2xl',
     // Typography
     'text-base',
-    'prose'
+    'prose',
+    'prose-headings:font-medium'
   ]
 })

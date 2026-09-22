@@ -4,8 +4,10 @@
   "compilerOptions": {
     // Basic
     "allowJs": true,
-    // Building for a library
-    "declaration": true,
+    // 本站是应用而非库(继承 noEmit, 从不产出 d.ts)。
+    // 开着会让 astro check 对 astro.config.ts 做声明可移植性检查, 而
+    // fontProviders.local() 的类型引用了 astro 内部未公开的 LocalFamilyOptions。
+    "declaration": false,
     // Code runs in the DOM
     "lib": ["es2022", "dom", "dom.iterable"],
     // Type Imports

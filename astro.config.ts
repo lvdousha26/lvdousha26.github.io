@@ -53,17 +53,16 @@ export default defineConfig({
   // https://docs.astro.build/en/guides/fonts/
   fonts: [
     {
-      provider: fontProviders.fontshare(),
-      name: 'Satoshi',
-      cssVariable: '--font-satoshi',
-      // Default included:
-      // weights: [400],
-      // styles: ["normal", "italics"],
-      // subsets: ["cyrillic-ext", "cyrillic", "greek-ext", "greek", "vietnamese", "latin-ext", "latin"],
-      // fallbacks: ["sans-serif"],
-      styles: ['normal', 'italic'],
-      weights: [400, 500],
-      subsets: ['latin']
+      provider: fontProviders.local(),
+      name: 'Century Gothic',
+      cssVariable: '--font-century-gothic',
+      // 字体文件自托管(取自 axi404.top)。Century Gothic 是 Monotype 商业字体, 重分发有许可风险
+      options: {
+        variants: [
+          { src: ['./src/assets/fonts/centurygothic.woff2'], weight: 400, style: 'normal' },
+          { src: ['./src/assets/fonts/centurygothic_bold.woff2'], weight: 700, style: 'normal' }
+        ]
+      }
     }
   ],
 
