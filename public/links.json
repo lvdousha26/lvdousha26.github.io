@@ -1,0 +1,32 @@
+{
+  "friends": [
+    {
+      "id_name": "common-links",
+      "desc": "Common links included in circle friends",
+      "link_list": [
+        {
+          "name": "Lin Mohan",
+          "intro": "代码重构世界，逻辑解构真理",
+          "link": "https://linmohan.net/",
+          "avatar": "https://linmohan.net/avatar.png"
+        },
+        {
+          "name": "拔剑Sketon",
+          "intro": "东方人的日常",
+          "link": "https://d-sketon.github.io/",
+          "avatar": "https://d-sketon.github.io/avatar/avatar.webp"
+        }
+      ]
+    },
+    {
+      "id_name": "inactive-links",
+      "desc": "Inactive or rule-breaking friends",
+      "link_list": []
+    },
+    {
+      "id_name": "special-links",
+      "desc": "Other special links",
+      "link_list": []
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+---
+import { Timeline } from 'astro-pure/user'
+import PageLayout from '@/layouts/CommonPage.astro'
+
+const headings = [
+  { depth: 2, slug: 'social-networks', text: '社交网络' },
+  { depth: 2, slug: 'about-blog', text: '关于本站' }
+]
+---
+
+<PageLayout title='关于' {headings} comment>
+  <p>大二在读，打过 OI。</p>
+  <p>帖子点进去左边的小按钮可以看头图。</p>
+
+  {/* social-networks */}
+  <h2 id='social-networks'>社交网络</h2>
+  <ul>
+    <li>
+      GitHub: <a href='https://github.com/lvdousha26' target='_blank'>lvdousha26</a>
+    </li>
+    <li>
+      RSS: <a href='/rss.xml' target='_blank'>/rss.xml</a>
+    </li>
+  </ul>
+
+  {/* about-blog */}
+  <h2 id='about-blog'>关于本站</h2>
+  <p>建站历史：</p>
+  <Timeline
+    events={[
+      {
+        date: '2025-03-10',
+        content: '使用 Hexo 建站'
+      },
+      {
+        date: '2025-05',
+        content:
+          '迁移到 <a href="https://gohugo.io/" target="_blank">Hugo</a> + <a href="https://github.com/D-Sketon/hugo-theme-reimu" target="_blank">hugo-theme-reimu</a>'
+      },
+      {
+        date: '2026-09-22',
+        content:
+          '迁移到 <a href="https://astro.build/" target="_blank">Astro</a> + <a href="https://github.com/cworld1/astro-theme-pure" target="_blank">Astro Theme Pure</a>'
+      }
+    ]}
+  />
+  <p>
+    本站由 <a href='https://github.com/cworld1/astro-theme-pure' target='_blank'>Astro Theme Pure</a
+    > 驱动，托管于 GitHub Pages。
+  </p>
+</PageLayout>

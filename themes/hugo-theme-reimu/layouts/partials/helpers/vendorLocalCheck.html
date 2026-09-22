@@ -1,5 +1,0 @@
-{{- $raw := . -}}
-{{- if reflect.IsMap $raw -}}
-  {{- $raw = $raw.src -}}
-{{- end -}}
-{{- return (hasPrefix $raw "local|") -}}

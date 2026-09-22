@@ -1,0 +1,50 @@
+---
+import { getBlogCollection, groupCollectionsByYear, sortMDByDate } from 'astro-pure/server'
+import { Button } from 'astro-pure/user'
+import PostPreview from '@/components/PostPreview.astro'
+import PageLayout from '@/layouts/BaseLayout.astro'
+
+export const prerender = true
+
+const allPosts = await getBlogCollection()
+const allPostsByDate = sortMDByDate(allPosts)
+const allPostsByYear = groupCollectionsByYear(allPostsByDate)
+
+const meta = {
+  description: '按年份归档的全部文章',
+  title: '归档'
+}
+---
+
+<PageLayout {meta}>
+  <Button title='返回' href='/blog' variant='back' />
+
+  <main class='mt-6 lg:mt-10'>
+    <div id='content-header' class='animate'>
+      <h1 class='mb-6 text-3xl font-medium'>归档</h1>
+    </div>
+
+    {allPosts.length === 0 && <p>还没有文章。</p>}
+
+    <section id='content' class='animate' aria-label='Blog post list'>
+      {
+        allPostsByYear.map(([year, posts]) => (
+          <div class='relative mt-20'>
+            <h2
+              class='absolute -start-6 -top-16 z-0 text-9xl font-bold text-transparent opacity-12 dark:opacity-25'
+              style='-webkit-text-stroke-width:2px;-webkit-text-stroke-color:hsl(var(--foreground)/var(--un-text-opacity))'
+            >
+              <samp>{year}</samp>
+            </h2>
+            <p class='px-5 text-muted-foreground'>{posts.length} 篇</p>
+            <ul class='flex flex-col text-start'>
+              {posts.map((p) => (
+                <PostPreview post={p} class='border-0 bg-transparent py-2' />
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </section>
+  </main>
+</PageLayout>

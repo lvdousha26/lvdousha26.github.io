@@ -1,0 +1,70 @@
+---
+import links from '@/public/links.json'
+import config from 'virtual:config'
+
+import { Collapse, Timeline } from 'astro-pure/user'
+import PageLayout from '@/layouts/CommonPage.astro'
+import FriendList from '@/components/links/FriendList.astro'
+
+const headings = [
+  { depth: 2, slug: 'common-links', text: '友情链接' },
+  { depth: 2, slug: 'apply-links', text: '申请友链' }
+]
+
+const { friends } = links
+const linksConf = config.integ.links
+const linkEditPage = 'https://github.com/lvdousha26/lvdousha26.github.io/blob/main/public/links.json'
+---
+
+<PageLayout title='友链' {headings} comment>
+  <h2 id='common-links'>友情链接</h2>
+  <FriendList list={friends[0]} />
+
+  {
+    friends[1].link_list.length > 0 && (
+      <Collapse title='失联或违规的友链'>
+        <FriendList list={friends[1]} />
+      </Collapse>
+    )
+  }
+  {
+    friends[2].link_list.length > 0 && (
+      <>
+        <h2 id='special-links'>特别链接</h2>
+        <FriendList list={friends[2]} />
+      </>
+    )
+  }
+
+  <Collapse title='友链变更记录'>
+    <Timeline events={linksConf.logbook} />
+  </Collapse>
+
+  <h2 id='apply-links'>申请友链</h2>
+  <p>本站信息（点击复制）：</p>
+  <blockquote class='not-prose grid grid-cols-[auto_1fr] gap-x-2 break-words border-s-4 ps-4'>
+    {
+      linksConf.applyTip.map(({ name, val }) => {
+        const script = `navigator.clipboard.writeText('${val}');document.dispatchEvent(new CustomEvent('toast',{detail:{message:'已复制 "${val}"'}}))`
+        return (
+          <>
+            <span class='text-end'>{name}:</span>
+            <samp class='cursor-pointer' onclick={script}>
+              {val}
+            </samp>
+          </>
+        )
+      })
+    }
+  </blockquote>
+
+  <p>
+    可通过下方留言或 <a href={linkEditPage} target='_blank'>提交 PR</a> 申请友链。申请说明：
+  </p>
+  <ul>
+    <li>在您的站点上推荐了本站</li>
+    <li>站点可正常访问且有正式域名</li>
+    <li>至少有五篇原创文章，且最近一年内有更新</li>
+    <li>内容不违反国家法律法规</li>
+  </ul>
+</PageLayout>
