@@ -1,0 +1,43 @@
+---
+import PageLayout from '@/layouts/BaseLayout.astro'
+import { Button } from '@/components/user'
+import CollectionPreview from '@/components/CollectionPreview.astro'
+import { getPostCollections } from '@/utils/collection'
+
+export const prerender = true
+
+const collections = await getPostCollections()
+
+const meta = {
+  title: 'Collections',
+  description: 'View all post collections'
+}
+---
+
+<PageLayout {meta}>
+  <Button title='Back' href='/' variant='back' />
+  <main class='mt-6 lg:mt-10'>
+    <div id='content-header' class='animate'>
+      <h1 class='mb-6 text-3xl font-medium'>Collections</h1>
+      <p class='mb-10 text-lg text-muted-foreground'>
+        Curated sets of posts on specific topics or themes.
+      </p>
+    </div>
+
+    <section id='content' class='animate'>
+      {
+        collections.length > 0 ? (
+          <div class='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+            {collections.map((collection) => (
+              <CollectionPreview {collection} />
+            ))}
+          </div>
+        ) : (
+          <div class='py-12 text-center text-muted-foreground'>
+            <p>No collections found.</p>
+          </div>
+        )
+      }
+    </section>
+  </main>
+</PageLayout>

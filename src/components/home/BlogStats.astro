@@ -1,7 +1,7 @@
 ---
-import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Icon } from 'astro-pure/user'
 import { getReadingTime } from 'astro-pure/utils'
+import { getBlogPosts } from '@/utils/collection'
 
 interface Props {
   blogStartDate: Date
@@ -9,8 +9,7 @@ interface Props {
 
 const { blogStartDate } = Astro.props as Props
 
-const allPosts = await getBlogCollection()
-const sortedPosts = sortMDByDate(allPosts)
+const sortedPosts = await getBlogPosts()
 
 const daysDiff = Math.floor((Date.now() - blogStartDate.getTime()) / (1000 * 60 * 60 * 24))
 
@@ -20,7 +19,7 @@ const lastUpdated =
     : new Date()
 
 let totalWords = 0
-for (const post of allPosts) {
+for (const post of sortedPosts) {
   if (post.body) totalWords += getReadingTime(post.body).words
 }
 
@@ -75,6 +74,6 @@ const formatDate = (date: Date) =>
 
   <div class='flex items-center justify-between border-t border-border pt-3 text-sm'>
     <span class='text-muted-foreground'>Total Posts</span>
-    <span class='font-medium text-foreground'>{allPosts.length}</span>
+    <span class='font-medium text-foreground'>{sortedPosts.length}</span>
   </div>
 </div>

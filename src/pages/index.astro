@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets'
 
-import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Icon, Label } from 'astro-pure/user'
 import PostPreview from '@/components/PostPreview.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
@@ -10,6 +9,7 @@ import SkillLayout from '@/components/home/SkillLayout.astro'
 import BlogStats from '@/components/home/BlogStats.astro'
 import GitHubActivityCalendar from '@/components/home/GitHubActivityCalendar.astro'
 import { Button } from '@/components/user'
+import { getBlogPosts } from '@/utils/collection'
 import config, { siteMeta } from '@/site-config'
 
 const languages = ['C++', 'Python', 'Java', 'TypeScript']
@@ -17,8 +17,8 @@ const frontend = ['Vue', 'Astro', 'HTML', 'CSS']
 const backend = ['Spring Boot', 'Docker', 'Linux']
 
 const MAX_POSTS = 10
-const allPosts = await getBlogCollection()
-const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
+const allPosts = await getBlogPosts()
+const allPostsByDate = allPosts.slice(0, MAX_POSTS)
 
 const imagePath = config.logo.src
 const images = import.meta.glob<{ default: ImageMetadata }>(

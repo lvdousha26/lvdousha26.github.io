@@ -2,15 +2,15 @@
 // 基于 astro-pure/components/pages/PostPreview.astro, 唯一的改动是封面图源:
 // 文章自带 heroImage 时仍用本地图, 否则改用第三方随机图 API(见 @/utils/random-cover)。
 import { Image } from 'astro:assets'
-import { type CollectionEntry, type CollectionKey, render } from 'astro:content'
+import { type CollectionEntry, render } from 'astro:content'
 
 import { FormattedDate, Icon } from 'astro-pure/user'
 import { cn } from 'astro-pure/utils'
 import { Button } from '@/components/user'
 import { coverSrc } from '@/utils/random-cover'
 
-type Props<T extends CollectionKey> = {
-  post: CollectionEntry<T>
+type Props = {
+  post: CollectionEntry<'blog'>
   detailed?: boolean
   class?: string
 }

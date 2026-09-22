@@ -41,4 +41,15 @@ const blog = defineCollection({
     })
 })
 
-export const collections = { blog }
+// Define post collections: hand-written curated lists of blog post ids.
+// 不加 draft 字段 —— 合集是手工清单, 没有草稿态。
+const postCollections = defineCollection({
+  loader: glob({ base: './src/content/collection', pattern: '**/*.md' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    bloglist: z.array(z.string()).default([])
+  })
+})
+
+export const collections = { blog, postCollections }

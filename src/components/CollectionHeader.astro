@@ -1,0 +1,19 @@
+---
+// 参考 axi404 的 CollectionHeader, 去掉 heroImage 分支(理由见 CollectionPreview.astro)
+import type { CollectionEntry } from 'astro:content'
+
+import { cn } from 'astro-pure/utils'
+
+type Props = {
+  collection: CollectionEntry<'postCollections'>
+  class?: string
+}
+
+const { collection, class: className } = Astro.props
+const { data } = collection
+---
+
+<div class={cn('mb-8 animate', className)}>
+  <h1 class='mb-2 text-3xl font-medium'>{data.title}</h1>
+  {data.description && <p class='text-muted-foreground'>{data.description}</p>}
+</div>

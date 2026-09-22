@@ -1,0 +1,52 @@
+---
+import type { CollectionEntry } from 'astro:content'
+
+import PageLayout from '@/layouts/BaseLayout.astro'
+import { Button } from '@/components/user'
+import CollectionHeader from '@/components/CollectionHeader.astro'
+import PostPreview from '@/components/PostPreview.astro'
+import { getPostCollections, getPostsForCollection } from '@/utils/collection'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+  const collections = await getPostCollections()
+  return collections.map((collection) => ({
+    params: { id: collection.id },
+    props: { collection }
+  }))
+}
+
+type Props = {
+  collection: CollectionEntry<'postCollections'>
+}
+
+const { collection } = Astro.props
+const posts = await getPostsForCollection(collection)
+
+const meta = {
+  title: collection.data.title,
+  description: collection.data.description ?? `Posts in the ${collection.data.title} collection`
+}
+---
+
+<PageLayout {meta}>
+  <Button title='Back' href='/collection' variant='back' />
+  <main class='mt-6 lg:mt-10'>
+    <CollectionHeader {collection} />
+
+    <section aria-label='Collection posts list' class='animate' id='content'>
+      {
+        posts.length > 0 ? (
+          <ul class='flex flex-col gap-y-4 text-start'>
+            {posts.map((post) => (
+              <PostPreview {post} detailed />
+            ))}
+          </ul>
+        ) : (
+          <p>No posts found in this collection.</p>
+        )
+      }
+    </section>
+  </main>
+</PageLayout>

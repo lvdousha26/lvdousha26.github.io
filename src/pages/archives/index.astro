@@ -1,14 +1,14 @@
 ---
-import { getBlogCollection, groupCollectionsByYear, sortMDByDate } from 'astro-pure/server'
+import { groupCollectionsByYear } from 'astro-pure/server'
 import PostPreview from '@/components/PostPreview.astro'
 import { Button } from '@/components/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import { getBlogPosts } from '@/utils/collection'
 
 export const prerender = true
 
-const allPosts = await getBlogCollection()
-const allPostsByDate = sortMDByDate(allPosts)
-const allPostsByYear = groupCollectionsByYear(allPostsByDate)
+const allPostsByDate = await getBlogPosts()
+const allPostsByYear = groupCollectionsByYear<'blog'>(allPostsByDate)
 
 const meta = {
   description: 'All posts archived by year',
@@ -24,7 +24,7 @@ const meta = {
       <h1 class='mb-6 text-3xl font-medium'>Archives</h1>
     </div>
 
-    {allPosts.length === 0 && <p>No posts yet.</p>}
+    {allPostsByDate.length === 0 && <p>No posts yet.</p>}
 
     <section id='content' class='animate' aria-label='Blog post list'>
       {

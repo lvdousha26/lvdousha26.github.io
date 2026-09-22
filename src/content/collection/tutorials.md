@@ -1,0 +1,25 @@
+---
+title: "Tutorials"
+description: "Step-by-step guides for the tools I use daily."
+# 按主题分组排序(不是日期): 环境 -> shell -> 包管理 -> 编辑器 -> 框架 -> 容器与服务 -> 开发工具 -> 学术与写作 -> 建站
+bloglist:
+  - "wsl-tutorial"
+  - "ssh-tutorial"
+  - "autodl-tutorial"
+  - "bash-tutorial"
+  - "conda-tutorial"
+  - "uv-tutorial"
+  - "vim-tutorial"
+  - "neovim-tutorial"
+  - "pytorch-tutorial"
+  - "docker-tutorial"
+  - "redis-tutorial"
+  - "git-tutorial"
+  - "gdb-tutorial"
+  - "postman-tutorial"
+  - "claude-code-tutorial"
+  - "latex-tutorial"
+  - "zotero-tutorial"
+  - "how-to-read-papers"
+  - "blog-from-scratch"
+---
