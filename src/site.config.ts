@@ -17,7 +17,7 @@ export const theme: ThemeUserConfig = {
     lang: 'zh-CN',
     attrs: 'zh_CN',
     // Date locale
-    dateLocale: 'zh-CN',
+    dateLocale: 'en-US',
     dateOptions: {
       day: 'numeric',
       month: 'short',
@@ -77,7 +77,7 @@ export const theme: ThemeUserConfig = {
       properties: { style: 'user-select:none' }
     },
     /** Blog page size for pagination (optional) */
-    blogPageSize: 8,
+    blogPageSize: 15,
     /** Share buttons to show */
     // Currently support weibo, x, bluesky
     share: ['weibo', 'x', 'bluesky']

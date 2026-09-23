@@ -1,6 +1,8 @@
 ---
-// 基于 astro-pure/components/pages/PostPreview.astro, 唯一的改动是封面图源:
-// 文章自带 heroImage 时仍用本地图, 否则改用第三方随机图 API(见 @/utils/random-cover)。
+// 基于 astro-pure/components/pages/PostPreview.astro:
+// 1. 封面图源: 文章自带 heroImage 时用本地图, 否则改用第三方随机图 API(见 @/utils/random-cover);
+// 2. 卡片外壳挂在 <li> 上、tag 列表放到 <a> 之外, 对齐参考站 axi404.top 的结构 ——
+//    这样调用方传入的 class(如 archives 的 'border-0 bg-transparent py-2')才能作用于卡片本身。
 import { Image } from 'astro:assets'
 import { type CollectionEntry, render } from 'astro:content'
 
@@ -26,15 +28,19 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
 ---
 
 <li
-  class={cn('post-preview', className)}
+  class={cn(
+    'post-preview group/card flex flex-col relative rounded-2xl border border-border bg-background transition-colors ease-in-out px-5 py-2.5 hover:bg-muted',
+    detailed && 'max-sm:px-4 sm:py-5',
+    className
+  )}
   style={localCover?.color &&
     `--preview-highlight:color-mix(in srgb,${localCover.color} 40%,hsl(var(--foreground)/var(--un-text-opacity,1)));
     --preview-highlight-bg:hsl(from ${localCover.color} h s l/20%)`}
 >
   <a
     class={cn(
-      'block w-full relative group rounded-2xl border bg-background transition-colors ease-in-out px-5 py-2.5 hover:bg-muted hover:text-primary',
-      detailed && 'max-sm:px-4 sm:py-5',
+      'group/link w-full flex flex-col transition-all hover:text-primary',
+      !detailed && 'sm:flex-row',
       showCover && 'max-md:pt-24'
     )}
     href={`/blog/${id}`}
@@ -44,7 +50,7 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
       localCover ? (
         <Image
           alt={localCover.alt || data.title}
-          class='cover-image absolute end-0 top-0 z-0 h-2/3 w-full rounded-2xl object-cover opacity-50 transition-opacity duration-300 group-hover:opacity-70 md:h-full md:w-3/5'
+          class='cover-image absolute end-0 top-0 z-0 h-2/3 w-full rounded-2xl object-cover opacity-50 transition-opacity duration-300 group-hover/card:opacity-70 md:h-full md:w-3/5'
           loading='eager'
           {...localCover}
         />
@@ -52,7 +58,7 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
         showCover && (
           <img
             alt={data.title}
-            class='cover-image absolute end-0 top-0 z-0 h-2/3 w-full rounded-2xl object-cover opacity-50 transition-opacity duration-300 group-hover:opacity-70 md:h-full md:w-3/5'
+            class='cover-image absolute end-0 top-0 z-0 h-2/3 w-full rounded-2xl object-cover opacity-50 transition-opacity duration-300 group-hover/card:opacity-70 md:h-full md:w-3/5'
             decoding='async'
             loading='lazy'
             referrerpolicy='no-referrer'
@@ -63,14 +69,12 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
         )
       )
     }
-    <div
-      class={cn('relative flex flex-col gap-1', !detailed && 'sm:flex-row sm:items-center')}
-      style='z-index:1'
-    >
-      <FormattedDate class='min-w-[95px] text-xs' date={postDate} />
 
+    <FormattedDate class='min-w-[95px] py-1 text-xs' date={postDate} />
+
+    <div class='z-10 flex-grow'>
       {/* title */}
-      <div class='flex justify-between flex-grow'>
+      <div class='flex justify-between'>
         <div class={detailed ? 'font-medium' : undefined}>
           {data.draft && <span class='text-red-500'>(Draft) </span>}
           {data.title}
@@ -84,16 +88,16 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
           stroke-width='2.5'
           stroke-linecap='round'
           stroke-linejoin='round'
-          class='preview-redirect my-1 stroke-muted-foreground group-hover:stroke-primary'
+          class='preview-redirect my-1 stroke-muted-foreground group-hover/link:stroke-primary'
           ><line
             x1='5'
             y1='12'
             x2='19'
             y2='12'
-            class='translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:scale-x-100'
+            class='translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover/link:translate-x-1 group-hover/link:scale-x-100'
           ></line><polyline
             points='12 5 19 12 12 19'
-            class='translate-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1'
+            class='translate-x-0 transition-all duration-300 ease-in-out group-hover/link:translate-x-1'
           ></polyline></svg
         >
       </div>
@@ -123,22 +127,23 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
                 </span>
               )}
             </div>
-            {data.tags.length > 0 && (
-              <object title='Tags' aria-label='Tags' aria-labelledby='Tags'>
-                <ul class='tag-list mt-1 flex flex-wrap gap-2'>
-                  {data.tags.map((tag: string) => (
-                    <li>
-                      <Button as='a' title={tag} href={`/tags/${tag}`} variant='pill' />
-                    </li>
-                  ))}
-                </ul>
-              </object>
-            )}
           </>
         )
       }
     </div>
   </a>
+
+  {
+    detailed && data.tags.length > 0 && (
+      <ul class='tag-list mt-1 flex flex-wrap gap-2'>
+        {data.tags.map((tag: string) => (
+          <li>
+            <Button as='a' title={tag} href={`/tags/${tag}`} variant='pill' />
+          </li>
+        ))}
+      </ul>
+    )
+  }
 
   <style>
     .post-preview {
@@ -146,7 +151,7 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
       );
     }
     .post-preview:hover {
-      & > a,
+      &,
       & .tag-list a {
         background-color: var( --preview-highlight-bg, hsl(var(--muted) / var(--un-bg-opacity, 1))) !important;
       }

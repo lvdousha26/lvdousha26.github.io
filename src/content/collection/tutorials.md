@@ -1,6 +1,6 @@
 ---
 title: "Tutorials"
-description: "Step-by-step guides for the tools I use daily."
+description: "日常所用工具的分步教程"
 # 按主题分组排序(不是日期): 环境 -> shell -> 包管理 -> 编辑器 -> 框架 -> 容器与服务 -> 开发工具 -> 学术与写作 -> 建站
 bloglist:
   - "wsl-tutorial"

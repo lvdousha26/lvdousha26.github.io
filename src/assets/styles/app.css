@@ -7,8 +7,8 @@
   --muted-foreground: 240 3.8% 28.1%;
   /* Background */
   --background: 210 33% 99%;
-  --muted: 240 4.8% 96%;
-  --card: 0 0% 90%;
+  --muted: 240 4.8% 95%;
+  --card: 0 0% 100%;
 
   /* Basic */
   --border: 240 5.9% 88%;
@@ -24,8 +24,8 @@
   --muted-foreground: 240 5% 74.9%;
   /* Background */
   --background: 240 20.54% 5.2%;
-  --muted: 240 5.9% 13%;
-  --card: 240 3.7% 24.9%;
+  --muted: 240 5.9% 12%;
+  --card: 240 10% 3.9%;
 
   /* Basic */
   --border: 240 3.7% 22.9%;
