@@ -2,10 +2,10 @@
 import type { GetStaticPaths, Page } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
-import { Paginator } from 'astro-pure/components/pages'
 import { getBlogCollection, getUniqueTagsWithCount, sortMDByDate } from 'astro-pure/server'
 import { Icon } from 'astro-pure/user'
 import CollectionPreview from '@/components/CollectionPreview.astro'
+import Paginator from '@/components/Paginator.astro'
 import PostPreview from '@/components/PostPreview.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import { Button } from '@/components/user'
@@ -39,11 +39,6 @@ const meta = {
   title: 'Blog'
 }
 
-// 不给 text, Paginator 用自带的 Previous / Next, 与 axi404 一样不再手写中文字样。
-const paginationProps = {
-  ...(page.url.prev && { prevUrl: { url: page.url.prev } }),
-  ...(page.url.next && { nextUrl: { url: page.url.next } })
-}
 ---
 
 <PageLayout {meta}>
@@ -73,7 +68,7 @@ const paginationProps = {
                 <PostPreview {post} detailed />
               ))}
             </ul>
-            <Paginator {...paginationProps} />
+            <Paginator currentPage={page.currentPage} lastPage={page.lastPage} url={page.url} />
           </section>
 
           {/* sidebar */}

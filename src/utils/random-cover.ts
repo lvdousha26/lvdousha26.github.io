@@ -20,6 +20,36 @@ export function coverSrc(seed: string, apiIndex = 0): string {
   return `${COVER_APIS[apiIndex]}?seed=${encodeURIComponent(seed)}`
 }
 
+/**
+ * 卡片悬浮强调色色板。
+ *
+ * 参考站 axi404.top 的悬浮色取自 heroImage 的主色调; 本站在没配 heroImage 时用随机图 API 兜底,
+ * 构建期拿不到图片主色, 所以改成从固定色板里取一个, 至少保住"每张卡片一个颜色"的观感。
+ * 选了中等明度的色, 因为在暗色模式下它会被当成 hsl(..., 20%) 的背景铺在深色底上。
+ */
+const ACCENT_PALETTE = [
+  '#7C8CB8', // 钢蓝
+  '#8A6D54', // 棕
+  '#5F7D6B', // 灰绿
+  '#8C6A7F', // 藕紫
+  '#6E7A9C', // 石板蓝
+  '#9A7B4F', // 赭黄
+  '#5C7E8C', // 青
+  '#7A6B9E' // 紫
+]
+
+/**
+ * 文章卡片的悬浮强调色。按 seed 确定性取色 —— 同一篇文章每次构建、以及服务端 / 客户端
+ * 都会得到同一个值, 不会出现两边算出不同颜色导致的水合不一致。
+ */
+export function coverAccent(seed: string): string {
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash * 31 + seed.charCodeAt(i)) | 0
+  }
+  return ACCENT_PALETTE[Math.abs(hash) % ACCENT_PALETTE.length]
+}
+
 /** 仅在地址变化时赋值, 避免重复赋值触发多余请求 */
 function setIfChanged(el: HTMLImageElement, src: string) {
   if (el.src !== src) el.src = src

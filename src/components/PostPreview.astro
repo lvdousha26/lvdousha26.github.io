@@ -9,7 +9,7 @@ import { type CollectionEntry, render } from 'astro:content'
 import { FormattedDate, Icon } from 'astro-pure/user'
 import { cn } from 'astro-pure/utils'
 import { Button } from '@/components/user'
-import { coverSrc } from '@/utils/random-cover'
+import { coverAccent, coverSrc } from '@/utils/random-cover'
 
 type Props = {
   post: CollectionEntry<'blog'>
@@ -25,6 +25,9 @@ const postDate = data.updatedDate ?? data.publishDate
 // 只有详细模式的卡片才有封面; 本地头图优先于随机图
 const showCover = detailed
 const localCover = showCover && data.heroImage ? data.heroImage : null
+
+// 悬浮强调色: 本地头图自带主色就用它, 否则按文章 id 从色板兜底
+const accent = localCover?.color ?? coverAccent(id)
 ---
 
 <li
@@ -33,9 +36,8 @@ const localCover = showCover && data.heroImage ? data.heroImage : null
     detailed && 'max-sm:px-4 sm:py-5',
     className
   )}
-  style={localCover?.color &&
-    `--preview-highlight:color-mix(in srgb,${localCover.color} 40%,hsl(var(--foreground)/var(--un-text-opacity,1)));
-    --preview-highlight-bg:hsl(from ${localCover.color} h s l/20%)`}
+  style={`--preview-highlight:color-mix(in srgb,${accent} 40%,hsl(var(--foreground)/var(--un-text-opacity,1)));
+    --preview-highlight-bg:hsl(from ${accent} h s l/20%)`}
 >
   <a
     class={cn(

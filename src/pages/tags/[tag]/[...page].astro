@@ -2,8 +2,8 @@
 import type { GetStaticPaths, Page } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
-import { Paginator } from 'astro-pure/components/pages'
 import { getUniqueTags } from 'astro-pure/server'
+import Paginator from '@/components/Paginator.astro'
 import PostPreview from '@/components/PostPreview.astro'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import { Button } from '@/components/user'
@@ -36,11 +36,6 @@ const meta = {
   description: `All posts tagged ${tag}`,
   title: `Tag: ${tag}`
 }
-
-const paginationProps = {
-  ...(page.url.prev && { prevUrl: { url: page.url.prev } }),
-  ...(page.url.next && { nextUrl: { url: page.url.next } })
-}
 ---
 
 <PageLayout {meta}>
@@ -57,7 +52,7 @@ const paginationProps = {
       <ul class='flex flex-col gap-y-3 text-start'>
         {page.data.map((post) => <PostPreview {post} detailed />)}
       </ul>
-      <Paginator {...paginationProps} />
+      <Paginator currentPage={page.currentPage} lastPage={page.lastPage} url={page.url} />
     </section>
   </main>
 </PageLayout>

@@ -1,0 +1,109 @@
+---
+// 照抄参考站 axi404.top 的编号分页 (Axi-Theme/src/components/pages/Paginator.astro)，
+// 用来替换 astro-pure 自带的 Prev/Next 版分页，所以放在本地 src/components 覆盖，
+// 不动 packages/pure —— 那层保持与模板一致，便于以后拉模板更新。
+interface PageUrlInfo {
+  current: string
+  prev?: string
+  next?: string
+  first?: string
+  last?: string
+}
+
+interface Props {
+  currentPage: number
+  lastPage: number
+  url: PageUrlInfo
+}
+
+const { currentPage, lastPage, url } = Astro.props
+
+// 首尾两页永远显示，当前页左右各留 delta 页，中间断开处补省略号。
+function getPageNumbers(current: number, last: number): (number | '...')[] {
+  if (last <= 1) {
+    return []
+  }
+
+  const delta = 2
+  const pages: (number | '...')[] = []
+  const left = current - delta
+  const right = current + delta + 1
+  let lastAdded: number | '...' | undefined
+
+  for (let i = 1; i <= last; i++) {
+    if (i === 1 || i === last || (i >= left && i < right)) {
+      if (lastAdded !== undefined && typeof lastAdded === 'number' && i > lastAdded + 1) {
+        if (pages[pages.length - 1] !== '...') {
+          pages.push('...')
+        }
+      }
+      pages.push(i)
+      lastAdded = i
+    } else if (lastAdded !== '...' && (i < left || i >= right)) {
+      if (pages[pages.length - 1] !== '...') {
+        pages.push('...')
+        lastAdded = '...'
+      }
+    }
+  }
+
+  return pages
+}
+
+const pageNumbers = getPageNumbers(currentPage, lastPage)
+
+// 第 1 页的规范地址是去掉尾号后的 base，其余页再拼 /n。
+function replacePageInUrl(currentUrl: string, page: number): string {
+  const base = currentUrl.replace(/\/\d+\/?$/, '')
+  if (page === 1) {
+    return base || '/'
+  }
+  return `${base === '/' ? '' : base}/${page}`
+}
+
+const itemBaseClasses =
+  'flex items-center justify-center min-w-[36px] h-9 px-2 rounded text-sm transition-colors duration-150 ease-in-out'
+
+const linkClasses = `
+  ${itemBaseClasses}
+  text-gray-600 hover:bg-gray-100 hover:text-gray-900
+  focus:outline-none focus:ring-1 focus:ring-blue-400 focus:bg-gray-100
+  dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100
+  dark:focus:bg-gray-700 dark:focus:ring-blue-500 dark:focus:ring-offset-gray-800
+`
+
+const currentClasses = `
+  ${itemBaseClasses}
+  bg-blue-100 text-blue-700 font-semibold cursor-default
+  dark:bg-gray-700 dark:text-gray-100
+`
+
+const ellipsisClasses = `
+  ${itemBaseClasses}
+  text-gray-400 dark:text-gray-500 cursor-default
+`
+---
+
+{
+  lastPage > 1 && (
+    <nav class='mt-8 flex flex-wrap items-center justify-center gap-1' aria-label='Pagination'>
+      {pageNumbers.map((num) =>
+        typeof num === 'number' ? (
+          num === currentPage ? (
+            <span class={currentClasses} aria-current='page' aria-label={`Page ${num}, Current Page`}>
+              {num}
+            </span>
+          ) : (
+            <a href={replacePageInUrl(url.current, num)} class={linkClasses} aria-label={`Go to page ${num}`}>
+              {num}
+            </a>
+          )
+        ) : (
+          <span class={ellipsisClasses} aria-hidden='true'>
+            ...
+          </span>
+        )
+      )}
+    </nav>
+  )
+}
