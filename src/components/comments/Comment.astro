@@ -1,0 +1,82 @@
+---
+// giscus 评论框。基于 GitHub Discussions, 无后端。
+//
+// 用 data-mapping='specific' 而不是 'pathname': 本站 trailingSlash 为 'never',
+// 站内跳转时 pathname 是 /blog/foo, 而硬刷新会被 GitHub Pages 301 到 /blog/foo/,
+// 同一篇文章出现两种路径 —— 按 pathname 映射会生成两个互不相通的讨论。
+// 所以由调用方传入一个与 URL 形态无关的稳定 term。
+import { cn } from 'astro-pure/utils'
+import { comments } from '@/site-config'
+
+interface Props {
+  /** 讨论的对应键。文章页传文章 id, 其它页面传去掉尾斜杠的路径 */
+  term: string
+  class?: string
+}
+
+const { term, class: className } = Astro.props
+const { giscus } = comments
+---
+
+{
+  giscus.enable && (
+    <div id='giscus-comment' class={cn('not-prose', className)}>
+      <script
+        is:inline
+        src='https://giscus.app/client.js'
+        data-repo={giscus.repo}
+        data-repo-id={giscus.repoId}
+        data-category={giscus.category}
+        data-category-id={giscus.categoryId}
+        data-mapping='specific'
+        data-term={term}
+        data-strict='0'
+        data-reactions-enabled={giscus.reactionsEnabled ? '1' : '0'}
+        data-emit-metadata='1'
+        data-input-position={giscus.inputPosition}
+        data-theme='preferred_color_scheme'
+        data-lang={giscus.lang}
+        data-loading='lazy'
+        crossorigin='anonymous'
+        async
+      />
+    </div>
+  )
+}
+
+<script>
+  // giscus 是跨域 iframe, 站点切深浅色时只能通过 postMessage 通知它, 没法用 CSS 继承。
+  function giscusTheme() {
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  }
+
+  function syncGiscusTheme() {
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
+    iframe?.contentWindow?.postMessage(
+      { giscus: { setConfig: { theme: giscusTheme() } } },
+      'https://giscus.app'
+    )
+  }
+
+  // iframe 由 giscus 的脚本异步插入, 出现后再同步一次初始主题
+  function watchGiscusIframe() {
+    if (document.querySelector('iframe.giscus-frame')) {
+      syncGiscusTheme()
+      return
+    }
+    const observer = new MutationObserver(() => {
+      if (!document.querySelector('iframe.giscus-frame')) return
+      observer.disconnect()
+      syncGiscusTheme()
+    })
+    observer.observe(document.body, { childList: true, subtree: true })
+  }
+
+  // 站点主题切换会改 <html> 的 class
+  new MutationObserver(syncGiscusTheme).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  })
+
+  watchGiscusIframe()
+</script>

@@ -133,9 +133,10 @@ export const integ: IntegrationUserConfig = {
       className: 'zoomable'
     }
   },
-  // Comment system
-  // Disabled until a self-hosted Waline server is available.
-  // See: https://waline.js.org/guide/get-started/
+  // [Waline]
+  // 已改用 giscus, 见文件底部的 comments 导出。组件本体(src/components/waline)已删除,
+  // 要切回来得先从 git 历史里捞回来。这一块保留为空壳是因为 astro-pure 的 zod schema
+  // 把 waline 定为必填键, 整个删掉会让配置校验失败。
   waline: {
     enable: false,
     // Server service link
@@ -164,6 +165,35 @@ export const siteMeta = {
   birthday: '2025-03-10',
   /** Contribution graph data source, also read by scripts/fetch-contributions.mjs */
   githubUsername: 'lvdousha26'
+}
+
+/**
+ * 评论系统与阅读量统计。
+ *
+ * 放在这里而不是 integ 里, 是因为 integ 受 astro-pure 的 zod schema 约束, 加新键会被剥掉。
+ *
+ * giscus 基于 GitHub Discussions, 不需要任何后端服务。下面的值最终以 data-* 属性写进 HTML,
+ * 都是公开信息, 不含密钥。前置条件有两个, 缺一个就只会看到报错 iframe:
+ *   1. 仓库开启 Discussions
+ *   2. 在该仓库上安装 giscus App (https://github.com/apps/giscus/installations/new)
+ *
+ * repoId / categoryId 是 GitHub 的 node id, 换仓库或换分类后需要重新取:
+ *   gh api graphql -f query='{repository(owner:"lvdousha26",name:"lvdousha26.github.io"){id discussionCategories(first:25){nodes{id name}}}}'
+ */
+export const comments = {
+  giscus: {
+    enable: true,
+    repo: 'lvdousha26/lvdousha26.github.io',
+    repoId: 'R_kgDOOF-9tA',
+    /** 必须是 Announcements 类型的分类, giscus 才有权限自动新建讨论 */
+    category: 'Announcements',
+    categoryId: 'DIC_kwDOOF-9tM4C9HLY',
+    /** 是否开启表情回应 */
+    reactionsEnabled: true,
+    /** 输入框位置: top / bottom */
+    inputPosition: 'top',
+    lang: 'zh-CN'
+  }
 }
 
 const config = { ...theme, integ } as Config

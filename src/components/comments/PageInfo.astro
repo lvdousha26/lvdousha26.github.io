@@ -1,0 +1,53 @@
+---
+// 文章/页面标题下的统计行: 阅读量 + 评论数。
+//
+// 两个数字来自不同来源:
+//   - 阅读量用 不蒜子(busuanzi), 免费、零部署, 脚本会自己找 #busuanzi_container_page_pv 填数
+//   - 评论数由 giscus 通过 postMessage 回报(Comment.astro 里开了 data-emit-metadata)
+import { cn } from 'astro-pure/utils'
+import { comments } from '@/site-config'
+
+interface Props {
+  /** 是否显示评论数。giscus 未启用时不显示, 免得留下点不动的死链 */
+  comment?: boolean
+  class?: string
+}
+
+const { comment, class: className, ...props } = Astro.props
+const showComment = !!comment && comments.giscus.enable
+---
+
+<div class={cn('text-base text-sm text-muted-foreground', className)} {...props}>
+  <span id='busuanzi_container_page_pv'>
+    <span id='busuanzi_value_page_pv'>-</span> views
+  </span>
+  {
+    showComment && (
+      <>
+        {' | '}
+        <a href='#giscus-comment'>
+          <span id='giscus-comment-count'>-</span> comments
+        </a>
+      </>
+    )
+  }
+</div>
+
+<script
+  is:inline
+  async
+  src='https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js'
+/>
+
+<script>
+  // giscus 载入后会把讨论数据 postMessage 出来, 从中取评论总数
+  window.addEventListener('message', (event) => {
+    if (event.origin !== 'https://giscus.app') return
+    const data = event.data
+    if (!data || typeof data !== 'object' || !data.giscus) return
+    const count = data.giscus.discussion?.totalCommentCount
+    if (typeof count !== 'number') return
+    const el = document.getElementById('giscus-comment-count')
+    if (el) el.textContent = String(count)
+  })
+</script>
