@@ -185,9 +185,15 @@ export const comments = {
     enable: true,
     repo: 'lvdousha26/lvdousha26.github.io',
     repoId: 'R_kgDOOF-9tA',
-    /** 必须是 Announcements 类型的分类, giscus 才有权限自动新建讨论 */
-    category: 'Announcements',
-    categoryId: 'DIC_kwDOOF-9tM4C9HLY',
+    /**
+     * 用 General(开放式讨论), 不用 giscus 向导推荐的 Announcements。
+     * Announcements 的格式限制只有 maintainer 能建帖, 而 giscus 是"没有对应讨论时,
+     * 由第一个评论者触发自动新建" —— 读者身份建帖会被 GitHub 拒, 报 Discussion not found。
+     * General 是开放式讨论, 任何登录用户都能建, 自动新建才能生效。
+     * 代价: 失去 Announcements 的防刷帖保护。
+     */
+    category: 'General',
+    categoryId: 'DIC_kwDOOF-9tM4C9HLZ',
     /** 是否开启表情回应 */
     reactionsEnabled: true,
     /** 输入框位置: top / bottom */

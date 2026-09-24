@@ -5,6 +5,9 @@
 // 站内跳转时 pathname 是 /blog/foo, 而硬刷新会被 GitHub Pages 301 到 /blog/foo/,
 // 同一篇文章出现两种路径 —— 按 pathname 映射会生成两个互不相通的讨论。
 // 所以由调用方传入一个与 URL 形态无关的稳定 term。
+//
+// 不加 data-loading='lazy': 长文(一万多像素高)里 iframe 在视口外, 懒加载期间只留一条
+// 150px 空白, 读者跳到页尾会以为没有评论区。
 import { cn } from 'astro-pure/utils'
 import { comments } from '@/site-config'
 
@@ -36,7 +39,6 @@ const { giscus } = comments
         data-input-position={giscus.inputPosition}
         data-theme='preferred_color_scheme'
         data-lang={giscus.lang}
-        data-loading='lazy'
         crossorigin='anonymous'
         async
       />
