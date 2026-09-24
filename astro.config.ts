@@ -128,9 +128,13 @@ export default defineConfig({
     // Enable SVGO optimization for SVG assets
     // https://docs.astro.build/en/reference/experimental-flags/svg-optimization/
     svgOptimizer: svgoOptimizer(),
-    // Enables pre-rendering your prefetched pages on the client in supported browsers.
+    // clientPrerender 关闭: 开了它 prefetch 提示会变成 Speculation Rules 的 "prerender",
+    // 浏览器会把视口内每个链接整篇渲染一遍(实测 /blog 一次触发 13 个, eagerness 全是 immediate),
+    // 当前页面为此付出大量 CPU 与网络, 而预渲染出来的文档会执行脚本, 又引出主题色被冻在
+    // 预渲染时刻的问题。参考站 axi404.top 只用 prefetch: true, 不预渲染。
+    // 保留 prefetch 依然预热 HTTP 缓存, 只是不再执行。
     // https://docs.astro.build/en/reference/experimental-flags/client-prerender/
-    clientPrerender: true,
+    // clientPrerender: true,
     // https://docs.astro.build/en/reference/experimental-flags/queued-rendering/
     queuedRendering: {
       enabled: true

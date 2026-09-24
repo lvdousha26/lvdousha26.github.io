@@ -25,17 +25,6 @@ const {
   <head>
     <BaseHead {articleDate} {description} {ogImage} {title} />
     <ThemeProvider />
-    {/* clientPrerender 会后台预渲染视口内的链接, 主题脚本在那一刻就用当时的 localStorage
-     * 把 <html> 的 class 定死了。文档真正被启用时重放一次, 否则在别的页面切完主题再点进来,
-     * 看到的还是切换前的配色。图标的 data-theme 也要跟着对齐。 */}
-    <script is:inline>
-      document.addEventListener('prerenderingchange', () => {
-        if (document.prerendering) return
-        window.simpleSetTheme?.()
-        const btn = document.getElementById('toggleDarkMode')
-        if (btn) btn.dataset.theme = localStorage.getItem('theme') || 'system'
-      })
-    </script>
   </head>
 
   <body class='flex justify-center bg-background text-foreground' {...props}>
