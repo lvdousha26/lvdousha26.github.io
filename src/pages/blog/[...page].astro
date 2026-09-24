@@ -101,8 +101,8 @@ const meta = {
                   </h2>
                   <ul class='text-bgColor flex flex-wrap gap-2'>
                     {
-                      // Only show top 50 tags in sidebar
-                      uniqueTags.slice(0, 50).map((tag) => (
+                      // 侧边栏只放最热的几个, 长列表留给 /tags (uniqueTags 已按出现次数降序)
+                      uniqueTags.slice(0, 10).map((tag) => (
                         <li>
                           <Button title={tag} href={`/tags/${tag}`} variant='pill' />
                         </li>
