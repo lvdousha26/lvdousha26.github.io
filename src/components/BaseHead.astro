@@ -27,8 +27,17 @@ const socialImageURL = new URL(ogImage ? ogImage : config.socialCard, Astro.url)
 <link rel='apple-touch-icon' sizes='180x180' href='/favicon/apple-touch-icon.png' />
 <link rel='manifest' href='/favicon/site.webmanifest' />
 
-{/* Font preloads */}
-<Font cssVariable='--font-century-gothic' preload={[{ style: 'normal', weight: 400 }]} />
+{/* Font preloads
+ * 两个字重都要 preload。只 preload 400 时, 700 要等布局阶段才发现需要下载 ——
+ * 冷缓存实测(线上首页): 400 在 1412ms 到位, 与 FCP 1480ms 基本齐平, 正文几乎不闪;
+ * 而 700 拖到 4014ms 才下载完, 粗体文字会在页面上明确地闪一次 Arial → Century Gothic。 */}
+<Font
+  cssVariable='--font-century-gothic'
+  preload={[
+    { style: 'normal', weight: 400 },
+    { style: 'normal', weight: 700 }
+  ]}
+/>
 <style>
   body {
     font-family: var(--font-century-gothic);
