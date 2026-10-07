@@ -46,3 +46,59 @@ a {
     color: hsl(var(--primary) / var(--un-text-opacity, 1));
   }
 }
+
+/* [Header glass] 抄 axi404 的导航栏: 滚动后由不透明底改为半透明 + 背景模糊。
+   关键点 —— 底色和模糊画在 ::before 上 (z-index:-1 + absolute inset:0),
+   元素本身保持 background-color: transparent。直接画在元素上时, 模糊只作用于
+   元素自己的背景, 内容透出的层次感几乎没有, 所以"半透明效果不明显"。
+   选择器加 html 前缀是为了在特异性上稳压 astro-pure Header.astro 里那两条
+   `header-component.not-top { background-color: ... }`
+   —— presetMini 不做类冲突消解, 靠源码顺序决胜不可靠, 所以不赌顺序也不用 !important。 */
+html header-component {
+  --header-glass-color: var(--background);
+  --header-glass-alpha: 0.94;
+  --header-glass-filter: none;
+  --header-glass-highlight: 0.65;
+  --header-glass-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / var(--header-glass-highlight)),
+    0 0 0 1px hsl(var(--border) / 0.35),
+    0 10px 15px -3px rgb(0 0 0 / 0.08),
+    0 4px 6px -4px rgb(0 0 0 / 0.08);
+}
+html.dark header-component {
+  --header-glass-color: var(--muted);
+  --header-glass-highlight: 0.08;
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  html header-component {
+    --header-glass-alpha: 0.75;
+    --header-glass-filter: blur(16px) saturate(1.2);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html header-component {
+    --header-glass-alpha: 1;
+    --header-glass-filter: none;
+  }
+}
+
+html header-component::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-color: transparent;
+  transition: background-color 0.15s;
+}
+html header-component.not-top,
+html.dark header-component.not-top {
+  background-color: transparent;
+  box-shadow: var(--header-glass-shadow);
+}
+html header-component.not-top::before {
+  background-color: hsl(var(--header-glass-color) / var(--header-glass-alpha));
+  -webkit-backdrop-filter: var(--header-glass-filter);
+  backdrop-filter: var(--header-glass-filter);
+}

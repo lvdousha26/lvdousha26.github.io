@@ -7,64 +7,227 @@ import PageLayout from '@/layouts/CommonPage.astro'
 import FriendList from '@/components/links/FriendList.astro'
 
 const headings = [
-  { depth: 2, slug: 'common-links', text: '友情链接' },
-  { depth: 2, slug: 'apply-links', text: '申请友链' }
+  { depth: 2, slug: 'common-links', text: 'Common Links' },
+  { depth: 2, slug: 'apply-links', text: 'Apply Links' }
 ]
 
 const { friends } = links
 const linksConf = config.integ.links
 const linkEditPage = 'https://github.com/lvdousha26/lvdousha26.github.io/blob/main/public/links.json'
+
+const applyRules = [
+  '在您的站点上推荐了本站；',
+  '站点可正常访问且有正式域名；',
+  '至少有五篇原创文章，且最近一年内有更新；',
+  '内容不违反国家法律法规。'
+]
 ---
 
 <PageLayout title='Links' {headings} comment>
-  <h2 id='common-links'>友情链接</h2>
-  <FriendList list={friends[0]} />
+  <div class='flex flex-col gap-y-12'>
+    {/* Common Links */}
+    <section class='flex flex-col gap-y-6'>
+      <div class='flex items-center gap-3 border-b border-border/30 pb-3'>
+        <div
+          class='flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='20'
+            height='20'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          >
+            <path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'></path>
+            <polyline points='15,3 21,3 21,9'></polyline>
+            <line x1='10' y1='14' x2='21' y2='3'></line>
+          </svg>
+        </div>
+        <div>
+          <h2 id='common-links' class='m-0 text-2xl font-semibold'>Common Links</h2>
+          <p class='m-0 text-sm text-muted-foreground'>
+            精选博客友链<span class='mx-2 align-middle'>·</span>一起探索有趣的世界
+          </p>
+        </div>
+      </div>
 
-  {
-    friends[1].link_list.length > 0 && (
-      <Collapse title='失联或违规的友链'>
-        <FriendList list={friends[1]} />
-      </Collapse>
-    )
-  }
-  {
-    friends[2].link_list.length > 0 && (
-      <>
-        <h2 id='special-links'>特别链接</h2>
-        <FriendList list={friends[2]} />
-      </>
-    )
-  }
+      <div class='axi-panel axi-panel-common rounded-2xl border border-border/30 p-6'>
+        <FriendList list={friends[0]} />
+      </div>
 
-  <Collapse title='友链变更记录'>
-    <Timeline events={linksConf.logbook} />
-  </Collapse>
+      <div class='flex flex-col'>
+        {
+          friends[1].link_list.length > 0 && (
+            <Collapse title='失联或违规的友链'>
+              <FriendList list={friends[1]} />
+            </Collapse>
+          )
+        }
+        <Collapse title='友链变更记录'>
+          <Timeline events={linksConf.logbook} />
+        </Collapse>
+      </div>
+    </section>
 
-  <h2 id='apply-links'>申请友链</h2>
-  <p>本站信息（点击复制）：</p>
-  <blockquote class='not-prose grid grid-cols-[auto_1fr] gap-x-2 break-words border-s-4 ps-4'>
     {
-      linksConf.applyTip.map(({ name, val }) => {
-        const script = `navigator.clipboard.writeText('${val}');document.dispatchEvent(new CustomEvent('toast',{detail:{message:'已复制 "${val}"'}}))`
-        return (
-          <>
-            <span class='text-end'>{name}:</span>
-            <samp class='cursor-pointer' onclick={script}>
-              {val}
-            </samp>
-          </>
-        )
-      })
+      friends[2].link_list.length > 0 && (
+        <section class='flex flex-col gap-y-6'>
+          <div class='flex items-center gap-3 border-b border-border/30 pb-3'>
+            <div class='flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                stroke-width='2'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+              >
+                <circle cx='12' cy='12' r='3'></circle>
+                <path d='M12 1v6m0 6v6'></path>
+                <path d='m21 12-6 0-6 0-6 0'></path>
+              </svg>
+            </div>
+            <div>
+              <h2 id='special-links' class='m-0 text-2xl font-semibold'>
+                Special Links
+              </h2>
+              <p class='m-0 text-sm text-muted-foreground'>
+                特别链接<span class='mx-2 align-middle'>·</span>另一些值得一看的地方
+              </p>
+            </div>
+          </div>
+          <div class='axi-panel axi-panel-common rounded-2xl border border-border/30 p-6'>
+            <FriendList list={friends[2]} />
+          </div>
+        </section>
+      )
     }
-  </blockquote>
 
-  <p>
-    可通过下方留言或 <a href={linkEditPage} target='_blank'>提交 PR</a> 申请友链。申请说明：
-  </p>
-  <ul>
-    <li>在您的站点上推荐了本站</li>
-    <li>站点可正常访问且有正式域名</li>
-    <li>至少有五篇原创文章，且最近一年内有更新</li>
-    <li>内容不违反国家法律法规</li>
-  </ul>
+    {/* Apply Links */}
+    <section class='flex flex-col gap-y-6'>
+      <div class='flex items-center gap-3 border-b border-border/30 pb-3'>
+        <div
+          class='flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/10 text-green-600 dark:text-green-400'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='20'
+            height='20'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          >
+            <path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'></path>
+            <rect x='8' y='2' width='8' height='4' rx='1' ry='1'></rect>
+          </svg>
+        </div>
+        <div>
+          <h2 id='apply-links' class='m-0 text-2xl font-semibold'>Apply Links</h2>
+          <p class='m-0 text-sm text-muted-foreground'>
+            友链申请<span class='mx-2 align-middle'>·</span>让我们成为朋友吧
+          </p>
+        </div>
+      </div>
+
+      <div class='axi-panel axi-panel-apply rounded-2xl border border-border/30 p-6'>
+        <div class='flex flex-col gap-y-6'>
+          {/* 本站信息 */}
+          <div class='flex flex-col gap-y-4'>
+            <div class='flex items-center gap-3'>
+              <div
+                class='flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary/20'
+              >
+                <span class='text-xs font-medium text-primary'>ℹ️</span>
+              </div>
+              <p class='m-0 text-sm text-muted-foreground'>本站信息如下（点击快速复制）：</p>
+            </div>
+            <div class='axi-blur-sm rounded-xl border border-border/50 bg-background/60 p-5'>
+              <div class='grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 break-words'>
+                {
+                  linksConf.applyTip.map(({ name, val }) => {
+                    const script = `navigator.clipboard.writeText('${val}');document.dispatchEvent(new CustomEvent('toast',{detail:{message:'已复制 ${val} 到剪贴板！'}}))`
+                    return (
+                      <>
+                        <span class='text-end text-sm font-medium text-muted-foreground'>
+                          {name}:
+                        </span>
+                        <samp
+                          class='cursor-pointer rounded-md bg-muted/30 px-2 py-1 font-mono text-sm transition-colors hover:bg-muted/50'
+                          onclick={script}
+                        >
+                          {val}
+                        </samp>
+                      </>
+                    )
+                  })
+                }
+              </div>
+            </div>
+          </div>
+
+          {/* 申请说明 */}
+          <div class='flex flex-col gap-y-4'>
+            <div class='flex items-center gap-3'>
+              <div
+                class='flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-500/20'
+              >
+                <span class='text-xs'>📝</span>
+              </div>
+              <p class='m-0 text-sm text-muted-foreground'>
+                可通过下方留言或<a href={linkEditPage} target='_blank'>提交 PR</a>申请友链。
+              </p>
+            </div>
+            <div class='axi-blur-sm rounded-xl border border-border/50 bg-background/60 p-5'>
+              <div class='flex flex-col gap-y-3'>
+                <h4 class='m-0 flex items-center gap-2 text-sm font-medium text-foreground'>
+                  <span class='text-green-500'>✅</span>申请说明
+                </h4>
+                <ul class='m-0 flex list-none flex-col gap-y-2 text-sm text-muted-foreground'>
+                  {
+                    applyRules.map((rule) => (
+                      <li class='flex items-center gap-2'>
+                        <span class='text-lg leading-none text-blue-500'>•</span>
+                        <span>{rule}</span>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </PageLayout>
+
+<style>
+  /* presetMini 没有 bg-gradient-to-br / from-* / to-*, 两处面板底色只能自己写 (同 Button.astro 的
+     .glass-blur 先例: 只声明 background-image, 不与任何 utility 争同一属性)。
+     色值取自 axi404 的 from-*-50/50 与 dark:from-*-950/20。 */
+  .axi-panel-common {
+    background-image: linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted) / 0.3));
+  }
+  .axi-panel-apply {
+    background-image: linear-gradient(to bottom right, rgb(240 253 244 / 0.5), rgb(239 246 255 / 0.5));
+  }
+  .dark .axi-panel-apply {
+    background-image: linear-gradient(to bottom right, rgb(5 46 22 / 0.2), rgb(23 37 84 / 0.2));
+  }
+
+  /* presetMini 也没有 backdrop-blur-* */
+  .axi-blur-sm {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+</style>

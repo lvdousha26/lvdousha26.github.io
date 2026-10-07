@@ -46,12 +46,12 @@ const getAvatarSrc = (friend: Friend) =>
     friendList.link_list.length > 0 ? (
       shuffle(friendList.link_list).map((frd: Friend) => (
         <a href={frd.link} target='_blank' class='no-underline'>
-          <div class='group relative h-full overflow-hidden rounded-2xl border bg-background px-2.5 py-1.5 transition-colors hover:bg-muted sm:px-4 sm:py-2'>
+          <div class='group relative h-full overflow-hidden rounded-2xl border border-border bg-background px-4 py-2 transition-colors hover:bg-muted sm:py-3'>
             <div class='relative z-10 flex h-full items-center gap-3'>
               {/* avatar */}
-              <div class='relative h-14 w-14 min-w-14 overflow-hidden rounded-full'>
+              <div class='relative h-16 w-16 min-w-16 overflow-hidden rounded-full'>
                 <Image
-                  class='my-0 bg-card'
+                  class='my-0 bg-white'
                   src={getAvatarSrc(frd)}
                   height={80}
                   width={80}
@@ -87,9 +87,11 @@ const getAvatarSrc = (friend: Friend) =>
                 </div>
               </div>
               {/* details */}
-              <div class='flex flex-col gap-y-1'>
+              <div class='flex flex-col gap-y-2'>
                 <p class='my-0 line-clamp-1 text-sm'>{frd.name} </p>
-                <p class='my-0 line-clamp-1 text-xs text-muted-foreground'>{frd.intro}</p>
+                <p class='my-0 line-clamp-1 text-xs text-muted-foreground sm:line-clamp-2'>
+                  {frd.intro}
+                </p>
               </div>
             </div>
             {/* avatar bg */}
