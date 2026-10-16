@@ -4,6 +4,14 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # 每日 00:37 UTC (= 08:37 北京时间) 重建一次。
+  # 页面上有些数据是构建时抓的 —— 首页的 GitHub 贡献热力图会在 build 阶段
+  # 请求 github-contributions-api.jogruber.de, 静态页面部署后就固定了,
+  # 不重建就永远停在上次 push 时的快照。
+  # 分钟数取 37 而非 0: GitHub 官方文档说明整点前后是调度高峰, 定时任务
+  # 容易被推迟甚至丢, 错开整点可显著降低延迟。
+  schedule:
+    - cron: '37 0 * * *'
 
 permissions:
   contents: read
