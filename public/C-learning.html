@@ -3274,11 +3274,72 @@ tail -n 20 main.i          # 看最后几行，就是你的代码被替换后的
       <code class="inline">#define SQUARE(x) x*x</code>，然后写 <code class="inline">SQUARE(1 + 2)</code>，你以为是 9，实际展开成 <code class="inline">1 + 2*1 + 2</code>，等于 <strong>5</strong>。正确写法是给每个参数和整体都加括号：<code class="inline">#define SQUARE(x) ((x)*(x))</code>。更推荐直接写 <code class="inline">static inline int square(int x) { return x * x; }</code>——有类型检查，也不会被重复求值。
     </div>
 
-    <p>还有两个必须知道的小事：</p>
+    <p>还有一个必须知道的小事：<strong><code class="inline">#define MAX 100</code> 后面不要加分号</strong>。因为它会被原样替换进代码里，<code class="inline">int a[MAX];</code> 会变成 <code class="inline">int a[100;];</code>，直接语法错误。</p>
+
+    <h4>为什么头文件一定要写 #ifndef</h4>
+    <p>先看一个必然发生的场景。你有两个头文件，<code class="inline">stack.h</code> 用到了 <code class="inline">list.h</code> 里的节点定义，于是它自己 <code class="inline">#include "list.h"</code>；而 <code class="inline">main.c</code> 两个都要用：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">main.c</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>#include "list.h"     // 直接包含
+#include "stack.h"    // 这个里面又包含了一次 list.h</code></pre>
+    </div>
+
+    <p>预处理是<strong>纯文本粘贴</strong>，它不认识"这个文件刚才是不是已经贴过了"。所以 <code class="inline">list.h</code> 的内容会被原样贴进 <code class="inline">main.c</code> <strong>两次</strong>，展开后长这样：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">预处理之后的 main.i（简化）</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>struct Node { int val; struct Node *next; };   // 第一次，来自 list.h
+struct Node { int val; struct Node *next; };   // 第二次，来自 stack.h 里的 include
+struct Stack { struct Node *top; };</code></pre>
+    </div>
+
+    <p>同一个作用域里 <code class="inline">struct Node</code> 被定义了两次，编译器只能报错：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">报错</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>In file included from stack.h:2,
+                 from main.c:2:
+list.h:1:8: error: redefinition of 'struct Node'
+    1 | struct Node { int val; struct Node *next; };
+      |        ^~~~</code></pre>
+    </div>
+
+    <p>注意报错里的 <code class="inline">In file included from stack.h:2, from main.c:2</code>——它明确告诉你"这个文件是被谁带进来的"。<strong>头文件卫士就是专门堵这个洞的。</strong></p>
+
+    <p>写法只有三行，但每一行都有作用：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">list.h（加了卫哨）</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>#ifndef LIST_H          // 如果 LIST_H 这个宏还没被定义
+#define LIST_H          // 那就定义它，然后继续往下读
+                        // （反过来：已经定义过，就跳到最后的 #endif）
+struct Node {
+    int val;
+    struct Node *next;
+};
+
+#endif /* LIST_H */</code></pre>
+    </div>
+
+    <p>走一遍就明白了：</p>
     <ul>
-      <li><strong><code class="inline">#define MAX 100</code> 后面不要加分号</strong>。因为它会被原样替换进代码里，<code class="inline">int a[MAX];</code> 会变成 <code class="inline">int a[100;];</code>，直接语法错误</li>
-      <li><strong>头文件卫士</strong>：头文件开头加 <code class="inline">#ifndef LIST_H</code> / <code class="inline">#define LIST_H</code>，末尾 <code class="inline">#endif</code>（或第一行写 <code class="inline">#pragma once</code>），防止同一个头文件被间接 include 两次导致重复定义</li>
+      <li><strong>第一次包含</strong>：<code class="inline">LIST_H</code> 还不存在 → <code class="inline">#ifndef</code> 成立 → 保留整段，同时 <code class="inline">#define LIST_H</code> 把它登记上</li>
+      <li><strong>第二次包含</strong>：<code class="inline">LIST_H</code> 已经定义 → <code class="inline">#ifndef</code> 不成立 → <strong>整段被悄悄丢掉</strong>，一行都不剩</li>
     </ul>
+
+    <p>几个容易踩的点：</p>
+    <ul>
+      <li><strong>宏名跟着文件名走</strong>：<code class="inline">list.h</code> → <code class="inline">LIST_H</code>，<code class="inline">my_stack.h</code> → <code class="inline">MY_STACK_H</code>。因为它是全局的宏，两个头文件撞名会互相把对方"卫士"掉，症状是"怎么少了一半声明"</li>
+      <li><strong><code class="inline">#define</code> 必须写在 <code class="inline">#ifndef</code> 里面</strong>，而且要紧紧跟在后面。写到外面去，就等于每次都登记一遍，等于没写</li>
+      <li><strong><code class="inline">#endif</code> 放在文件最后一行</strong>，后面加个 <code class="inline">/* LIST_H */</code> 注释，几百行的头文件里才不会配错对</li>
+      <li><strong>它防的是"同一份源码里重复粘贴"，不是"被多个 .c 包含"</strong>。两个 .c 各自包含 <code class="inline">list.h</code> 是完全正常的，各自展开一份，互不影响</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-title">#pragma once 能不能用</div>
+      能。第一行写 <code class="inline">#pragma once</code>，编译器自己记住"这个文件路径已经展开过"，不用你起名字，也不会撞名。它不是 C 标准的一部分，但 GCC / Clang / MSVC 全都支持，日常写作业用它更省事。<strong>唯一要小心的是同一个文件通过不同路径（软链接、多份拷贝）被包含时，它可能认不出来</strong>——而 <code class="inline">#ifndef</code> 只认宏名，反而更稳。两种都行，<strong>别在同一个文件里混着写</strong>。
+    </div>
 
     <p>参数不用背全，这些必须熟：</p>
 
