@@ -1932,18 +1932,44 @@
     <h3>关于地摊书</h3>
     <p>凡是标题带"21 天精通""从入门到放弃""一本就够"的，一律别买。这类书多数是拼凑出来的，代码错误多，还会把坏习惯教给你。</p>
 
-    <h3>推荐书单</h3>
+    <h3>入门先读这个：阮一峰的《C 语言教程》</h3>
+    <p>免费、在线、不废话，一个周末能读完：<a href="https://wangdoc.com/clang/intro" target="_blank" rel="noopener noreferrer">wangdoc.com/clang/intro</a>。</p>
+
+    <ul>
+      <li><strong>快</strong>：没有长篇铺垫，概念讲完就给例子，适合先把"C 大概长什么样"建立起来</li>
+      <li><strong>现代</strong>：全篇用 GCC 命令行举例，<code class="inline">-std=c99</code>、<code class="inline">a.out</code>、<code class="inline">-o</code> 这些一开始就讲清楚，跟你上机用的是同一套东西</li>
+      <li><strong>不绕</strong>：不堆术语，读到不懂的地方可以直接往下走，不会卡死</li>
+    </ul>
+
+    <p>但它偏"语法与要点"，讲到够用就停：指针只到能看懂的程度，内存布局、链接这些底层不展开。<strong>所以它是入门的第一本，不是唯一一本。</strong></p>
+
+    <h3>书单：入门一本，进阶一本，够了</h3>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>书</th><th>定位</th><th>什么时候看</th></tr>
+          <tr><th>资源</th><th>定位</th><th>什么时候看</th></tr>
         </thead>
         <tbody>
-          <tr><td>《C Primer Plus》第 6 版</td><td>系统全面，适合当参考书翻</td><td>全程</td></tr>
-          <tr><td>《深入理解计算机系统》（CSAPP）</td><td>底层视角，进阶</td><td>大二再看,略难的计算机导论</td></tr>
+          <tr>
+            <td>阮一峰《C 语言教程》</td>
+            <td>免费在线，最快建立整体印象</td>
+            <td><strong>入门第一周</strong>，边看边敲</td>
+          </tr>
+          <tr>
+            <td>《C Primer Plus》第 6 版</td>
+            <td><strong>进阶</strong>：厚、全、讲得细，适合系统补细节，或当工具书查</td>
+            <td>入门之后（课程讲到指针前后）再啃，<strong>不必从头读到尾</strong></td>
+          </tr>
+          <tr>
+            <td>《深入理解计算机系统》（CSAPP）</td>
+            <td>底层视角，进阶</td>
+            <td>大二再看，偏难的"计算机导论"</td>
+          </tr>
         </tbody>
       </table>
     </div>
+
+    <p>路线可以这么排：<strong>阮一峰过一遍 → 上课跟老师、每段代码自己敲 → 哪里卡住就翻《C Primer Plus》对应那章 → CSAPP 留到大二。</strong>《C Primer Plus》七八百页，从头读到尾的人很少，把它当"哪儿不懂查哪儿"更现实。</p>
   </section>
 
   <!-- ================= 刷题平台 ================= -->
