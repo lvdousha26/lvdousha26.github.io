@@ -433,6 +433,9 @@
   .table-wrap.dense th,
   .table-wrap.dense td { padding: 6px 14px; }
   .abbr-src { font-size: 13px; color: var(--muted); }
+  .asm-table td:nth-child(2) { white-space: nowrap; }
+  .asm-2col table { table-layout: fixed; }
+  .asm-2col th:first-child, .asm-2col td:first-child { width: 30%; }
   .table-wrap.dense table { font-size: 0.9rem; }
   tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: rgba(127, 127, 127, 0.06); }
@@ -2093,7 +2096,7 @@ int *q = NULL;   // 空指针，试试 *q = 1; 会怎样</code></pre>
 
     <p>跑完会发现三件事，正好是理解指针的关键：</p>
     <ol>
-      <li><strong><code class="inline">&amp;a</code> 不读 a 的值，只算地址</strong>。对应的指令是 <code class="inline">leaq</code>（load effective address）——它只做地址计算，根本不访问那块内存</li>
+      <li><strong><code class="inline">&amp;a</code> 不读 a 的值，只算地址</strong>。对应的指令是 <code class="inline">leaq</code>（load effective address）——它只做地址计算，根本不访问那块内存。这类 C 与汇编的对应关系，<a href="#tools">12.4 节</a>末尾有完整对照表</li>
       <li><strong>指针变量自己也有地址、也占内存</strong>。64 位系统里 <code class="inline">int *</code> 占 8 字节，<code class="inline">int</code> 占 4 字节，所以 a 在 0x1000，p 在 0x1008</li>
       <li><strong><code class="inline">*p = 100</code> 是两条指令</strong>：先 <code class="inline">movq p(%rip), %rax</code> 把地址读进寄存器，再 <code class="inline">movl $100, (%rax)</code> 往这个地址写。<strong>p 从头到尾没变，变的是 a</strong></li>
     </ol>
@@ -3365,6 +3368,126 @@ struct Node {
       <div class="callout-title">背下这一行，够用一整年</div>
       <code class="inline">gcc -std=c11 -Wall -Wextra -g -O0 main.c -o main</code> —— 编译期把警告全打开，调试信息带上，优化关掉。以后所有作业都从这里开始改。
     </div>
+
+    <h4>C 和汇编怎么对应：一行语句变成哪几条指令</h4>
+    <p>四阶段里第 ② 步「编译」就是把 C 变成汇编。这一步不必神秘化，它的规律很死：<strong>变量落到栈上的固定槽位，运算先进寄存器，分支变成比较加跳转，函数变成 call 和 ret。</strong>想亲眼看，把 <code class="inline">-S</code> 加进命令就行：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>gcc -S -O0 -masm=intel main.c -o main.s   # 只到汇编，Intel 语法（更好读）
+cat main.s                                # 直接看</code></pre>
+    </div>
+
+    <p>不加 <code class="inline">-masm=intel</code> 出来的是 AT&amp;T 语法，两者说的是同一件事，只是写反了：</p>
+
+    <div class="table-wrap dense asm-2col">
+      <table>
+        <thead>
+          <tr><th>语法</th><th>同一条 <code class="inline">a = 42</code></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>AT&amp;T（gcc 默认）</td><td><code class="inline">movl $42, -4(%rbp)</code></td></tr>
+          <tr><td>Intel</td><td><code class="inline">mov DWORD PTR [rbp-4], 42</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>区别就三条：AT&amp;T 是<strong>源在前、目的在后</strong>，寄存器带 <code class="inline">%</code>，立即数带 <code class="inline">$</code>；Intel 全部反过来，更像人话。<strong>加 <code class="inline">-masm=intel</code> 之后，网上教程和教材里抄来的汇编才看得懂。</strong></p>
+
+    <p>先认识几个寄存器，够看 90% 的代码：</p>
+
+    <div class="table-wrap dense">
+      <table>
+        <thead>
+          <tr><th>寄存器</th><th>干什么的</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code class="inline">rax</code></td><td><strong>返回值</strong>、临时结果。低 32 位叫 <code class="inline">eax</code>，再低 16 位叫 <code class="inline">ax</code></td></tr>
+          <tr><td><code class="inline">rdi</code> <code class="inline">rsi</code> <code class="inline">rdx</code> <code class="inline">rcx</code> <code class="inline">r8</code> <code class="inline">r9</code></td><td>整型参数按顺序放在这六个里，<strong>第 7 个起才走栈</strong></td></tr>
+          <tr><td><code class="inline">rsp</code></td><td>栈顶指针，<code class="inline">push</code> / <code class="inline">pop</code> 就是在动它</td></tr>
+          <tr><td><code class="inline">rbp</code></td><td>栈帧基址。局部变量都在 <code class="inline">[rbp-8]</code>、<code class="inline">[rbp-16]</code> 这些位置</td></tr>
+          <tr><td><code class="inline">rip</code></td><td>下一条要执行的指令地址，<code class="inline">call</code> / 跳转改的就是它</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>然后是这张对照表，左边是你写的，右边是编译器给的。看熟这张表，<strong>再看到汇编就不慌了</strong>：</p>
+
+    <div class="table-wrap asm-table">
+      <table>
+        <thead>
+          <tr><th>C 代码</th><th>对应的汇编（Intel 语法）</th><th>要点</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code class="inline">int a = 42;</code></td><td><code class="inline">mov DWORD PTR [rbp-4], 42</code></td><td>局部变量就是栈上一个<strong>固定槽位</strong>，名字编译完就没了</td></tr>
+          <tr><td><code class="inline">b = a + c;</code></td><td><code class="inline">mov eax, [rbp-4]</code><br><code class="inline">add eax, [rbp-8]</code><br><code class="inline">mov [rbp-12], eax</code></td><td><strong>运算必须先搬进寄存器</strong>，内存之间不能直接相加</td></tr>
+          <tr><td><code class="inline">if (a &gt; b) ...</code></td><td><code class="inline">cmp eax, [rbp-8]</code><br><code class="inline">jle .L2</code></td><td>条件是<strong>反着跳</strong>的：不满足就跳过 if 块</td></tr>
+          <tr><td><code class="inline">for (i = 0; i &lt; n; i++)</code></td><td><code class="inline">.L2: cmp ... jge .L3</code><br><code class="inline">... ; jmp .L2</code></td><td>循环 = <strong>标签 + 比较 + 条件跳走 + 末尾跳回</strong></td></tr>
+          <tr><td><code class="inline">f(a, b);</code></td><td><code class="inline">mov edi, a</code><br><code class="inline">mov esi, b</code><br><code class="inline">call f</code></td><td>实参先摆进 rdi/rsi，返回值回来时在 <code class="inline">eax</code> 里</td></tr>
+          <tr><td><code class="inline">p = &amp;a;</code></td><td><code class="inline">lea rax, [rbp-4]</code></td><td><strong>只算地址，不读那块内存</strong>——所以 &amp; 和 [] 能被合并成一条</td></tr>
+          <tr><td><code class="inline">*p = 100;</code></td><td><code class="inline">mov rax, [rbp-16]</code><br><code class="inline">mov DWORD PTR [rax], 100</code></td><td>两步：<strong>先把地址读进寄存器，再往那个地址写</strong></td></tr>
+          <tr><td><code class="inline">return s;</code></td><td><code class="inline">mov eax, [rbp-4]</code><br><code class="inline">leave</code> / <code class="inline">ret</code></td><td>返回值固定走 <code class="inline">eax</code>，<code class="inline">ret</code> 就是把 rip 弹回调用方</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>注意「<code class="inline">DWORD PTR</code>」这四个字：它标的是<strong>宽度</strong>。<code class="inline">char</code> 是 <code class="inline">BYTE</code>（1 字节）、<code class="inline">short</code> 是 <code class="inline">WORD</code>（2）、<code class="inline">int</code> 是 <code class="inline">DWORD</code>（4）、指针和 <code class="inline">long</code> 是 <code class="inline">QWORD</code>（8）。指针类型写错、<code class="inline">printf</code> 格式符用错，在汇编这一层看就是宽度对不上——它不会报错，只会读错几个字节。</p>
+
+    <p>拿一个真函数走一遍，比看表有用：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>int sum(int *a, int n) {
+    int s = 0;
+    for (int i = 0; i &lt; n; i++) {
+        s += a[i];
+    }
+    return s;
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">对应的汇编（-O0，注释是我加的，省掉了几条地址计算）</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>sum:
+    push    rbp                    ; 保存调用方的栈帧
+    mov     rbp, rsp               ; 建立自己的栈帧
+    mov     QWORD PTR [rbp-24], rdi   ; 参数 a（指针，8 字节）存进栈
+    mov     DWORD PTR [rbp-12], esi   ; 参数 n（int，4 字节）存进栈
+    mov     DWORD PTR [rbp-4], 0      ; s = 0
+    mov     DWORD PTR [rbp-8], 0      ; i = 0
+.L2:                               ; ← 循环开头
+    mov     eax, DWORD PTR [rbp-8]    ; 取 i
+    cmp     eax, DWORD PTR [rbp-12]   ; 和 n 比
+    jge     .L3                       ; i &gt;= n 就跳出（反着跳）
+    mov     eax, DWORD PTR [rbp-8]    ; 取 i
+    cdqe                              ; 32 位扩成 64 位（做地址要用）
+    lea     rdx, [rax*4]              ; i * sizeof(int) = i * 4
+    mov     rax, QWORD PTR [rbp-24]   ; 取 a 的地址
+    add     rax, rdx                  ; a + i*4 → 第 i 个元素的地址
+    mov     eax, DWORD PTR [rax]      ; 顺着地址读出 a[i]
+    add     DWORD PTR [rbp-4], eax    ; s += a[i]
+    add     DWORD PTR [rbp-8], 1      ; i++
+    jmp     .L2                       ; 跳回循环开头
+.L3:
+    mov     eax, DWORD PTR [rbp-4]    ; 返回值放 eax
+    pop     rbp                       ; 恢复调用方的栈帧
+    ret</code></pre>
+    </div>
+
+    <p>这段汇编把前面几节讲的东西全兑现了：</p>
+    <ul>
+      <li><strong>局部变量真的是"栈上的槽位"</strong>：<code class="inline">s</code> 在 <code class="inline">[rbp-4]</code>、<code class="inline">i</code> 在 <code class="inline">[rbp-8]</code>，编译器排的位置，跟你写的顺序没关系</li>
+      <li><strong><code class="inline">a[i]</code> 被拆成"基址 + i×4"</strong>：<code class="inline">lea rdx,[rax*4]</code> 算出偏移，再 <code class="inline">add</code> 到指针上。这就是 4.5 节说的"指针算术按类型步进"的物理实现</li>
+      <li><strong>函数返回后栈帧就作废了</strong>：<code class="inline">pop rbp</code> 之后 <code class="inline">[rbp-4]</code> 那块内存不再属于你。所以"返回局部变量的地址"是 UB——不是玄学，是这块地已经被回收了</li>
+      <li><strong>每次递归调用都会 push 一层新栈帧</strong>：递归太深撑爆栈 → 段错误，原因也在这里</li>
+    </ul>
+
+    <div class="callout warn">
+      <div class="callout-title">别拿 -O2 的汇编逐行对源码</div>
+      <code class="inline">-O0</code> 是"一条语句一条语句地翻"，最适合学习。<code class="inline">-O2</code> 会把变量全塞进寄存器、把循环改成指针步进、把整段计算提出来甚至向量化——<strong>你写的第 5 行可能跑到第 20 行去执行，也可能整段消失。</strong>要对照语法就看 <code class="inline">-O0</code>；要研究优化，就换个心态，别指望一一对应。顺便说，这也是"UB 在 -O2 下行为突变"的原因：优化器正是按"你保证过不会越界"来重排代码的。
+    </div>
+
+    <p>要不要背？<strong>不用。</strong>只要能把骨架对上：变量 → 栈槽位、表达式 → 寄存器、<code class="inline">if</code>/<code class="inline">for</code> → 比较加跳转、函数 → <code class="inline">call</code> 加 <code class="inline">ret</code>。真需要看汇编的场合就三个：调段错误要看寄存器、ICS 的 Bomb Lab 要读反汇编、想搞明白某个 UB 到底怎么被优化掉。其余时候，知道它长什么样就够了。</p>
 
     <p>报错也分两类，区别很重要：</p>
     <ul>
