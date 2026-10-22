@@ -434,6 +434,16 @@
   .table-wrap.dense td { padding: 6px 14px; }
   .abbr-src { font-size: 13px; color: var(--muted); }
   .asm-table td:nth-child(2) { white-space: nowrap; }
+  .td-note { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .env-table { table-layout: fixed; }
+  .env-table table { font-size: 0.93rem; }
+  .env-table th:nth-child(1), .env-table td:nth-child(1) { width: 17%; }
+  .env-table th:nth-child(2), .env-table td:nth-child(2) { width: 37%; }
+  .env-table th:nth-child(3), .env-table td:nth-child(3) { width: 26%; }
+  .env-table th:nth-child(4), .env-table td:nth-child(4) { width: 20%; }
+  @media (max-width: 720px) {
+    .env-table table { min-width: 620px; }
+  }
   .asm-2col table { table-layout: fixed; }
   .asm-2col th:first-child, .asm-2col td:first-child { width: 30%; }
   .table-wrap.dense table { font-size: 0.9rem; }
@@ -1577,23 +1587,24 @@
     <a class="nav-link" href="#about"><span class="nav-num">—</span>自我介绍</a>
     <div class="nav-group-label">开始</div>
     <a class="nav-link" href="#intro"><span class="nav-num">00</span>开场</a>
-    <div class="nav-group-label">资源与平台</div>
+    <div class="nav-group-label">资源与环境</div>
     <a class="nav-link" href="#resources"><span class="nav-num">01</span>视频课怎么选</a>
-    <a class="nav-link" href="#books"><span class="nav-num">02</span>教材怎么选</a>
-    <a class="nav-link" href="#platforms"><span class="nav-num">03</span>刷题平台</a>
+    <a class="nav-link" href="#env"><span class="nav-num">02</span>开发环境</a>
+    <a class="nav-link" href="#books"><span class="nav-num">03</span>教材怎么选</a>
+    <a class="nav-link" href="#platforms"><span class="nav-num">04</span>刷题平台</a>
     <div class="nav-group-label">核心难点</div>
-    <a class="nav-link" href="#pointers"><span class="nav-num">04</span>指针</a>
-    <a class="nav-link" href="#quiz"><span class="nav-num">05</span>五道题自测</a>
+    <a class="nav-link" href="#pointers"><span class="nav-num">05</span>指针</a>
+    <a class="nav-link" href="#quiz"><span class="nav-num">06</span>五道题自测</a>
     <div class="nav-group-label">方法与习惯</div>
-    <a class="nav-link" href="#style"><span class="nav-num">06</span>代码可读性</a>
-    <a class="nav-link" href="#ai"><span class="nav-num">07</span>AI 使用原则</a>
-    <a class="nav-link" href="#debug"><span class="nav-num">08</span>Debug 能力</a>
-    <a class="nav-link" href="#schedule"><span class="nav-num">09</span>学习节奏</a>
+    <a class="nav-link" href="#style"><span class="nav-num">07</span>代码可读性</a>
+    <a class="nav-link" href="#ai"><span class="nav-num">08</span>AI 使用原则</a>
+    <a class="nav-link" href="#debug"><span class="nav-num">09</span>Debug 能力</a>
+    <a class="nav-link" href="#schedule"><span class="nav-num">10</span>学习节奏</a>
     <div class="nav-group-label">动手</div>
-    <a class="nav-link" href="#checklist"><span class="nav-num">10</span>学习清单</a>
+    <a class="nav-link" href="#checklist"><span class="nav-num">11</span>学习清单</a>
     <div class="nav-group-label">会后延伸</div>
-    <a class="nav-link" href="#courses"><span class="nav-num">11</span>课程推荐</a>
-    <a class="nav-link" href="#tools"><span class="nav-num">12</span>工具链四件套</a>
+    <a class="nav-link" href="#courses"><span class="nav-num">12</span>课程推荐</a>
+    <a class="nav-link" href="#tools"><span class="nav-num">13</span>工具链四件套</a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-note">单文件 · 可离线打开<br>进度自动保存在本机</div>
@@ -1770,13 +1781,105 @@
 
     <div class="callout">
       <div class="callout-title">建议路线</div>
-      翁恺打基础，CS50 换个视角，<strong>Frank 的《C 语言大师》用来深挖</strong>——尤其是指针和内存那几集。全程自己敲代码，<strong>看视频和敲代码的时间比建议 1:2，光看不动手等于没学。</strong>学完 C 之后往哪走，看文末第 11 节的课程推荐。
+      翁恺打基础，CS50 换个视角，<strong>Frank 的《C 语言大师》用来深挖</strong>——尤其是指针和内存那几集。全程自己敲代码，<strong>看视频和敲代码的时间比建议 1:2，光看不动手等于没学。</strong>学完 C 之后往哪走，看文末第 12 节的课程推荐。
+    </div>
+  </section>
+
+  <!-- ================= 开发环境 ================= -->
+  <section id="env">
+    <h2><span class="h2-num">02</span>开发环境：别在选工具上卡住</h2>
+
+    <p>写 C 之前得先有个地方能编译、能运行、能调试。这件事本身不难，但<strong>选错了会先卡掉你半天</strong>——而且是被工具坑，不是被 C 坑。</p>
+
+    <p>先看两个别碰的。它们不是"过时了所以不好"，是真的会让你<strong>学到错的东西</strong>：</p>
+
+    <div class="callout danger">
+      <div class="callout-title">这两个别再用了</div>
+      <strong>VC 6.0（Visual C++ 6.0）</strong>：1998 年的产品。编译器只认 C89，<code class="inline">for (int i = 0; ...)</code> 这种写法直接编不过（C99 才允许）；跟课程评测机、竞赛环境也不是一套——你在它上面"跑通了"，换个 gcc 就是一堆错。<br><br>
+      <strong>Dev-C++（原版 5.11）</strong>：2005 年就停止维护了，现在流传的版本调试器常和 gdb 对不上，中文路径、UTF-8 编码、报错定位都容易出毛病。<strong>看着像能用，真出问题没人修。</strong>
+    </div>
+
+    <p>那用什么？按你现在要干的事选，不按"哪个更专业"选：</p>
+
+    <div class="table-wrap env-table">
+      <table>
+        <thead>
+          <tr><th>工具</th><th>好在哪</th><th>代价</th><th>适合</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>小熊猫 C++</strong><br><span class="td-note">Red Panda</span></td>
+            <td>Dev-C++ 的现代重写版，<strong>自带编译器和调试器</strong>，中文界面，装完双击就能编译运行，C99 之后的语法全支持</td>
+            <td>生态小，只适合单文件作业，做不了大工程</td>
+            <td><strong>上课写作业的首选</strong>，Dev-C++ 的正经替代</td>
+          </tr>
+          <tr>
+            <td><strong>CP Editor</strong></td>
+            <td>专为算法题做的：一键编译运行、把样例贴进去逐个自动比对、还能<strong>直接提交到洛谷 / Codeforces</strong></td>
+            <td>只管单文件，写不了项目</td>
+            <td>刷题、打比赛</td>
+          </tr>
+          <tr>
+            <td><strong>Visual Studio</strong><br><span class="td-note">2022 社区版，免费</span></td>
+            <td>真正省事：调试器是所有选项里最好用的，智能提示最全，出问题点一下就停在那儿</td>
+            <td><strong>太重</strong>：装完几十 GB，启动慢，写一个 .c 也要先"新建项目"</td>
+            <td>课程设计、大作业（Windows）</td>
+          </tr>
+          <tr>
+            <td><strong>VS Code</strong></td>
+            <td>轻量、跨平台、插件多，写代码、看 diff、跑终端在一个窗口里</td>
+            <td><strong>要自己配</strong>：装扩展、装编译器、配 <code class="inline">tasks.json</code> 和 <code class="inline">launch.json</code></td>
+            <td>想长期用、写项目、愿意配一次</td>
+          </tr>
+          <tr>
+            <td><strong>vim / Neovim</strong></td>
+            <td>终端里就能改，服务器上唯一的选项；改配置本身也是乐趣</td>
+            <td>学习曲线陡，头两周效率明显下降</td>
+            <td>对技术本身感兴趣、愿意折腾</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>翻译成一句话的建议：</p>
+    <ul>
+      <li><strong>只想赶紧把作业跑起来</strong>：小熊猫 C++。装完就能用，中文界面不折腾</li>
+      <li><strong>主要刷算法题</strong>：CP Editor。样例自动比对和直接提交这两点，用过就回不去</li>
+      <li><strong>Windows 上写课程设计</strong>：Visual Studio。慢是慢，但调试真省事</li>
+      <li><strong>想长期用一套、以后写项目</strong>：VS Code。花半小时配好，之后最舒服（配置见 <a href="#tools">13.3 节</a>）</li>
+      <li><strong>想折腾、以后要上服务器</strong>：vim。值得学，但别在赶作业的那一周开始学</li>
+    </ul>
+
+    <div class="link-row">
+      <a class="link-btn solid" href="https://github.com/royqh1979/RedPanda-CPP/releases" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        小熊猫 C++ 下载
+      </a>
+      <a class="link-btn" href="https://cpeditor.org/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        CP Editor
+      </a>
+      <a class="link-btn" href="https://code.visualstudio.com/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        VS Code
+      </a>
+      <a class="link-btn" href="https://visualstudio.microsoft.com/zh-hans/vs/community/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        Visual Studio
+      </a>
+    </div>
+
+    <p><strong>但有一件事跟工具无关：</strong>不管你用哪个，命令行那套迟早要会（<a href="#tools">第 13 节</a>）。评测机、服务器、CI 上没有 IDE，只有 <code class="inline">gcc</code> 和一个黑框。IDE 是让你写作业舒服，命令行是让你在别人的机器上也能干活。</p>
+
+    <div class="callout">
+      <div class="callout-title">别在选工具上卡三天</div>
+      工具三个月就能换一套，代码和思路才是攒下来的。<strong>先用能跑起来的那个，遇到真正的瓶颈再换。</strong>很多人的问题是"一直在选编辑器"，而不是"编辑器不好用"。
     </div>
   </section>
 
   <!-- ================= 教材篇 ================= -->
   <section id="books">
-    <h2><span class="h2-num">02</span>教材篇：别买谭浩强，别买地摊书</h2>
+    <h2><span class="h2-num">03</span>教材篇：别买谭浩强，别买地摊书</h2>
 
     <h3>关于谭浩强</h3>
     <ul>
@@ -1805,7 +1908,7 @@
 
   <!-- ================= 刷题平台 ================= -->
   <section id="platforms">
-    <h2><span class="h2-num">03</span>刷题平台：按阶段来，别一上来就卷</h2>
+    <h2><span class="h2-num">04</span>刷题平台：按阶段来，别一上来就卷</h2>
 
     <figure class="figure">
       <div class="svg-wrap">
@@ -1921,14 +2024,14 @@
       </ol>
     </div>
 
-    <p>写完一道题不确定对不对？除了交评测等结果，还可以自己造数据<a href="#debug">对拍</a>：写一份暴力解跟它比，几百组数据跑下来，错在哪组一目了然。具体做法见第 08 节的「从对拍到 difftest」。</p>
+    <p>写完一道题不确定对不对？除了交评测等结果，还可以自己造数据<a href="#debug">对拍</a>：写一份暴力解跟它比，几百组数据跑下来，错在哪组一目了然。具体做法见第 09 节的「从对拍到 difftest」。</p>
   </section>
 
   <!-- ================= 指针 ================= -->
   <section id="pointers">
-    <h2><span class="h2-num">04</span>核心难点：指针怎么理解</h2>
+    <h2><span class="h2-num">05</span>核心难点：指针怎么理解</h2>
 
-    <h3>4.1 先建立内存模型</h3>
+    <h3>5.1 先建立内存模型</h3>
     <p>把内存想象成一排酒店房间：</p>
 
     <div class="code-block">
@@ -1945,7 +2048,7 @@
       <li><strong>指针就是"房间号"本身，它自己也有房间</strong></li>
     </ol>
 
-    <h3>4.2 两个运算符</h3>
+    <h3>5.2 两个运算符</h3>
     <ul>
       <li><code class="inline">&amp;x</code>：取地址（拿到房间号）</li>
       <li><code class="inline">*p</code>：解引用（顺着房间号走进去，操作里面的东西）</li>
@@ -2055,7 +2158,7 @@
       <div class="demo-hint">提示：解引用时，标有地址的小标签会沿箭头飞到目标格子，那就是"按地址寻址"的过程。</div>
     </div>
 
-    <h3>4.3 进终端看：指针在指令层面做了什么</h3>
+    <h3>5.3 进终端看：指针在指令层面做了什么</h3>
     <p>上面那个演示是"内存视角"。但 CPU 真正执行时，指针操作会被拆成两条指令，中间必须经过<strong>寄存器</strong>。寄存器是 CPU 内部的一小块超快存储，只有十几个格子；一条指令也不能直接把一个内存地址的内容搬到另一个内存地址——<strong>必须"内存 → 寄存器 → 内存"绕一圈</strong>。这就是指针操作看起来很绕的根本原因。</p>
 
     <p>下面这个迷你终端是教学模拟（不是真 shell）：输入 C 语句，它一步步执行，把 <strong>寄存器</strong>和<strong>内存格子</strong>的变化实时画在右边。先敲这几条试试：</p>
@@ -2096,7 +2199,7 @@ int *q = NULL;   // 空指针，试试 *q = 1; 会怎样</code></pre>
 
     <p>跑完会发现三件事，正好是理解指针的关键：</p>
     <ol>
-      <li><strong><code class="inline">&amp;a</code> 不读 a 的值，只算地址</strong>。对应的指令是 <code class="inline">leaq</code>（load effective address）——它只做地址计算，根本不访问那块内存。这类 C 与汇编的对应关系，<a href="#tools">12.4 节</a>末尾有完整对照表</li>
+      <li><strong><code class="inline">&amp;a</code> 不读 a 的值，只算地址</strong>。对应的指令是 <code class="inline">leaq</code>（load effective address）——它只做地址计算，根本不访问那块内存。这类 C 与汇编的对应关系，<a href="#tools">13.4 节</a>末尾有完整对照表</li>
       <li><strong>指针变量自己也有地址、也占内存</strong>。64 位系统里 <code class="inline">int *</code> 占 8 字节，<code class="inline">int</code> 占 4 字节，所以 a 在 0x1000，p 在 0x1008</li>
       <li><strong><code class="inline">*p = 100</code> 是两条指令</strong>：先 <code class="inline">movq p(%rip), %rax</code> 把地址读进寄存器，再 <code class="inline">movl $100, (%rax)</code> 往这个地址写。<strong>p 从头到尾没变，变的是 a</strong></li>
     </ol>
@@ -2106,7 +2209,7 @@ int *q = NULL;   // 空指针，试试 *q = 1; 会怎样</code></pre>
       你写 <code class="inline">*p</code> 是一个符号，CPU 执行的是"读地址 → 再访存"两次操作。中间那个寄存器（rax）就是"临时拎着的门牌号"。理解了这个模型，<code class="inline">int **pp</code>、指针数组、链表节点里的 <code class="inline">next</code> 都只是这个动作套娃。
     </div>
 
-    <h3>4.4 完整示例</h3>
+    <h3>5.4 完整示例</h3>
 
     <div class="code-block">
       <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
@@ -2128,7 +2231,7 @@ int main(void) {
 }</code></pre>
     </div>
 
-    <h3>4.5 指针和数组</h3>
+    <h3>5.5 指针和数组</h3>
 
     <div class="code-block">
       <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
@@ -2156,7 +2259,7 @@ void f(int arr[]) {
       <strong>数组一旦传进函数，就退化成指针，函数内部拿不到数组长度。</strong>所以数组传参时要额外传一个长度参数。
     </div>
 
-    <h3>4.6 为什么需要指针：函数参数</h3>
+    <h3>5.6 为什么需要指针：函数参数</h3>
     <p>C 语言是值传递：函数收到的只是拷贝，改不了外面的变量。</p>
 
     <div class="code-block">
@@ -2184,7 +2287,7 @@ int main(void) {
       <li>表达"可能为空、可能没有"的语义（<code class="inline">NULL</code>）</li>
     </ol>
 
-    <h3>4.7 指针的常见坑（考前必背）</h3>
+    <h3>5.7 指针的常见坑（考前必背）</h3>
     <ol>
       <li><strong>野指针</strong>：<code class="inline">int *p; *p = 10;</code> 指针没初始化，指向随机地址，直接崩溃</li>
       <li><strong>空指针解引用</strong>：<code class="inline">int *p = NULL; *p = 10;</code> 崩溃</li>
@@ -2195,10 +2298,10 @@ int main(void) {
       <li><strong><code class="inline">malloc</code> 与 <code class="inline">free</code> 不配对</strong>：进阶内容，先记住"要配对"</li>
     </ol>
 
-    <h3>4.8 练习方法</h3>
+    <h3>5.8 练习方法</h3>
     <p>每写一个指针程序，在纸上画三列：<strong>变量名、地址、内容</strong>，用箭头画出指向关系。画一个月，指针就通了。指针这关至少留两周专门啃，别跳。二级指针先不用深究，见到不慌就行。</p>
 
-    <h3>4.9 未定义行为（UB）：编译器没义务按你想的来</h3>
+    <h3>5.9 未定义行为（UB）：编译器没义务按你想的来</h3>
     <p>上面反复出现"未定义行为"这个词。它不是"会报错"——恰恰相反，<strong>它连错都不报</strong>。</p>
 
     <p>C 标准对一些写法不规定任何行为，只写一句 "undefined behavior"，意思是<strong>编译器可以做任何事</strong>：照你想的跑、算出个垃圾值、把整段代码删掉、或者让程序在完全无关的地方崩掉。它描述的不是"某种错误结果"，而是"<strong>这里没有规则</strong>"。</p>
@@ -2262,7 +2365,7 @@ i = i++ + 1;                 // 不同编译器给出 0 或 1，甚至不同优�
 
   <!-- ================= 自测 ================= -->
   <section id="quiz">
-    <h2><span class="h2-num">05</span>五道题自测</h2>
+    <h2><span class="h2-num">06</span>五道题自测</h2>
     <p>指针刚讲完，先花两分钟做下面五道题——全是刚讲过的东西。点击选项会立即给出对错和解析，答错了就往上翻回去看对应的那一条。</p>
 
     <div class="quiz-score">
@@ -2276,13 +2379,13 @@ i = i++ + 1;                 // 不同编译器给出 0 或 1，甚至不同优�
 
   <!-- ================= 代码可读性 ================= -->
   <section id="style">
-    <h2><span class="h2-num">06</span>代码可读性：写给三个月后的自己</h2>
+    <h2><span class="h2-num">07</span>代码可读性：写给三个月后的自己</h2>
 
     <p>先把一件事说清楚：<strong>可读性不是"好看"，是维护成本。</strong>你写的代码有两个读者——编译器只关心语法对不对，三个月后的你才决定它还改不改得动。课程作业几十行，怎么写都能跑；但到了几百行、几千行，<strong>难读的代码会让你连自己的 bug 都找不着。</strong></p>
 
     <p>这一段讲四件事：名字怎么起、缩进怎么缩、注释写什么、函数怎么切。全是立刻能用上的，不需要任何新知识。</p>
 
-    <h3>6.1 命名：让名字自己解释</h3>
+    <h3>7.1 命名：让名字自己解释</h3>
     <p>一条判断标准就够：<strong>把这个名字读出来，能不能知道它是什么、用来干什么。</strong>读完还得猜的，就该改。</p>
 
     <div class="table-wrap">
@@ -2404,7 +2507,7 @@ i = i++ + 1;                 // 不同编译器给出 0 或 1，甚至不同优�
     <p class="abbr-src">以上整理自这几份传阅很广的清单，想看得更全可以直接翻：<a href="https://blog.csdn.net/tomjobs/article/details/104242869" target="_blank" rel="noopener noreferrer">hzwer 版《算法竞赛变量命名指南》</a>、<a href="https://www.cnblogs.com/hayzxjr/articles/18352927" target="_blank" rel="noopener noreferrer">按类别整理的命名方式</a>、<a href="https://rbook2.roj.ac.cn/appendix/tricks/%E5%B8%B8%E7%94%A8%E5%8F%98%E9%87%8F%E5%90%8D.html" target="_blank" rel="noopener noreferrer">带示例的速查表</a>。</p>
 
 
-    <h3>6.2 缩进与格式：让结构一眼可见</h3>
+    <h3>7.2 缩进与格式：让结构一眼可见</h3>
     <p>缩进不是为了好看，是为了<strong>把"谁属于谁"画出来</strong>。读代码时眼睛先扫缩进轮廓，再往里看内容。</p>
 
     <ul>
@@ -2460,7 +2563,7 @@ int main(void) {
 
     <p>差别只在缩进、空格、命名和空行。但第二种你能一眼看出"外层在轮次、内层在比较、三个变量在交换"——<strong>这才是缩进真正省下的时间。</strong></p>
 
-    <h3>6.3 注释：解释"为什么"，不是"是什么"</h3>
+    <h3>7.3 注释：解释"为什么"，不是"是什么"</h3>
     <p>代码本身已经说了"在做什么"，注释再复述一遍就是噪音。<strong>值钱的注释全是"为什么"</strong>：为什么这里要 +1、为什么这个看着多余的分支不能删、这个魔数是从哪个公式来的。</p>
 
     <div class="code-block">
@@ -2482,7 +2585,7 @@ int samplesPerSecond = 44100;</code></pre>
       <li><strong>改了代码就改注释</strong>：过期注释比没有注释更危险，它会主动骗人</li>
     </ul>
 
-    <h3>6.4 函数：小、单一、早返回</h3>
+    <h3>7.4 函数：小、单一、早返回</h3>
     <p>一个函数只做一件事。判断标准很土但有效：<strong>能不能用一句话说完它干了什么，而且这句话里不出现"然后"。</strong>"找到最大值然后打印然后写进文件"——三个动作，就该拆成三个函数。</p>
 
     <div class="code-block">
@@ -2515,7 +2618,7 @@ int getScore(Student *s) {
       <li><strong>有副作用的函数，名字里体现出来</strong>：<code class="inline">list_pop</code> 会改链表，<code class="inline">list_peek</code> 不会——看名字就该知道</li>
     </ul>
 
-    <h3>6.5 写完先过一遍这六条</h3>
+    <h3>7.5 写完先过一遍这六条</h3>
     <ol>
       <li>变量名读出来像人话吗？<code class="inline">a1</code>、<code class="inline">a2</code>、<code class="inline">temp</code>、<code class="inline">flag</code> 还剩几个？</li>
       <li>缩进和大括号风格，整个文件是一致的吗？</li>
@@ -2533,7 +2636,7 @@ int getScore(Student *s) {
 
   <!-- ================= AI ================= -->
   <section id="ai">
-    <h2><span class="h2-num">07</span>AI 使用原则：外功可以借，内功借不来</h2>
+    <h2><span class="h2-num">08</span>AI 使用原则：外功可以借，内功借不来</h2>
 
     <p>两年前的经验是"别依赖 AI，面试要手撕"。这句话现在<strong>只对了一半</strong>：<strong>手撕确实少了</strong>。越来越多的面试直接给你一个仓库、一个需求，让你开着 Copilot / Cursor 现场做，或者在 take-home 里随便用——考的是你和 AI 协作的能力：怎么拆问题、怎么审它的输出、跑不通了怎么定位。<strong>不适应这个变化，等于自己把机会推掉。</strong></p>
 
@@ -2583,7 +2686,7 @@ int getScore(Student *s) {
   </section>
 
   <section id="debug">
-    <h2><span class="h2-num">08</span>Debug 能力：比会写代码更重要</h2>
+    <h2><span class="h2-num">09</span>Debug 能力：比会写代码更重要</h2>
 
     <p>写代码的时间有一半是在调试。调试能力是初学者和入门者的分水岭。</p>
 
@@ -2593,7 +2696,7 @@ int getScore(Student *s) {
     <h3>四个实用手段</h3>
     <ol>
       <li><strong>printf 大法</strong>：在最可疑的变量前后打印，缩小范围，初学者最实用</li>
-      <li><strong>断点单步</strong>：VS Code + gdb 或 IDE 自带调试器，学会看变量值和调用栈。gdb 命令速查见 <a href="#tools">第 12 节</a></li>
+      <li><strong>断点单步</strong>：VS Code + gdb 或 IDE 自带调试器，学会看变量值和调用栈。gdb 命令速查见 <a href="#tools">第 13 节</a></li>
       <li><strong>最小复现</strong>：把有问题的代码复制到新文件，删无关部分，一直删到 bug 消失，最后留下的那段就是问题</li>
       <li><strong>二分注释法</strong>：注释掉一半代码，看 bug 还在不在，不断二分定位</li>
     </ol>
@@ -2761,10 +2864,10 @@ int main(void) {
 
   <!-- ================= 学习节奏 ================= -->
   <section id="schedule">
-    <h2><span class="h2-num">09</span>学习节奏建议</h2>
+    <h2><span class="h2-num">10</span>学习节奏建议</h2>
 
     <ul>
-      <li><strong>第 0 周</strong>：按文末 <a href="#tools">第 12 节</a> 装好环境，把 shell / gcc / gdb / git 跑通，后面全程用命令行</li>
+      <li><strong>第 0 周</strong>：按文末 <a href="#tools">第 13 节</a> 装好环境，把 shell / gcc / gdb / git 跑通，后面全程用命令行</li>
       <li><strong>第 1~4 周</strong>：跟翁恺，每行代码自己敲一遍</li>
       <li><strong>第 5~8 周</strong>：数组、函数、指针，<strong>在指针上慢下来</strong></li>
       <li><strong>第 9~12 周</strong>：结构体、文件、动态内存</li>
@@ -2784,7 +2887,7 @@ int main(void) {
 
   <!-- ================= 清单 ================= -->
   <section id="checklist">
-    <h2><span class="h2-num">10</span>学习清单</h2>
+    <h2><span class="h2-num">11</span>学习清单</h2>
     <p>把这份清单当成一学期的路线图。勾选状态会保存在本机浏览器里，下次打开还在。</p>
 
     <div class="checklist" id="checklistBox">
@@ -2814,7 +2917,7 @@ int main(void) {
 
   <!-- ================= 课程推荐 ================= -->
   <section id="courses">
-    <h2><span class="h2-num">11</span>课程推荐：从工具到造一台计算机</h2>
+    <h2><span class="h2-num">12</span>课程推荐：从工具到造一台计算机</h2>
 
     <p>这一段放在最后，现场来不及讲。C 语言课只解决"能写出程序"，接下来真正该补的，是<strong>程序在机器上到底怎么跑起来</strong>：内存怎么排、指令怎么执行、链接器干了什么、进程怎么切换。这条路列了四门课（其中 ICS 的中文版和原版其实是同一门，算一门），难度差得很大，按顺序打最省事。</p>
 
@@ -2877,14 +2980,14 @@ int main(void) {
       </a>
     </div>
 
-    <p>不想等课程更新到那一讲的话，<a href="#tools">文末第 12 节</a>已经把这四样工具最常用的部分整理成了可以直接抄的速查。</p>
+    <p>不想等课程更新到那一讲的话，<a href="#tools">文末第 13 节</a>已经把这四样工具最常用的部分整理成了可以直接抄的速查。</p>
 
     <h3>② OpenCamp · Learning C Camp<span class="level lv2">入门到进阶</span></h3>
     <div class="course-note">中文训练营 · 有 CI 自动评测 · 从写第一个程序到实现编译器</div>
     <ul>
       <li><strong>是什么</strong>：OpenCamp 社区办的 C 语言训练营，编课思路学《新概念英语》——<strong>不孤立讲语法点，每课给一段可编译、可运行的经典代码</strong>，用真实程序带知识点</li>
       <li><strong>怎么排</strong>：Unit 0 从 <code class="inline">int main</code> 开始跑通第一个程序；Unit 1 覆盖数组、字符串、结构体、指针、函数指针；Unit 2 用实现 <code class="inline">ls</code>、<code class="inline">sort</code>、<code class="inline">sed</code> 这些 Unix 命令练系统编程；<strong>再往后 Unit 4 写 C 编译器、Unit 5 写 C 内核</strong></li>
-      <li><strong>为什么推荐</strong>：这是这份材料里唯一<strong>把"C 本身"练到底</strong>的一门。学校课上到结构体就结束了，它能一路把你带到"自己实现 printf""写词法分析器"这种程度——正好也是第 04 节那些指针、内存概念的实战版</li>
+      <li><strong>为什么推荐</strong>：这是这份材料里唯一<strong>把"C 本身"练到底</strong>的一门。学校课上到结构体就结束了，它能一路把你带到"自己实现 printf""写词法分析器"这种程度——正好也是第 05 节那些指针、内存概念的实战版</li>
       <li><strong>配套工具 Clings</strong>：Rustlings 风格的命令行练习，<strong>读报错 → 修代码 → 保存 → 自动验证</strong>，一条命令就能拉起整套练习，很适合练手感</li>
       <li><strong>注意</strong>：训练营按寒暑假开营，错过就跟着往期材料自学；<strong>Unit 0–2 大一就能跟，Unit 4/5 建议放到学完 ICS 之后</strong>，不然编译器那关会很痛苦</li>
     </ul>
@@ -2965,7 +3068,7 @@ int main(void) {
 
   <!-- ================= 工具链 ================= -->
   <section id="tools">
-    <h2><span class="h2-num">12</span>工具链：没人教，但默认你会</h2>
+    <h2><span class="h2-num">13</span>工具链：没人教，但默认你会</h2>
 
     <p>这一段是整场分享里最"功利"的部分，现场没时间展开，但你回去一定会用到。学校课上不会讲，可这四样东西——<strong>学长默认你会、助教默认你会、公司面试官默认你会、连报错信息都默认你看得懂</strong>。它们恰好就是 MIT 那门 Missing Semester 的内容，课名直译过来就是"缺失的一学期"：学校默认有人教过你，其实并没有。</p>
 
@@ -2983,7 +3086,7 @@ int main(void) {
       </table>
     </div>
 
-    <h3>12.1 shell：命令行才是主界面</h3>
+    <h3>13.1 shell：命令行才是主界面</h3>
     <p>编译器、调试器、git 全都是命令行程序，图形界面只是套在外面的一层壳。<strong>服务器上没有图形界面</strong>，以后跑实验、连远程机器，你面对的就是一个黑框。先接受这件事，剩下的就是记命令。</p>
 
     <div class="table-wrap">
@@ -3040,7 +3143,7 @@ find . -name "*.c" | xargs wc -l</code></pre>
       别在 <code class="inline">cmd</code> 里学这些，<code class="inline">PowerShell</code> 的语法也不一样（<code class="inline">ls</code> 只是个别名，重定向行为也不同）。两条正路：① 装 <strong>Git for Windows</strong>，用自带的 <strong>Git Bash</strong>，命令基本和 Linux 一致；② 直接上 <strong>WSL2</strong>（管理员终端里 <code class="inline">wsl --install</code>），得到一个真 Linux。编译器装 <strong>MinGW-w64</strong>，或者干脆全在 WSL 里做。VS Code 的内置终端就是 shell，可以直接在里面敲。
     </div>
 
-    <h3>12.2 vim：编辑器的保底技能</h3>
+    <h3>13.2 vim：编辑器的保底技能</h3>
     <p>先说清楚：<strong>不是让你放弃 VS Code 改用 vim。</strong>但有两种场景躲不掉：一是 ssh 连到服务器上，只有 vi/vim，改一行配置就得用它；二是面试和实习里，别人默认你会。而且 vim 的按键习惯在 VS Code、IDEA、JetBrains 里都有插件，学一次到处能用。</p>
 
     <p>vim 最反直觉的地方是<strong>它有模式</strong>。打开文件先落在普通模式，这时候按字母是"命令"，不是"打字"。新手 90% 的困惑——"一排 i 出来一堆字""怎么打不出字了""退不出去"——都是模式没搞对。</p>
@@ -3129,14 +3232,14 @@ vi /etc/nginx/nginx.conf
 
     <p>练习建议：别一上来装一堆插件。<strong>先跑一遍 <code class="inline">vimtutor</code></strong>——vim 自带的交互式教程，30 分钟就能把上面这些按一遍。平时在 VS Code 里装个 Vim 插件，先把方向键禁用掉逼自己用 <code class="inline">hjkl</code>，一周就顺手了。</p>
 
-    <h3>12.3 VS Code：日常写代码就住在这儿</h3>
+    <h3>13.3 VS Code：日常写代码就住在这儿</h3>
     <p>vim 是保底技能，但<strong>平时写作业没必要为难自己</strong>。日常主力直接上 <strong>VS Code</strong> 就行：免费、跨平台、装完就能用。更关键的是，前面讲的 shell、gcc、gdb、git 全都能在同一个窗口里完成——内置终端敲命令，扩展负责补全和断点，侧边栏直接看 diff。<strong>一个窗口干完所有事，不用来回切。</strong></p>
 
     <p>要装的东西只有三样，顺序别搞反：</p>
     <ol>
       <li><strong>VS Code 本体</strong>：官网下载，一路下一步</li>
       <li><strong>C/C++ 扩展</strong>（Microsoft 官方出品）：补全、跳转、调试都靠它</li>
-      <li><strong>编译器</strong>：Windows 装 MinGW-w64（或按 12.1 节直接上 WSL），macOS 执行 <code class="inline">xcode-select --install</code>，Linux 装 <code class="inline">build-essential</code></li>
+      <li><strong>编译器</strong>：Windows 装 MinGW-w64（或按 13.1 节直接上 WSL），macOS 执行 <code class="inline">xcode-select --install</code>，Linux 装 <code class="inline">build-essential</code></li>
     </ol>
 
     <div class="callout danger">
@@ -3152,7 +3255,7 @@ vi /etc/nginx/nginx.conf
           <tr><th>快捷键</th><th>干什么</th></tr>
         </thead>
         <tbody>
-          <tr><td><code class="inline">Ctrl + `</code></td><td>打开内置终端（<code class="inline">`</code> 是 Esc 下面那个键），就是 12.1 节那个 shell</td></tr>
+          <tr><td><code class="inline">Ctrl + `</code></td><td>打开内置终端（<code class="inline">`</code> 是 Esc 下面那个键），就是 13.1 节那个 shell</td></tr>
           <tr><td><code class="inline">Ctrl + Shift + P</code></td><td>命令面板，记不住快捷键就在这儿搜</td></tr>
           <tr><td><code class="inline">Ctrl + P</code></td><td>按文件名秒开文件，项目大了离不开</td></tr>
           <tr><td><code class="inline">Ctrl + Shift + F</code></td><td>全局搜索：这个变量到底在哪些文件里用过</td></tr>
@@ -3163,7 +3266,7 @@ vi /etc/nginx/nginx.conf
       </table>
     </div>
 
-    <p>第一次按 <code class="inline">F5</code>，它会自动生成 <code class="inline">.vscode/tasks.json</code> 和 <code class="inline">launch.json</code>，里面那条编译命令基本就是 12.4 节推荐的那行 <code class="inline">gcc -g ...</code>。想自己控制就改这两个文件，不用背。</p>
+    <p>第一次按 <code class="inline">F5</code>，它会自动生成 <code class="inline">.vscode/tasks.json</code> 和 <code class="inline">launch.json</code>，里面那条编译命令基本就是 13.4 节推荐的那行 <code class="inline">gcc -g ...</code>。想自己控制就改这两个文件，不用背。</p>
 
     <div class="callout warn">
       <div class="callout-title">三个必踩的坑</div>
@@ -3176,7 +3279,7 @@ vi /etc/nginx/nginx.conf
 
     <p>要是已经习惯了 vim 的手感，装个 <strong>Vim 扩展</strong>就能在 VS Code 里继续用 <code class="inline">hjkl</code>，两边技能不冲突。</p>
 
-    <h3>12.4 gcc：编译不是一步完成的</h3>
+    <h3>13.4 gcc：编译不是一步完成的</h3>
     <p>很多人以为 <code class="inline">gcc main.c</code> 是一个动作，其实它内部走了四步。知道这四步，报错信息你就能看懂一半——因为报错会明确告诉你"死在哪个阶段"。</p>
 
     <figure class="figure">
@@ -3477,7 +3580,7 @@ cat main.s                                # 直接看</code></pre>
     <p>这段汇编把前面几节讲的东西全兑现了：</p>
     <ul>
       <li><strong>局部变量真的是"栈上的槽位"</strong>：<code class="inline">s</code> 在 <code class="inline">[rbp-4]</code>、<code class="inline">i</code> 在 <code class="inline">[rbp-8]</code>，编译器排的位置，跟你写的顺序没关系</li>
-      <li><strong><code class="inline">a[i]</code> 被拆成"基址 + i×4"</strong>：<code class="inline">lea rdx,[rax*4]</code> 算出偏移，再 <code class="inline">add</code> 到指针上。这就是 4.5 节说的"指针算术按类型步进"的物理实现</li>
+      <li><strong><code class="inline">a[i]</code> 被拆成"基址 + i×4"</strong>：<code class="inline">lea rdx,[rax*4]</code> 算出偏移，再 <code class="inline">add</code> 到指针上。这就是 5.5 节说的"指针算术按类型步进"的物理实现</li>
       <li><strong>函数返回后栈帧就作废了</strong>：<code class="inline">pop rbp</code> 之后 <code class="inline">[rbp-4]</code> 那块内存不再属于你。所以"返回局部变量的地址"是 UB——不是玄学，是这块地已经被回收了</li>
       <li><strong>每次递归调用都会 push 一层新栈帧</strong>：递归太深撑爆栈 → 段错误，原因也在这里</li>
     </ul>
@@ -3497,7 +3600,7 @@ cat main.s                                # 直接看</code></pre>
     </ul>
 
 
-    <h3>12.5 多文件：为什么要分 .h 和 .c，路径又是怎么找的</h3>
+    <h3>13.5 多文件：为什么要分 .h 和 .c，路径又是怎么找的</h3>
     <p>单文件写到几百行以后会同时遇到三个问题：找不到函数、改一行要重编全部、两个人没法同时改。解决办法就是<strong>拆文件</strong>。但拆之前得先分清两个词：</p>
 
     <ul>
@@ -3653,7 +3756,7 @@ clean:
     </div>
 
     <p>之后只要敲 <code class="inline">make</code> 就能编译，<code class="inline">make clean</code> 清理。以后加文件，把新的 <code class="inline">.c</code> 和 <code class="inline">.h</code> 加到 <code class="inline">app:</code> 后面那行依赖里就行。</p>
-    <h3>12.6 gdb：程序崩了，别再靠 printf 猜</h3>
+    <h3>13.6 gdb：程序崩了，别再靠 printf 猜</h3>
     <p>printf 能定位问题，但它只能告诉你"我打到这一行了"。gdb 能告诉你<strong>崩溃时完整调用栈、每一层的变量值、内存里到底是什么</strong>。段错误、越界、野指针这几类问题，printf 基本查不出来。</p>
 
     <p>前提：编译时必须加 <code class="inline">-g</code>，否则 gdb 只能看到地址。</p>
@@ -3707,7 +3810,7 @@ $1 = (struct Node *) 0x0
       <li><code class="inline">watch x</code>：变量 <code class="inline">x</code> 一被修改就停下来，专治"不知道谁把它改坏了"</li>
     </ul>
 
-    <h3>12.7 git：不是可选项</h3>
+    <h3>13.7 git：不是可选项</h3>
     <p>git 最容易被误解成"给别人协作用的"。其实对单人项目它更值钱：<strong>写崩了能回滚，改错了能对比，交作业有记录。</strong>而且 GitHub 主页现在基本等于程序员的第二张简历。</p>
 
     <figure class="figure">
@@ -3802,7 +3905,7 @@ build/</code></pre>
       不需要先系统学完再动手。<strong>做法是：给自己定一周"只用命令行"</strong> —— 用 gcc 代替 IDE 的编译按钮，用 gdb 代替 printf，每次改完代码就 <code class="inline">git add</code> + <code class="inline">commit</code>。一周之后这些就变成肌肉记忆了。真卡住了，回 Missing Semester 的第 1、2、6 讲对着补。
     </div>
 
-    <h3>12.8 动手：在页面里开一个终端</h3>
+    <h3>13.8 动手：在页面里开一个终端</h3>
     <p>命令看一百遍不如敲三遍。下面这个终端是跑在页面里的<strong>迷你 shell</strong>，带一个假文件系统，行为尽量照着 bash 来：命令打错会报 <code class="inline">command not found</code>，路径不对会报 <code class="inline">No such file or directory</code>，<code class="inline">gcc</code> 编译成功时<strong>一句都不输出</strong>。</p>
 
     <div class="term" id="shell">
@@ -3822,7 +3925,7 @@ build/</code></pre>
       </div>
     </div>
 
-    <p>照着敲一遍，12.1 节那张命令表就活了：</p>
+    <p>照着敲一遍，13.1 节那张命令表就活了：</p>
 
     <div class="code-block">
       <div class="code-head"><span class="code-lang">建议的操作顺序</span><button class="copy-btn" type="button">复制</button></div>
@@ -4856,7 +4959,7 @@ badcommand       # 故意打错，看 bash 怎么骂你</code></pre>
     if (/^ls$/i.test(line)) { out('main.c', 'tl-note'); done(); return; }
     if (/^cat\s+main\.c$/i.test(line)) { catMain(); done(); return; }
     if (/^(gcc|gdb|\.\/)\S*/.test(line)) {
-      out('这是教学模拟，不跑真的编译器和调试器；gcc 的四阶段见 12.4 节，多文件与路径见 12.5 节，gdb 用法见 12.6 节。', 'tl-note');
+      out('这是教学模拟，不跑真的编译器和调试器；gcc 的四阶段见 13.4 节，多文件与路径见 13.5 节，gdb 用法见 13.6 节。', 'tl-note');
       done();
       return;
     }
