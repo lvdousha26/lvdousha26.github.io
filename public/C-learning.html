@@ -3373,20 +3373,164 @@ struct Node {
       <li><strong>运行时崩溃（段错误）</strong>：编译链接都过了，一跑就死。这已经不归 gcc 管了，交给下面这个工具</li>
     </ul>
 
-    <p>文件一多，每次都敲一长串命令很烦，写个最小 <code class="inline">Makefile</code>（注意命令前面是 <strong>Tab</strong>，不是空格）：</p>
+
+    <h3>12.5 多文件：为什么要分 .h 和 .c，路径又是怎么找的</h3>
+    <p>单文件写到几百行以后会同时遇到三个问题：找不到函数、改一行要重编全部、两个人没法同时改。解决办法就是<strong>拆文件</strong>。但拆之前得先分清两个词：</p>
+
+    <ul>
+      <li><strong>声明（declaration）</strong>：告诉编译器"有这么个东西，它长这样"。函数原型、<code class="inline">struct</code> 定义、<code class="inline">extern</code> 变量都算</li>
+      <li><strong>定义（definition）</strong>：告诉编译器"它到底是什么"，真正分配内存、给出函数体</li>
+    </ul>
+
+    <p>规则只有一条：<strong>定义只能有一份，声明可以有很多份。</strong>而编译器是<strong>单个 .c 单独编译</strong>的——它编 <code class="inline">main.c</code> 时根本看不见 <code class="inline">list.c</code>。所以 <code class="inline">main.c</code> 想调用 <code class="inline">list_push</code>，就必须先看到它的声明，这就轮到头文件了。</p>
+
+    <p>于是分工固定成这样：</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>文件</th><th>放什么</th><th>不放什么</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code class="inline">list.h</code></td><td>函数原型、<code class="inline">struct</code> / <code class="inline">typedef</code>、宏、<code class="inline">extern</code> 变量声明</td><td><strong>函数体、变量定义</strong>（否则每个包含它的 .c 都会各定义一份）</td></tr>
+          <tr><td><code class="inline">list.c</code></td><td>函数的定义、私有变量、<code class="inline">static</code> 辅助函数</td><td>不需要暴露给别人的东西</td></tr>
+          <tr><td><code class="inline">main.c</code></td><td><code class="inline">main</code> 函数，调用别人的接口</td><td>别人的实现细节</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>一个最小可跑的三件套：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">list.h（接口）</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>#ifndef LIST_H
+#define LIST_H
+
+struct Node {
+    int val;
+    struct Node *next;
+};
+
+void list_push(struct Node **head, int val);
+int  list_sum(const struct Node *head);
+
+extern int g_node_count;   // 声明：只是个"通知"，不分配内存
+
+#endif /* LIST_H */</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">list.c（实现）</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>#include "list.h"
+
+int g_node_count = 0;      // 定义：真正在这里分配
+
+void list_push(struct Node **head, int val) {
+    struct Node *n = malloc(sizeof *n);
+    if (!n) return;
+    n-&gt;val = val;
+    n-&gt;next = *head;
+    *head = n;
+    g_node_count++;
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">main.c（调用方）</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>#include "list.h"
+
+int main(void) {
+    struct Node *head = NULL;
+    list_push(&amp;head, 1);
+    return 0;
+}</code></pre>
+    </div>
+
+    <p>注意到 <code class="inline">list.c</code> 自己也 <code class="inline">#include "list.h"</code> 了吗？这不是多余——<strong>让编译器替你检查声明和定义是否一致</strong>。参数写错了，编译就会报错，比链接期或运行期才发现强得多。</p>
+
+    <h4>编译命令：一步和分步</h4>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code># 一步到位：把所有 .c 都列上
+gcc -std=c11 -Wall -Wextra -g main.c list.c -o app
+
+# 分步：更接近真实工程的做法
+gcc -c -std=c11 -Wall -Wextra -g main.c -o main.o
+gcc -c -std=c11 -Wall -Wextra -g list.c -o list.o
+gcc main.o list.o -o app</code></pre>
+    </div>
+
+    <p>分步的价值在于：<strong>改了 <code class="inline">list.c</code> 就只重编 <code class="inline">list.c</code></strong>，<code class="inline">main.o</code> 原样复用。文件多了以后，这个差别是几十秒和几秒的差别。<code class="inline">-c</code> 的意思是"只编译成 .o，先别链接"——链接是最后一步，把各个 .o 里的符号拼起来。</p>
+
+    <h4>文件路径到底怎么找</h4>
+    <p>这是多文件最容易懵的地方，因为<strong>编译器没有"项目根目录"这个概念</strong>，它只认两样：你在命令行里写的路径（相对你<strong>当前所在的目录</strong>），以及 <code class="inline">-I</code> 参数给的目录。IDE 之所以看起来"什么都能找到"，是它在背后替你补了这些参数。</p>
+
+    <p>一个正常的项目长这样：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">目录结构</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>project/
+|-- include/
+|   `-- list.h
+|-- src/
+|   |-- main.c
+|   `-- list.c
+`-- build/</code></pre>
+    </div>
+
+    <p>在 <code class="inline">project/</code> 目录下敲：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>gcc -std=c11 -Wall -Wextra -g -Iinclude src/main.c src/list.c -o build/app</code></pre>
+    </div>
+
+    <p>拆开看每个路径归谁管：</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>写法</th><th>谁用它</th><th>相对谁</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code class="inline">src/main.c</code></td><td>gcc 直接读这个源文件</td><td><strong>你敲命令时所在的目录</strong></td></tr>
+          <tr><td><code class="inline">-Iinclude</code></td><td>只影响 <code class="inline">#include</code> 的搜索</td><td>同样是当前目录</td></tr>
+          <tr><td><code class="inline">-o build/app</code></td><td>输出文件放哪</td><td>当前目录；<strong>build/ 必须已经存在</strong>，gcc 不会帮你建目录</td></tr>
+          <tr><td><code class="inline">#include "list.h"</code></td><td>预处理阶段找头文件</td><td><strong>先找包含它的那个文件所在目录</strong>，再找 <code class="inline">-I</code>，最后系统目录</td></tr>
+          <tr><td><code class="inline">&lt;stdio.h&gt;</code></td><td>同上</td><td>只找 <code class="inline">-I</code> 和系统目录，<strong>不找你自己的目录</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>几条由此推出的结论，都是踩过才记住的：</p>
+    <ul>
+      <li><strong>双引号和尖括号的区别就在第一站</strong>。<code class="inline">"list.h"</code> 先在自己身边找（<code class="inline">src/main.c</code> 里写它，先看 <code class="inline">src/list.h</code>），所以同一目录的头文件不用加任何参数；<code class="inline">&lt;stdio.h&gt;</code> 跳过这一步，直接去系统目录，这样才不会误撞上你自己写的同名文件</li>
+      <li><strong><code class="inline">-I</code> 只管头文件，不管 .c</strong>。写了 <code class="inline">-Iinclude</code> 之后，<code class="inline">#include "list.h"</code> 能找到 <code class="inline">include/list.h</code>，但 <code class="inline">list.c</code> 还是得自己写全路径 <code class="inline">src/list.c</code></li>
+      <li><strong>头文件里再 <code class="inline">#include</code>，是相对那个头文件的目录算的</strong>，不是相对 main.c。所以 <code class="inline">include/</code> 下的头文件互相引用，写文件名就行</li>
+      <li><strong>报错 <code class="inline">fatal error: list.h: No such file or directory</code></strong>，八成是 <code class="inline">-I</code> 写错或没写；报错 <code class="inline">No such file or directory</code> 指向 <code class="inline">main.c</code> 本身，那是你站错目录了，先 <code class="inline">pwd</code> 看看自己在哪</li>
+      <li><strong>Windows 上别用反斜杠</strong>。<code class="inline">gcc src\main.c</code> 在 shell 里 <code class="inline">\</code> 是转义符，会变成奇怪的字符；统一写正斜杠 <code class="inline">src/main.c</code>，MinGW 一样认</li>
+      <li><strong>别在命令里写死绝对路径</strong>。<code class="inline">E:/Desktop/project/src/main.c</code> 换台机器就废，而且复制到别人电脑上第一条命令就跑不起来</li>
+    </ul>
+
+    <p>多文件之后，编译命令会越来越长，所以最终还是要交给 Makefile——但这次你知道它在替你做什么了（<code class="inline">$&lt;</code> 是源文件，<code class="inline">$@</code> 是目标文件，<code class="inline">-I</code> 和路径原样抄进去）：</p>
+
+    <p>最小可用的 <code class="inline">Makefile</code>（注意命令前面是 <strong>Tab</strong>，不是空格）：</p>
 
     <div class="code-block">
       <div class="code-head"><span class="code-lang">Makefile</span><button class="copy-btn" type="button">复制</button></div>
-      <pre><code>main: main.c list.c list.h
-	gcc -std=c11 -Wall -Wextra -g main.c list.c -o main
+      <pre><code>CC     = gcc
+CFLAGS = -std=c11 -Wall -Wextra -g -Iinclude
+
+app: src/main.c src/list.c include/list.h
+	$(CC) $(CFLAGS) src/main.c src/list.c -o build/app
 
 clean:
-	rm -f main</code></pre>
+	rm -f build/app</code></pre>
     </div>
 
-    <p>之后只要敲 <code class="inline">make</code> 就能编译，<code class="inline">make clean</code> 清理。</p>
-
-    <h3>12.5 gdb：程序崩了，别再靠 printf 猜</h3>
+    <p>之后只要敲 <code class="inline">make</code> 就能编译，<code class="inline">make clean</code> 清理。以后加文件，把新的 <code class="inline">.c</code> 和 <code class="inline">.h</code> 加到 <code class="inline">app:</code> 后面那行依赖里就行。</p>
+    <h3>12.6 gdb：程序崩了，别再靠 printf 猜</h3>
     <p>printf 能定位问题，但它只能告诉你"我打到这一行了"。gdb 能告诉你<strong>崩溃时完整调用栈、每一层的变量值、内存里到底是什么</strong>。段错误、越界、野指针这几类问题，printf 基本查不出来。</p>
 
     <p>前提：编译时必须加 <code class="inline">-g</code>，否则 gdb 只能看到地址。</p>
@@ -3440,7 +3584,7 @@ $1 = (struct Node *) 0x0
       <li><code class="inline">watch x</code>：变量 <code class="inline">x</code> 一被修改就停下来，专治"不知道谁把它改坏了"</li>
     </ul>
 
-    <h3>12.6 git：不是可选项</h3>
+    <h3>12.7 git：不是可选项</h3>
     <p>git 最容易被误解成"给别人协作用的"。其实对单人项目它更值钱：<strong>写崩了能回滚，改错了能对比，交作业有记录。</strong>而且 GitHub 主页现在基本等于程序员的第二张简历。</p>
 
     <figure class="figure">
@@ -3535,7 +3679,7 @@ build/</code></pre>
       不需要先系统学完再动手。<strong>做法是：给自己定一周"只用命令行"</strong> —— 用 gcc 代替 IDE 的编译按钮，用 gdb 代替 printf，每次改完代码就 <code class="inline">git add</code> + <code class="inline">commit</code>。一周之后这些就变成肌肉记忆了。真卡住了，回 Missing Semester 的第 1、2、6 讲对着补。
     </div>
 
-    <h3>12.7 动手：在页面里开一个终端</h3>
+    <h3>12.8 动手：在页面里开一个终端</h3>
     <p>命令看一百遍不如敲三遍。下面这个终端是跑在页面里的<strong>迷你 shell</strong>，带一个假文件系统，行为尽量照着 bash 来：命令打错会报 <code class="inline">command not found</code>，路径不对会报 <code class="inline">No such file or directory</code>，<code class="inline">gcc</code> 编译成功时<strong>一句都不输出</strong>。</p>
 
     <div class="term" id="shell">
@@ -4589,7 +4733,7 @@ badcommand       # 故意打错，看 bash 怎么骂你</code></pre>
     if (/^ls$/i.test(line)) { out('main.c', 'tl-note'); done(); return; }
     if (/^cat\s+main\.c$/i.test(line)) { catMain(); done(); return; }
     if (/^(gcc|gdb|\.\/)\S*/.test(line)) {
-      out('这是教学模拟，不跑真的编译器和调试器；gcc 的四阶段见 12.4 节，gdb 用法见 12.5 节。', 'tl-note');
+      out('这是教学模拟，不跑真的编译器和调试器；gcc 的四阶段见 12.4 节，多文件与路径见 12.5 节，gdb 用法见 12.6 节。', 'tl-note');
       done();
       return;
     }
