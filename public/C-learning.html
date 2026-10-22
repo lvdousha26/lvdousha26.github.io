@@ -2731,6 +2731,20 @@ int samplesPerSecond = 44100;</code></pre>
       <li><strong>改了代码就改注释</strong>：过期注释比没有注释更危险，它会主动骗人</li>
     </ul>
 
+    <h4>反过来：注释掉代码，什么时候是对的</h4>
+    <p>上面那条针对的是<strong>长期留存</strong>。但作为一种<strong>临时手段</strong>，注释掉代码非常好用——它是手边最快的那个"开关"，比加 <code class="inline">if (0)</code>、比删了再撤销都利索。</p>
+
+    <ul>
+      <li><strong>二分定位</strong>：程序挂得莫名其妙，先把后半段整个注释掉，跑一遍。还挂 → 问题在前半段；不挂 → 在后半段。重复四五次，几百行就缩到十几行</li>
+      <li><strong>隔离依赖</strong>：怀疑是某个函数搞坏的，先把它的调用注释掉跑一次，因果关系立刻清楚，再决定往哪查</li>
+      <li><strong>验证"这行有没有用"</strong>：注释掉跑一遍，比盯着代码推理快得多。尤其是那些看起来多余的分支</li>
+    </ul>
+
+    <div class="callout warn">
+      <div class="callout-title">但必须有归宿</div>
+      注释掉的东西是<strong>临时工，不是存档</strong>。规矩两条：<strong>① 这次调试结束，就删掉或者恢复；② 真要留几天，写清原因和日期</strong>，比如 <code class="inline">// TODO(10-23): 临时屏蔽，等接口改完恢复</code>。<br><br>为什么不靠注释保存"以前怎么写"？<strong>git 已经替你存档了。</strong>想看历史版本，<code class="inline">git log -p</code> / <code class="inline">git diff</code> 比翻一堆注释掉的代码清楚得多。注释里的历史，三个月后只会变成"谁也不敢删"的垃圾。
+    </div>
+
     <h3>7.4 函数：小、单一、早返回</h3>
     <p>一个函数只做一件事。判断标准很土但有效：<strong>能不能用一句话说完它干了什么，而且这句话里不出现"然后"。</strong>"找到最大值然后打印然后写进文件"——三个动作，就该拆成三个函数。</p>
 
@@ -3435,6 +3449,17 @@ vi /etc/nginx/nginx.conf
         </tbody>
       </table>
     </div>
+
+    <p>表里只是开头，再补六个几乎天天用的：<code class="inline">Ctrl + /</code> 注释 / 取消注释（配合 07 节说的"临时开关"用法）、<code class="inline">Ctrl + D</code> 选中下一个相同的词（改名、批量修一起改）、<code class="inline">Alt + ↑ / ↓</code> 整行上下移动、<code class="inline">Shift + Alt + ↓</code> 复制当前行、<code class="inline">Ctrl + Shift + K</code> 删掉整行、<code class="inline">F2</code> 重命名（改一个变量名，整个文件跟着变）。</p>
+
+    <h4>快捷键怎么练</h4>
+    <ul>
+      <li><strong>别背表，按需学</strong>：某个动作你连着做了三次，就去查有没有快捷键——这时候查一次就记住了</li>
+      <li><strong>一次只加三个</strong>：一周记三个，一个月就是十几个。一口气背四十个的结果是一个都想不起来</li>
+      <li><strong>贴出来</strong>：写在便利贴上贴显示器边，或者开个 notes 文件，用到了瞄一眼</li>
+      <li><strong>先干掉最打断思路的四个</strong>：复制整行、删整行、跳到行首行尾、上下移动行。这四个动作每次都要摸鼠标，一次就断一次思路</li>
+      <li><strong>记不住就 <code class="inline">Ctrl + Shift + P</code></strong>：命令面板里搜动作名，右边直接显示对应快捷键，顺手就学会了</li>
+    </ul>
 
     <p>第一次按 <code class="inline">F5</code>，它会自动生成 <code class="inline">.vscode/tasks.json</code> 和 <code class="inline">launch.json</code>，里面那条编译命令基本就是 13.4 节推荐的那行 <code class="inline">gcc -g ...</code>。想自己控制就改这两个文件，不用背。</p>
 
