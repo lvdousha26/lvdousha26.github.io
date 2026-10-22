@@ -2297,32 +2297,112 @@ int main(void) {
 }</code></pre>
     </div>
 
-    <h3>5.5 指针和数组</h3>
+    <h3>5.5 指针和数组：其实只有一层语法糖</h3>
+
+    <p>先把结论摆出来：<strong>C 里没有"数组下标"这个独立的东西，<code class="inline">a[i]</code> 只是 <code class="inline">*(a + i)</code> 的另一种写法。</strong>C 标准里下标运算符的定义就是这一条：<code class="inline">E1[E2]</code> 等价于 <code class="inline">*((E1) + (E2))</code>。既然是纯替换，而加法又能交换，那 <code class="inline">2[arr]</code> 也是合法的——能编过，但没人这么写。</p>
 
     <div class="code-block">
       <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
       <pre><code>int arr[5] = {1, 2, 3, 4, 5};
-int *p = arr;        // 数组名退化为首元素地址
+int *p = arr;          // 数组名退化为首元素地址
 
-p[2]     == arr[2];  // true
-*(p + 2) == arr[2];  // true，指针加 2 实际跳过 2 个 int</code></pre>
+arr[2]        // 语法糖
+*(arr + 2)    // 把糖拆开：先算地址，再解引用
+*(2 + arr)    // 加法可交换
+2[arr]        // 所以这个也合法（别在代码里这么写）</code></pre>
     </div>
 
-    <p>两个高频坑：</p>
+    <p>四行代码取到的是同一个 <code class="inline">int</code>（值为 3）。同理，结构体的 <code class="inline">p-&gt;x</code> 也只是 <code class="inline">(*p).x</code> 的糖，<strong>所有"看起来像运算符"的东西，底下都是地址加偏移</strong>。</p>
+
+    <h4>那数组和指针是同一个东西吗？不是</h4>
+    <p>"数组就是指针"这句话只在<strong>传参</strong>这一个场景下成立。真正的区别有三条，都能自己敲出来验：</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>数组 <code class="inline">int a[5]</code></th><th>指针 <code class="inline">int *p</code></th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code class="inline">sizeof</code></td><td><strong>20</strong>（整个数组）</td><td><strong>8</strong>（一个地址，64 位）</td></tr>
+          <tr><td><code class="inline">&amp;</code> 之后是什么类型</td><td><code class="inline">int (*)[5]</code>，指向"5 个 int 的数组"</td><td><code class="inline">int **</code>，指向指针</td></tr>
+          <tr><td>能不能赋值</td><td><code class="inline">a = p;</code> 编译错误，数组名不是左值</td><td><code class="inline">p = a;</code> 可以</td></tr>
+          <tr><td>有没有自己的存储</td><td>没有，它只是那块内存的名字</td><td>有，指针本身也占 8 字节</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>第二行值得盯一下。加 1 之后两者的差距会立刻暴露：</p>
 
     <div class="code-block">
       <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
-      <pre><code>printf("%zu\n", sizeof(arr));  // 20（5 * 4），整个数组
-printf("%zu\n", sizeof(p));    // 8，指针自身大小（64 位系统）
+      <pre><code>int a[5];
 
-void f(int arr[]) {
-    printf("%zu\n", sizeof(arr));  // 8，数组传参后退化成指针
+a + 1       // 地址 + 4  字节：跳过 1 个 int
+&amp;a + 1      // 地址 + 20 字节：跳过了整个数组
+
+sizeof(a)    // 20
+sizeof(&amp;a)  // 8</code></pre>
+    </div>
+
+    <p>同一个 <code class="inline">a</code>，加 1 走的距离差了 5 倍——因为 <code class="inline">&amp;a</code> 的类型是"指向整个数组的指针"，而 <code class="inline">a</code> 已经退化成"指向首元素的指针"。</p>
+
+    <h4>为什么会"退化"</h4>
+    <p>数组名在绝大多数表达式里会自动变成"指向首元素的指针"，这个转换叫 <strong>decay（退化）</strong>。只有三个地方不退化：</p>
+    <ul>
+      <li><code class="inline">sizeof(a)</code>：量的是整个数组，不是指针</li>
+      <li><code class="inline">&amp;a</code>：得到"指向数组"的指针，类型 <code class="inline">int (*)[5]</code></li>
+      <li><code class="inline">char s[] = "abc";</code>：这里是把内容拷贝进数组，不是把指针赋过去</li>
+    </ul>
+    <p>除此之外，代码里写 <code class="inline">a</code> 的地方，编译器都当成 <code class="inline">&amp;a[0]</code>。</p>
+
+    <h4>传参时它俩真的等价</h4>
+    <p>函数参数里写 <code class="inline">int a[]</code>、<code class="inline">int a[10]</code>、<code class="inline">int *a</code>，编译器看到的是同一个东西。方括号里的数字会被<strong>直接忽略</strong>——它只是给人看的注释，不是长度检查。</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>void f(int arr[]) {              // 等价于 void f(int *arr)
+    printf("%zu\n", sizeof(arr)); // 8，不是 20
+}
+
+void g(int arr[10]) {            // 10 被忽略，和上面一模一样
+    arr[10] = 1;                 // 照样编过，没有任何人拦你
 }</code></pre>
     </div>
 
     <div class="callout warn">
       <div class="callout-title">面试常考点</div>
-      <strong>数组一旦传进函数，就退化成指针，函数内部拿不到数组长度。</strong>所以数组传参时要额外传一个长度参数。
+      <strong>数组一旦传进函数，就退化成指针，函数内部拿不到数组长度。</strong>所以必须额外传一个长度参数。<code class="inline">int arr[10]</code> 里的 10 骗不了编译器，也拦不住越界——这是 C 里最经典的"看着像检查，其实什么都没有"。
+    </div>
+
+    <h4>二维数组：a[i][j] 是两层糖</h4>
+    <p>新手常以为二维数组是"指针的指针"，不是。<code class="inline">int a[3][4]</code> 是一整块 48 字节的连续内存，<code class="inline">a</code> 的类型是 <strong><code class="inline">int (*)[4]</code></strong>（指向"4 个 int 的数组"的指针），<code class="inline">a[i][j]</code> 展开成 <code class="inline">*(*(a + i) + j)</code>。</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>int a[3][4];
+
+a[1][2]          // 就是 *(*(a + 1) + 2)
+
+sizeof(a)        // 48（3 * 4 * 4）
+sizeof(a[0])     // 16（一行 4 个 int）
+sizeof(a[0][0])  // 4（一个 int）
+
+int **q = a;     // 错：int ** 和 int (*)[4] 不是一回事</code></pre>
+    </div>
+
+    <p>指针数组和数组指针，只差一对括号，但意思完全不同：</p>
+
+    <div class="code-block">
+      <div class="code-head"><span class="code-lang">C</span><button class="copy-btn" type="button">复制</button></div>
+      <pre><code>int *p[4];     // 数组，4 个元素，每个都是 int*      → 指针数组
+int (*q)[4];   // 指针，1 个，指向"4 个 int 的数组"   → 数组指针</code></pre>
+    </div>
+
+    <p>读法是<strong>从名字开始，先看括号里，再看右边，最后看左边</strong>：<code class="inline">(*q)[4]</code> → q 是指针，指向 4 个 int 的数组。</p>
+
+    <div class="callout">
+      <div class="callout-title">一句话</div>
+      <strong>写代码用 <code class="inline">a[i]</code>，读代码想 <code class="inline">*(a + i)</code>。</strong>语法糖是为了让你写得清楚，不是让你忘记底下是什么——忘了底层，<code class="inline">sizeof</code> 和传参这两个坑就会一直踩。
     </div>
 
     <h3>5.6 为什么需要指针：函数参数</h3>
