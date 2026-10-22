@@ -1875,6 +1875,46 @@
       <div class="callout-title">别在选工具上卡三天</div>
       工具三个月就能换一套，代码和思路才是攒下来的。<strong>先用能跑起来的那个，遇到真正的瓶颈再换。</strong>很多人的问题是"一直在选编辑器"，而不是"编辑器不好用"。
     </div>
+
+    <h4>补一句：vim 的改版、发行版，还有几个平替</h4>
+    <p>上面表里 vim 只占一行，其实它的生态比"一个编辑器"大得多。真要往这条路上走，这几个词迟早会撞见：</p>
+
+    <ul>
+      <li><strong>Neovim</strong>：vim 的分支，现在社区的主力。异步执行（跑补全、跑格式化不卡界面）、配置用 Lua、内置 LSP。你在网上看到的"vim 配置"，八成说的是它</li>
+      <li><strong>gVim</strong>：vim 的图形界面版，鼠标能点，其余操作一样。Windows 上想试又不想全键盘，可以先从它开始</li>
+      <li><strong>发行版（配好的一整套）</strong>：LazyVim / LunarVim / NvChad / AstroNvim。主题、补全、文件树、LSP 全替你配齐，装完直接写代码——<strong>比自己从零写配置省几个月</strong></li>
+      <li><strong>插件生态</strong>：vim 难配就难在什么都要自己挑。常见的几类：文件跳转（Telescope / fzf-lua）、文件树（nvim-tree / oil）、语法高亮（Treesitter）、补全与诊断（LSP + cmp / blink）、状态栏（lualine）、Git 标记（gitsigns），插件管理器用 <code class="inline">lazy.nvim</code></li>
+      <li><strong>成本要提前知道</strong>：从零配一套顺手的 Neovim，头一个月基本在改配置而不是写代码。这不算坏事，但要挑空的时候做，别赶作业那一周</li>
+    </ul>
+
+    <p>而且不是所有人都需要模态编辑。只想"在终端里改个文件"的话，下面这几个更省事：</p>
+
+    <div class="table-wrap dense">
+      <table>
+        <thead>
+          <tr><th>工具</th><th>特点</th><th>什么时候用</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="inline">nano</code></td>
+            <td>几乎所有 Linux 都预装，<strong>屏幕底部直接列着快捷键</strong>：<code class="inline">^O</code> 保存、<code class="inline">^X</code> 退出（<code class="inline">^</code> 就是 Ctrl）。零学习成本</td>
+            <td>连服务器改配置、临时救急。<strong>不会 vim 也能立刻上手</strong></td>
+          </tr>
+          <tr>
+            <td><code class="inline">micro</code></td>
+            <td>nano 的现代版：<code class="inline">Ctrl+S</code> 保存、<code class="inline">Ctrl+Q</code> 退出，鼠标能点，有语法高亮，按键跟常见编辑器一致</td>
+            <td>嫌 nano 太原始，又不想学模态编辑</td>
+          </tr>
+          <tr>
+            <td><code class="inline">helix</code></td>
+            <td>模态编辑，但<strong>「先选中再操作」</strong>，比 vim 直观；自带 LSP、语法高亮和主题，配置文件很短</td>
+            <td>想要 vim 的效率，但不想折腾配置</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>顺序建议：<strong>先会用 <code class="inline">nano</code> 应急 → 觉得不够就用 <code class="inline">micro</code> 或 <code class="inline">helix</code> → 真打算长期投入，再上 Neovim 的发行版。</strong>别一上来就从零配 vim，那是最容易被劝退的路径。</p>
   </section>
 
   <!-- ================= 教材篇 ================= -->
@@ -3230,7 +3270,7 @@ vi /etc/nginx/nginx.conf
     # :wq 存盘退出，权限不够就 :q! 放弃</code></pre>
     </div>
 
-    <p>练习建议：别一上来装一堆插件。<strong>先跑一遍 <code class="inline">vimtutor</code></strong>——vim 自带的交互式教程，30 分钟就能把上面这些按一遍。平时在 VS Code 里装个 Vim 插件，先把方向键禁用掉逼自己用 <code class="inline">hjkl</code>，一周就顺手了。</p>
+    <p>练习建议：别一上来装一堆插件。<strong>先跑一遍 <code class="inline">vimtutor</code></strong>——vim 自带的交互式教程，30 分钟就能把上面这些按一遍。平时在 VS Code 里装个 Vim 插件，先把方向键禁用掉逼自己用 <code class="inline">hjkl</code>，一周就顺手了。想了解 Neovim、各种发行版和 <code class="inline">nano</code> 这类平替，见 <a href="#env">02 节末尾</a>。</p>
 
     <h3>13.3 VS Code：日常写代码就住在这儿</h3>
     <p>vim 是保底技能，但<strong>平时写作业没必要为难自己</strong>。日常主力直接上 <strong>VS Code</strong> 就行：免费、跨平台、装完就能用。更关键的是，前面讲的 shell、gcc、gdb、git 全都能在同一个窗口里完成——内置终端敲命令，扩展负责补全和断点，侧边栏直接看 diff。<strong>一个窗口干完所有事，不用来回切。</strong></p>
