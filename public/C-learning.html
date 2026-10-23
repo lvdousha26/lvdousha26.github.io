@@ -1814,10 +1814,16 @@
             <td><strong>上课写作业的首选</strong>，Dev-C++ 的正经替代</td>
           </tr>
           <tr>
+            <td><strong>OICPP IDE</strong><br><span class="td-note">信息学竞赛专用</span></td>
+            <td>为 OI 从头做的：<strong>云编译</strong>（一键验 Linux 下能不能过编）、<strong>对拍器</strong>、样例测试带差异高亮、一键抓取洛谷 / Codeforces / AtCoder 的样例，还能 PDF 分屏看题面</td>
+            <td>只管算法题；云功能依赖网络；项目比较新，遇到怪问题主要靠作者和文档</td>
+            <td><strong>认真打 OI / 天梯赛 / 蓝桥的</strong>，天天刷题的</td>
+          </tr>
+          <tr>
             <td><strong>CP Editor</strong></td>
-            <td>专为算法题做的：一键编译运行、把样例贴进去逐个自动比对、还能<strong>直接提交到洛谷 / Codeforces</strong></td>
-            <td>只管单文件，写不了项目</td>
-            <td>刷题、打比赛</td>
+            <td>轻，一键编译运行、把样例贴进去自动比对、能直接提交到洛谷 / Codeforces</td>
+            <td>只管单文件；<strong>代码高亮和补全比较弱</strong>，界面也偏简陋——冲着"好看好写"去的话会失望</td>
+            <td>偶尔刷题、只想要个极简外壳</td>
           </tr>
           <tr>
             <td><strong>Visual Studio</strong><br><span class="td-note">2022 社区版，免费</span></td>
@@ -1832,6 +1838,12 @@
             <td>想长期用、写项目、愿意配一次</td>
           </tr>
           <tr>
+            <td><strong>Zed</strong><br><span class="td-note">Rust + GPU 渲染</span></td>
+            <td>和 VS Code 同一档的图形编辑器，但底层是 Rust + GPU 直绘：<strong>启动快、打字延迟低、内存占用小</strong>。原生 Git、内置 AI 和协作、支持 Vim 模式；<strong>学生用学校邮箱可以免费用 Pro</strong></td>
+            <td>扩展生态小得多（八百多个 vs VS Code 五万），C/C++ 的调试也得自己接；遇到冷门需求可能找不到插件</td>
+            <td>嫌 VS Code 卡、又不想放弃图形界面</td>
+          </tr>
+          <tr>
             <td><strong>vim / Neovim</strong></td>
             <td>终端里就能改，服务器上唯一的选项；改配置本身也是乐趣</td>
             <td>学习曲线陡，头两周效率明显下降</td>
@@ -1844,9 +1856,11 @@
     <p>翻译成一句话的建议：</p>
     <ul>
       <li><strong>只想赶紧把作业跑起来</strong>：小熊猫 C++。装完就能用，中文界面不折腾</li>
-      <li><strong>主要刷算法题</strong>：CP Editor。样例自动比对和直接提交这两点，用过就回不去</li>
+      <li><strong>认真刷算法题 / 打比赛</strong>：OICPP。云编译、对拍、样例抓取这套流程，比手贴样例省太多</li>
+      <li><strong>只是偶尔刷两题</strong>：CP Editor 够用，但别指望它的高亮和补全——它就是个外壳</li>
       <li><strong>Windows 上写课程设计</strong>：Visual Studio。慢是慢，但调试真省事</li>
       <li><strong>想长期用一套、以后写项目</strong>：VS Code。花半小时配好，之后最舒服（配置见 <a href="#tools">13.3 节</a>）</li>
+      <li><strong>嫌 VS Code 卡</strong>：Zed。同样的图形界面，快一档，代价是插件少</li>
       <li><strong>想折腾、以后要上服务器</strong>：vim。值得学，但别在赶作业的那一周开始学</li>
     </ul>
 
@@ -1855,6 +1869,10 @@
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         小熊猫 C++ 下载
       </a>
+      <a class="link-btn" href="https://oicpp.mywwzh.top" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        OICPP
+      </a>
       <a class="link-btn" href="https://cpeditor.org/" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         CP Editor
@@ -1862,6 +1880,10 @@
       <a class="link-btn" href="https://code.visualstudio.com/" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         VS Code
+      </a>
+      <a class="link-btn" href="https://zed.dev/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        Zed
       </a>
       <a class="link-btn" href="https://visualstudio.microsoft.com/zh-hans/vs/community/" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
