@@ -441,6 +441,28 @@
   .env-table th:nth-child(2), .env-table td:nth-child(2) { width: 37%; }
   .env-table th:nth-child(3), .env-table td:nth-child(3) { width: 26%; }
   .env-table th:nth-child(4), .env-table td:nth-child(4) { width: 20%; }
+  .env-table tr.env-group td {
+    background: #f6f6f7;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 7px 14px;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .env-table tr.env-group td::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: var(--text);
+    vertical-align: 1px;
+    opacity: 0.55;
+  }
+  [data-theme="dark"] .env-table tr.env-group td { background: #16161a; }
   @media (max-width: 720px) {
     .env-table table { min-width: 620px; }
   }
@@ -1945,7 +1967,7 @@
       <strong>Dev-C++（原版 5.11）</strong>：2005 年就停止维护了，现在流传的版本调试器常和 gdb 对不上，中文路径、UTF-8 编码、报错定位都容易出毛病。<strong>看着像能用，真出问题没人修。</strong>
     </div>
 
-    <p>那用什么？按你现在要干的事选，不按"哪个更专业"选：</p>
+    <p>那用什么？按你现在要干的事选，不按"哪个更专业"选。下面这两组，界限很清楚：<strong>前四个是新手友好型</strong>——装完就能写，不用配环境，够你应付整个学期；<strong>后四个是长期型</strong>——要花半天到几天配置，但能用两三年不换。</p>
 
     <div class="table-wrap env-table">
       <table>
@@ -1953,6 +1975,7 @@
           <tr><th>工具</th><th>好在哪</th><th>代价</th><th>适合</th></tr>
         </thead>
         <tbody>
+          <tr class="env-group"><td colspan="4">新手友好 · 装完就能写作业</td></tr>
           <tr>
             <td><strong>小熊猫 C++</strong><br><span class="td-note">Red Panda</span></td>
             <td>Dev-C++ 的现代重写版，<strong>自带编译器和调试器</strong>，中文界面，装完双击就能编译运行，C99 之后的语法全支持</td>
@@ -1977,9 +2000,11 @@
             <td><strong>太重</strong>：装完几十 GB，启动慢，写一个 .c 也要先"新建项目"</td>
             <td>课程设计、大作业（Windows）</td>
           </tr>
+
+          <tr class="env-group"><td colspan="4">可长期用 · 陪你到大三大四</td></tr>
           <tr>
             <td><strong>VS Code</strong></td>
-            <td>轻量、跨平台、插件多，写代码、看 diff、跑终端在一个窗口里</td>
+            <td>轻量、跨平台、插件多，写代码、看 diff、跑终端在一个窗口里；生态最大，遇到什么需求基本都有现成扩展</td>
             <td><strong>要自己配</strong>：装扩展、装编译器、配 <code class="inline">tasks.json</code> 和 <code class="inline">launch.json</code></td>
             <td>想长期用、写项目、愿意配一次</td>
           </tr>
@@ -1990,10 +2015,16 @@
             <td>嫌 VS Code 卡、又不想放弃图形界面</td>
           </tr>
           <tr>
-            <td><strong>vim / Neovim</strong></td>
-            <td>终端里就能改，服务器上唯一的选项；改配置本身也是乐趣</td>
-            <td>学习曲线陡，头两周效率明显下降</td>
-            <td>对技术本身感兴趣、愿意折腾</td>
+            <td><strong>vim</strong><br><span class="td-note">终端里的老家伙</span></td>
+            <td>任何一台 Linux 上基本都有，改一行配置、连服务器救急，它永远在。资源占用几乎为零</td>
+            <td>学习成本全在按键上；插件和老配置体系比较旧，新手容易配出一堆冲突</td>
+            <td>需要"随处在、随手动"的人；只想应急的话学会 <code class="inline">i</code> / <code class="inline">Esc</code> / <code class="inline">:wq</code> 就够</td>
+          </tr>
+          <tr>
+            <td><strong>Neovim</strong><br><span class="td-note">vim 的现代分支</span></td>
+            <td>异步执行、Lua 配置、内置 LSP，插件生态活跃；配好之后是效率最高的一档，也能装发行版（LazyVim 等）直接用</td>
+            <td><strong>配置是无底洞</strong>：头一个月基本在改配置，不是写代码</td>
+            <td>对工具本身感兴趣、愿意长期投入</td>
           </tr>
         </tbody>
       </table>
@@ -2008,6 +2039,7 @@
       <li><strong>想长期用一套、以后写项目</strong>：VS Code。花半小时配好，之后最舒服（配置见 <a href="#tools">13.3 节</a>）</li>
       <li><strong>嫌 VS Code 卡</strong>：Zed。同样的图形界面，快一档，代价是插件少</li>
       <li><strong>想折腾、以后要上服务器</strong>：vim。值得学，但别在赶作业的那一周开始学</li>
+      <li><strong>想一步到位、两三年不换</strong>：后四个里挑一个用熟就行，别三个都装——装三个不如用精一个</li>
     </ul>
 
     <div class="link-row">
