@@ -742,6 +742,9 @@
     padding: 8px 52px 104px;
   }
   /* 自我介绍页：背景图铺满整页，内容压在下方 */
+  /* #about 自身是 display:flex，会盖掉 body.paged section 的 display:none，
+     所以这里必须显式把「非当前页」隐藏掉，否则翻页后背景图仍留着 */
+  body.paged #about:not(.active) { display: none; }
   body.paged #about.active {
     display: flex;
     flex-direction: column;
