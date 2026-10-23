@@ -2004,7 +2004,7 @@
           <tr class="env-group"><td colspan="4">可长期用 · 陪你到大三大四</td></tr>
           <tr>
             <td><strong>VS Code</strong></td>
-            <td>轻量、跨平台、插件多，写代码、看 diff、跑终端在一个窗口里；生态最大，遇到什么需求基本都有现成扩展</td>
+            <td>轻量、跨平台、插件多，写代码、看 diff、跑终端在一个窗口里；<strong>生态最大</strong>——很多你听说过的 AI 编辑器（Cursor、Trae 等）都是拿它二开出来的，所以在这儿学的一套，到那边基本原样能用</td>
             <td><strong>要自己配</strong>：装扩展、装编译器、配 <code class="inline">tasks.json</code> 和 <code class="inline">launch.json</code></td>
             <td>想长期用、写项目、愿意配一次</td>
           </tr>
@@ -3628,6 +3628,18 @@ vi /etc/nginx/nginx.conf
     </ul>
 
     <p>第一次按 <code class="inline">F5</code>，它会自动生成 <code class="inline">.vscode/tasks.json</code> 和 <code class="inline">launch.json</code>，里面那条编译命令基本就是 13.4 节推荐的那行 <code class="inline">gcc -g ...</code>。想自己控制就改这两个文件，不用背。</p>
+
+    <h4>它的生态：半个行业都建在它上面</h4>
+    <p>VS Code 有一个开源内核（<strong>Code - OSS</strong>，MIT 协议），所以很多你听说过的编辑器，其实是它二开出来的：</p>
+
+    <ul>
+      <li><strong>Cursor / Windsurf / Trae / Kiro</strong>：常见的 AI 编辑器，界面、快捷键、插件体系几乎和 VS Code 一样，只是把 AI 塞进了核心</li>
+      <li><strong>VSCodium</strong>：社区把微软的遥测和品牌去掉、重新编译的干净版</li>
+      <li><strong>Eclipse Theia</strong>：这个不是 fork，而是照同一套插件协议重写的框架——GitLab 的 Web IDE、不少云平台的在线编辑器都基于它</li>
+      <li><strong>vscode.dev / GitHub Codespaces</strong>：浏览器里那个，还是同一套东西</li>
+    </ul>
+
+    <p>对你有两个实际影响：<strong>① 在这里练的快捷键、装的扩展、写过的 <code class="inline">tasks.json</code>，换到 Cursor 那类工具里基本原样能用，不是白学；② 反过来说，那些 AI 编辑器"好用"的一半功劳属于 VS Code，别全记在 AI 头上。</strong></p>
 
     <div class="callout warn">
       <div class="callout-title">三个必踩的坑</div>
