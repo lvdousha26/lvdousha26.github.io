@@ -1587,20 +1587,20 @@
     <a class="nav-link" href="#about"><span class="nav-num">—</span>自我介绍</a>
     <div class="nav-group-label">开始</div>
     <a class="nav-link" href="#intro"><span class="nav-num">00</span>开场</a>
-    <div class="nav-group-label">资源与环境</div>
+    <div class="nav-group-label">怎么学</div>
     <a class="nav-link" href="#resources"><span class="nav-num">01</span>视频课怎么选</a>
-    <a class="nav-link" href="#env"><span class="nav-num">02</span>开发环境</a>
-    <a class="nav-link" href="#books"><span class="nav-num">03</span>教材怎么选</a>
+    <a class="nav-link" href="#books"><span class="nav-num">02</span>教材怎么选</a>
+    <a class="nav-link" href="#env"><span class="nav-num">03</span>开发环境</a>
     <a class="nav-link" href="#platforms"><span class="nav-num">04</span>刷题平台</a>
     <div class="nav-group-label">核心难点</div>
     <a class="nav-link" href="#pointers"><span class="nav-num">05</span>指针</a>
     <a class="nav-link" href="#quiz"><span class="nav-num">06</span>五道题自测</a>
-    <div class="nav-group-label">方法与习惯</div>
+    <div class="nav-group-label">写好与查错</div>
     <a class="nav-link" href="#style"><span class="nav-num">07</span>代码可读性</a>
-    <a class="nav-link" href="#ai"><span class="nav-num">08</span>AI 使用原则</a>
-    <a class="nav-link" href="#debug"><span class="nav-num">09</span>Debug 能力</a>
+    <a class="nav-link" href="#debug"><span class="nav-num">08</span>Debug 能力</a>
+    <a class="nav-link" href="#ai"><span class="nav-num">09</span>AI 使用原则</a>
+    <div class="nav-group-label">收尾</div>
     <a class="nav-link" href="#schedule"><span class="nav-num">10</span>学习节奏</a>
-    <div class="nav-group-label">动手</div>
     <a class="nav-link" href="#checklist"><span class="nav-num">11</span>学习清单</a>
     <div class="nav-group-label">会后延伸</div>
     <a class="nav-link" href="#courses"><span class="nav-num">12</span>课程推荐</a>
@@ -1785,9 +1785,64 @@
     </div>
   </section>
 
+  <!-- ================= 教材篇 ================= -->
+  <section id="books">
+    <h2><span class="h2-num">02</span>教材篇：别买谭浩强，别买地摊书</h2>
+
+    <h3>关于谭浩强</h3>
+    <ul>
+      <li>初版是 1991 年，代码风格陈旧，大量使用 <code class="inline">gets()</code> 这类已被 C11 标准移除的危险函数</li>
+      <li>示例重应试、轻工程，很多写法在现代 C 里是不推荐的</li>
+      <li>部分概念表述不准确（比如早期版本的 <code class="inline">void main()</code>）</li>
+    </ul>
+   
+
+    <h3>关于地摊书</h3>
+    <p>凡是标题带"21 天精通""从入门到放弃""一本就够"的，一律别买。这类书多数是拼凑出来的，代码错误多，还会把坏习惯教给你。</p>
+
+    <h3>入门先读这个：阮一峰的《C 语言教程》</h3>
+    <p>免费、在线、不废话，一个周末能读完：<a href="https://wangdoc.com/clang/intro" target="_blank" rel="noopener noreferrer">wangdoc.com/clang/intro</a>。</p>
+
+    <ul>
+      <li><strong>快</strong>：没有长篇铺垫，概念讲完就给例子，适合先把"C 大概长什么样"建立起来</li>
+      <li><strong>现代</strong>：全篇用 GCC 命令行举例，<code class="inline">-std=c99</code>、<code class="inline">a.out</code>、<code class="inline">-o</code> 这些一开始就讲清楚，跟你上机用的是同一套东西</li>
+      <li><strong>不绕</strong>：不堆术语，读到不懂的地方可以直接往下走，不会卡死</li>
+    </ul>
+
+    <p>但它偏"语法与要点"，讲到够用就停：指针只到能看懂的程度，内存布局、链接这些底层不展开。<strong>所以它是入门的第一本，不是唯一一本。</strong></p>
+
+    <h3>书单：入门一本，进阶一本，够了</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>资源</th><th>定位</th><th>什么时候看</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>阮一峰《C 语言教程》</td>
+            <td>免费在线，最快建立整体印象</td>
+            <td><strong>入门第一周</strong>，边看边敲</td>
+          </tr>
+          <tr>
+            <td>《C Primer Plus》第 6 版</td>
+            <td><strong>进阶</strong>：厚、全、讲得细，适合系统补细节，或当工具书查</td>
+            <td>入门之后（课程讲到指针前后）再啃，<strong>不必从头读到尾</strong></td>
+          </tr>
+          <tr>
+            <td>《深入理解计算机系统》（CSAPP）</td>
+            <td>底层视角，进阶</td>
+            <td>大二再看，偏难的"计算机导论"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>路线可以这么排：<strong>阮一峰过一遍 → 上课跟老师、每段代码自己敲 → 哪里卡住就翻《C Primer Plus》对应那章 → CSAPP 留到大二。</strong>《C Primer Plus》七八百页，从头读到尾的人很少，把它当"哪儿不懂查哪儿"更现实。</p>
+  </section>
+
   <!-- ================= 开发环境 ================= -->
   <section id="env">
-    <h2><span class="h2-num">02</span>开发环境：别在选工具上卡住</h2>
+    <h2><span class="h2-num">03</span>开发环境：别在选工具上卡住</h2>
 
     <p>写 C 之前得先有个地方能编译、能运行、能调试。这件事本身不难，但<strong>选错了会先卡掉你半天</strong>——而且是被工具坑，不是被 C 坑。</p>
 
@@ -1939,61 +1994,6 @@
     <p>顺序建议：<strong>先会用 <code class="inline">nano</code> 应急 → 觉得不够就用 <code class="inline">micro</code> 或 <code class="inline">helix</code> → 真打算长期投入，再上 Neovim 的发行版。</strong>别一上来就从零配 vim，那是最容易被劝退的路径。</p>
   </section>
 
-  <!-- ================= 教材篇 ================= -->
-  <section id="books">
-    <h2><span class="h2-num">03</span>教材篇：别买谭浩强，别买地摊书</h2>
-
-    <h3>关于谭浩强</h3>
-    <ul>
-      <li>初版是 1991 年，代码风格陈旧，大量使用 <code class="inline">gets()</code> 这类已被 C11 标准移除的危险函数</li>
-      <li>示例重应试、轻工程，很多写法在现代 C 里是不推荐的</li>
-      <li>部分概念表述不准确（比如早期版本的 <code class="inline">void main()</code>）</li>
-    </ul>
-   
-
-    <h3>关于地摊书</h3>
-    <p>凡是标题带"21 天精通""从入门到放弃""一本就够"的，一律别买。这类书多数是拼凑出来的，代码错误多，还会把坏习惯教给你。</p>
-
-    <h3>入门先读这个：阮一峰的《C 语言教程》</h3>
-    <p>免费、在线、不废话，一个周末能读完：<a href="https://wangdoc.com/clang/intro" target="_blank" rel="noopener noreferrer">wangdoc.com/clang/intro</a>。</p>
-
-    <ul>
-      <li><strong>快</strong>：没有长篇铺垫，概念讲完就给例子，适合先把"C 大概长什么样"建立起来</li>
-      <li><strong>现代</strong>：全篇用 GCC 命令行举例，<code class="inline">-std=c99</code>、<code class="inline">a.out</code>、<code class="inline">-o</code> 这些一开始就讲清楚，跟你上机用的是同一套东西</li>
-      <li><strong>不绕</strong>：不堆术语，读到不懂的地方可以直接往下走，不会卡死</li>
-    </ul>
-
-    <p>但它偏"语法与要点"，讲到够用就停：指针只到能看懂的程度，内存布局、链接这些底层不展开。<strong>所以它是入门的第一本，不是唯一一本。</strong></p>
-
-    <h3>书单：入门一本，进阶一本，够了</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>资源</th><th>定位</th><th>什么时候看</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>阮一峰《C 语言教程》</td>
-            <td>免费在线，最快建立整体印象</td>
-            <td><strong>入门第一周</strong>，边看边敲</td>
-          </tr>
-          <tr>
-            <td>《C Primer Plus》第 6 版</td>
-            <td><strong>进阶</strong>：厚、全、讲得细，适合系统补细节，或当工具书查</td>
-            <td>入门之后（课程讲到指针前后）再啃，<strong>不必从头读到尾</strong></td>
-          </tr>
-          <tr>
-            <td>《深入理解计算机系统》（CSAPP）</td>
-            <td>底层视角，进阶</td>
-            <td>大二再看，偏难的"计算机导论"</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p>路线可以这么排：<strong>阮一峰过一遍 → 上课跟老师、每段代码自己敲 → 哪里卡住就翻《C Primer Plus》对应那章 → CSAPP 留到大二。</strong>《C Primer Plus》七八百页，从头读到尾的人很少，把它当"哪儿不懂查哪儿"更现实。</p>
-  </section>
-
   <!-- ================= 刷题平台 ================= -->
   <section id="platforms">
     <h2><span class="h2-num">04</span>刷题平台：按阶段来，别一上来就卷</h2>
@@ -2112,7 +2112,7 @@
       </ol>
     </div>
 
-    <p>写完一道题不确定对不对？除了交评测等结果，还可以自己造数据<a href="#debug">对拍</a>：写一份暴力解跟它比，几百组数据跑下来，错在哪组一目了然。具体做法见第 09 节的「从对拍到 difftest」。</p>
+    <p>写完一道题不确定对不对？除了交评测等结果，还可以自己造数据<a href="#debug">对拍</a>：写一份暴力解跟它比，几百组数据跑下来，错在哪组一目了然。具体做法见第 08 节的「从对拍到 difftest」。</p>
   </section>
 
   <!-- ================= 指针 ================= -->
@@ -2816,83 +2816,9 @@ int getScore(Student *s) {
     </div>
   </section>
 
-  <!-- ================= AI ================= -->
-  <section id="ai">
-    <h2><span class="h2-num">08</span>AI 使用原则：外功可以借，内功借不来</h2>
-
-    <p>两年前的经验是"别依赖 AI，面试要手撕"。这句话现在<strong>只对了一半</strong>：<strong>手撕确实少了</strong>。越来越多的面试直接给你一个仓库、一个需求，让你开着 Copilot / Cursor 现场做，或者在 take-home 里随便用——考的是你和 AI 协作的能力：怎么拆问题、怎么审它的输出、跑不通了怎么定位。<strong>不适应这个变化，等于自己把机会推掉。</strong></p>
-
-    <p>但另一件事没变：<strong>内功和外功，是两种能力。</strong></p>
-
-    <ul>
-      <li><strong>外功</strong>：工具用得熟、prompt 写得清楚、知道哪个模型擅长什么、能快速验收。<strong>速成很快</strong>——AI 自己就能教你，几周补得上来；<strong>但过时也快</strong>——去年的工具，今年已经没人提了</li>
-      <li><strong>内功</strong>：代码读得懂、对错判得出、内存画得出、崩了能定位、复杂度心里有数。这些 AI 教不了你，只能自己一行行写。<strong>学得慢，但不折旧</strong>——指针和内存模型几十年没变过</li>
-    </ul>
-
-    <p>而面试考 AI coding 的时候，<strong>筛的恰恰是内功</strong>：AI 十秒钟给你二十行，你能不能一眼看出 <code class="inline">i &lt;= n</code> 越界了、<code class="inline">malloc</code> 没判空、字符串字面量被改了——这才是他们想看的。AI 写得越快，这个判断力越值钱。</p>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>对比项</th><th>内功</th><th>外功</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>是什么</td><td>读得懂、判得对、修得动</td><td>会用工具、写得清 prompt、接得上流程</td></tr>
-          <tr><td>AI 能替你补吗</td><td>不能</td><td>能，几周就够</td></tr>
-          <tr><td>怎么练</td><td>关掉 AI 手写、读别人的代码、自己 debug</td><td>多用、多看别人怎么用</td></tr>
-          <tr><td>面试里怎么体现</td><td>一眼看出 AI 的代码错在哪</td><td>十分钟把能跑的原型搭起来</td></tr>
-          <tr><td>过时速度</td><td>很慢，三十年前的书今天还能看</td><td>很快，一年换一轮</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>把 AI 当副驾驶，别当代驾</h3>
-    <ol>
-      <li><strong>自己先写 20 分钟</strong>，不是 0 分钟（那叫外包），也不是两小时（那叫浪费）</li>
-      <li><strong>报错先自己读</strong>。要给 AI 看，就连"我试过什么、我猜是哪里"一起给它，别只贴一行错误</li>
-      <li><strong>问"为什么"，别问"给我答案"</strong>。好问法："我这段在 <code class="inline">n = 0</code> 时输出乱码，为什么？"坏问法："这题怎么写"</li>
-      <li><strong>AI 给完先别运行</strong>：从头读一遍，标出你不同意的地方，再去验证</li>
-      <li><strong>关掉对话自己重写一遍</strong>。写不出来，说明刚才只是"看懂了"，不是会了</li>
-      <li><strong>自己补边界</strong>：0、1、最大值、空指针，AI 经常只写"正常情况"</li>
-    </ol>
-
-    <div class="callout danger">
-      <div class="callout-title">四件别交给 AI 的事</div>
-      <strong>① 替你读报错 ② 替你推指针和内存 ③ 替你交没跑过的代码 ④ 在你解释不了的时候替你提交。</strong>前三件是内功的练习机会，让出去就永远练不出来；第四件是事故。顺带一句：AI 写 C 也常错——<code class="inline">gets()</code>、<code class="inline">sizeof</code> 用错、指针类型对不上，它照样自信地给你。
-    </div>
-
-    <h3>附：如果你打算"跑路"硬件，C 就是那张门票</h3>
-
-    <p>说点更现实的。这两年互联网这边在收缩——校招名额、实习转正、涨薪幅度都不如从前，"降本增效"四个字大家都听腻了。与此同时另一头在扩：<strong>新能源车、消费电子、工业控制、机器人、无人机、芯片</strong>，都属于软硬结合的方向。这些岗位招人时不太看你刷了多少题，看的是<strong>你能不能把程序烧进板子里，让它真的动起来</strong>。</p>
-
-    <p>而这条路的第一道门槛就是 C，绕不过去。不是"学过 C 就行"，是这几样必须真会：</p>
-
-    <ul>
-      <li><strong>位运算</strong>：置位 <code class="inline">|=</code>、清位 <code class="inline">&amp;= ~</code>、移位。寄存器就是这么一位一位操作的</li>
-      <li><strong>指针和内存映射</strong>：外设寄存器在手册里就是一个地址，写 <code class="inline">*(volatile uint32_t *)0x40021000 = 1;</code> 才叫"点了个灯"。指针在这里不是练习题，是唯一的操作方式</li>
-      <li><strong><code class="inline">volatile</code></strong>：编译器会把"它看起来没变"的变量优化掉，可硬件随时在改它。少写一个 <code class="inline">volatile</code>，程序就"偶尔"不对</li>
-      <li><strong>结构体对齐和大小端</strong>：解析协议包时字段偏一个字节，整条通信全乱，而且不报错</li>
-      <li><strong>栈有多大</strong>：单片机上可能只有几 KB。递归深一点、局部数组大一点就直接溢出——<strong>这里没有操作系统替你兜底</strong></li>
-      <li><strong>调试手段</strong>：常常没有串口可 printf，断点常常一跑就飞，得会看寄存器、看波形、对着数据手册猜</li>
-    </ul>
-
-    <p>看出来了吗？这些<strong>恰好就是前面几节讲的"内功"</strong>：指针、内存布局、编译链接。所以你不需要"重新学一门语言"，只要把 C 的底层补齐，再补领域知识（时钟、中断、外设、RTOS）。反过来说，如果 C 只停在"考试能过"的水平，转过去等于从零开始。</p>
-
-    <div class="callout warn">
-      <div class="callout-title">但别把"跑路"当口号</div>
-      硬件不是避难所：<strong>起薪普遍低于互联网，项目周期长，不少岗位在二线或者园区，出差和产线调试是常态</strong>；而且它对"动手"的要求更硬，面试可能直接给你一块板子和一个示波器。看清这些再决定，别只因为"互联网卷"就一头扎进去。
-    </div>
-
-    <p>至于 AI 在这个方向上的角色：它能帮你写上层业务逻辑、搭驱动框架、解释手册里的缩写，但<strong>"这个时序对不对""这个寄存器为什么读回来是这个值"——它替不了你</strong>。越靠近物理世界，判断力越值钱，这也正是前面说内功不折旧的原因。</p>
-
-    <div class="callout">
-      <div class="callout-title">一句话</div>
-      <strong>外功让你快，内功让你不错；外功速成快，过时也快。</strong>去年大家用 Copilot，今年换 Cursor，明年不知道又是什么；而指针、内存、复杂度这些，三十年前的书翻开还是对的。工具会一轮轮换掉，判断力不会过期。AI 时代稀缺的不是"能写出代码"，是"能判断这段代码对不对"——前者越来越便宜，后者越来越贵。
-    </div>
-  </section>
-
+  <!-- ================= Debug 能力 ================= -->
   <section id="debug">
-    <h2><span class="h2-num">09</span>Debug 能力：比会写代码更重要</h2>
+    <h2><span class="h2-num">08</span>Debug 能力：比会写代码更重要</h2>
 
     <p>写代码的时间有一半是在调试。调试能力是初学者和入门者的分水岭。</p>
 
@@ -3065,6 +2991,81 @@ int main(void) {
     <div class="callout">
       <div class="callout-title">本质是同一件事</div>
       <strong>找一个你信任的实现当标尺，用大量输入把你的实现和它对到完全一致。</strong>写编译器就对 clang，写 JSON 解析器就对 Python 的 <code class="inline">json</code>，写排序就对 <code class="inline">qsort</code>，写 NEMU 就对 QEMU。想不出反例、或者改一处怕弄坏另一处的时候，这套办法比盯着代码看有效得多。
+    </div>
+  </section>
+
+  <!-- ================= AI ================= -->
+  <section id="ai">
+    <h2><span class="h2-num">09</span>AI 使用原则：外功可以借，内功借不来</h2>
+
+    <p>两年前的经验是"别依赖 AI，面试要手撕"。这句话现在<strong>只对了一半</strong>：<strong>手撕确实少了</strong>。越来越多的面试直接给你一个仓库、一个需求，让你开着 Copilot / Cursor 现场做，或者在 take-home 里随便用——考的是你和 AI 协作的能力：怎么拆问题、怎么审它的输出、跑不通了怎么定位。<strong>不适应这个变化，等于自己把机会推掉。</strong></p>
+
+    <p>但另一件事没变：<strong>内功和外功，是两种能力。</strong></p>
+
+    <ul>
+      <li><strong>外功</strong>：工具用得熟、prompt 写得清楚、知道哪个模型擅长什么、能快速验收。<strong>速成很快</strong>——AI 自己就能教你，几周补得上来；<strong>但过时也快</strong>——去年的工具，今年已经没人提了</li>
+      <li><strong>内功</strong>：代码读得懂、对错判得出、内存画得出、崩了能定位、复杂度心里有数。这些 AI 教不了你，只能自己一行行写。<strong>学得慢，但不折旧</strong>——指针和内存模型几十年没变过</li>
+    </ul>
+
+    <p>而面试考 AI coding 的时候，<strong>筛的恰恰是内功</strong>：AI 十秒钟给你二十行，你能不能一眼看出 <code class="inline">i &lt;= n</code> 越界了、<code class="inline">malloc</code> 没判空、字符串字面量被改了——这才是他们想看的。AI 写得越快，这个判断力越值钱。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>对比项</th><th>内功</th><th>外功</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>是什么</td><td>读得懂、判得对、修得动</td><td>会用工具、写得清 prompt、接得上流程</td></tr>
+          <tr><td>AI 能替你补吗</td><td>不能</td><td>能，几周就够</td></tr>
+          <tr><td>怎么练</td><td>关掉 AI 手写、读别人的代码、自己 debug</td><td>多用、多看别人怎么用</td></tr>
+          <tr><td>面试里怎么体现</td><td>一眼看出 AI 的代码错在哪</td><td>十分钟把能跑的原型搭起来</td></tr>
+          <tr><td>过时速度</td><td>很慢，三十年前的书今天还能看</td><td>很快，一年换一轮</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>把 AI 当副驾驶，别当代驾</h3>
+    <ol>
+      <li><strong>自己先写 20 分钟</strong>，不是 0 分钟（那叫外包），也不是两小时（那叫浪费）</li>
+      <li><strong>报错先自己读</strong>。要给 AI 看，就连"我试过什么、我猜是哪里"一起给它，别只贴一行错误</li>
+      <li><strong>问"为什么"，别问"给我答案"</strong>。好问法："我这段在 <code class="inline">n = 0</code> 时输出乱码，为什么？"坏问法："这题怎么写"</li>
+      <li><strong>AI 给完先别运行</strong>：从头读一遍，标出你不同意的地方，再去验证</li>
+      <li><strong>关掉对话自己重写一遍</strong>。写不出来，说明刚才只是"看懂了"，不是会了</li>
+      <li><strong>自己补边界</strong>：0、1、最大值、空指针，AI 经常只写"正常情况"</li>
+    </ol>
+
+    <div class="callout danger">
+      <div class="callout-title">四件别交给 AI 的事</div>
+      <strong>① 替你读报错 ② 替你推指针和内存 ③ 替你交没跑过的代码 ④ 在你解释不了的时候替你提交。</strong>前三件是内功的练习机会，让出去就永远练不出来；第四件是事故。顺带一句：AI 写 C 也常错——<code class="inline">gets()</code>、<code class="inline">sizeof</code> 用错、指针类型对不上，它照样自信地给你。
+    </div>
+
+    <h3>附：如果你打算"跑路"硬件，C 就是那张门票</h3>
+
+    <p>说点更现实的。这两年互联网这边在收缩——校招名额、实习转正、涨薪幅度都不如从前，"降本增效"四个字大家都听腻了。与此同时另一头在扩：<strong>新能源车、消费电子、工业控制、机器人、无人机、芯片</strong>，都属于软硬结合的方向。这些岗位招人时不太看你刷了多少题，看的是<strong>你能不能把程序烧进板子里，让它真的动起来</strong>。</p>
+
+    <p>而这条路的第一道门槛就是 C，绕不过去。不是"学过 C 就行"，是这几样必须真会：</p>
+
+    <ul>
+      <li><strong>位运算</strong>：置位 <code class="inline">|=</code>、清位 <code class="inline">&amp;= ~</code>、移位。寄存器就是这么一位一位操作的</li>
+      <li><strong>指针和内存映射</strong>：外设寄存器在手册里就是一个地址，写 <code class="inline">*(volatile uint32_t *)0x40021000 = 1;</code> 才叫"点了个灯"。指针在这里不是练习题，是唯一的操作方式</li>
+      <li><strong><code class="inline">volatile</code></strong>：编译器会把"它看起来没变"的变量优化掉，可硬件随时在改它。少写一个 <code class="inline">volatile</code>，程序就"偶尔"不对</li>
+      <li><strong>结构体对齐和大小端</strong>：解析协议包时字段偏一个字节，整条通信全乱，而且不报错</li>
+      <li><strong>栈有多大</strong>：单片机上可能只有几 KB。递归深一点、局部数组大一点就直接溢出——<strong>这里没有操作系统替你兜底</strong></li>
+      <li><strong>调试手段</strong>：常常没有串口可 printf，断点常常一跑就飞，得会看寄存器、看波形、对着数据手册猜</li>
+    </ul>
+
+    <p>看出来了吗？这些<strong>恰好就是前面几节讲的"内功"</strong>：指针、内存布局、编译链接。所以你不需要"重新学一门语言"，只要把 C 的底层补齐，再补领域知识（时钟、中断、外设、RTOS）。反过来说，如果 C 只停在"考试能过"的水平，转过去等于从零开始。</p>
+
+    <div class="callout warn">
+      <div class="callout-title">但别把"跑路"当口号</div>
+      硬件不是避难所：<strong>起薪普遍低于互联网，项目周期长，不少岗位在二线或者园区，出差和产线调试是常态</strong>；而且它对"动手"的要求更硬，面试可能直接给你一块板子和一个示波器。看清这些再决定，别只因为"互联网卷"就一头扎进去。
+    </div>
+
+    <p>至于 AI 在这个方向上的角色：它能帮你写上层业务逻辑、搭驱动框架、解释手册里的缩写，但<strong>"这个时序对不对""这个寄存器为什么读回来是这个值"——它替不了你</strong>。越靠近物理世界，判断力越值钱，这也正是前面说内功不折旧的原因。</p>
+
+    <div class="callout">
+      <div class="callout-title">一句话</div>
+      <strong>外功让你快，内功让你不错；外功速成快，过时也快。</strong>去年大家用 Copilot，今年换 Cursor，明年不知道又是什么；而指针、内存、复杂度这些，三十年前的书翻开还是对的。工具会一轮轮换掉，判断力不会过期。AI 时代稀缺的不是"能写出代码"，是"能判断这段代码对不对"——前者越来越便宜，后者越来越贵。
     </div>
   </section>
 
@@ -3436,7 +3437,7 @@ vi /etc/nginx/nginx.conf
     # :wq 存盘退出，权限不够就 :q! 放弃</code></pre>
     </div>
 
-    <p>练习建议：别一上来装一堆插件。<strong>先跑一遍 <code class="inline">vimtutor</code></strong>——vim 自带的交互式教程，30 分钟就能把上面这些按一遍。平时在 VS Code 里装个 Vim 插件，先把方向键禁用掉逼自己用 <code class="inline">hjkl</code>，一周就顺手了。想了解 Neovim、各种发行版和 <code class="inline">nano</code> 这类平替，见 <a href="#env">02 节末尾</a>。</p>
+    <p>练习建议：别一上来装一堆插件。<strong>先跑一遍 <code class="inline">vimtutor</code></strong>——vim 自带的交互式教程，30 分钟就能把上面这些按一遍。平时在 VS Code 里装个 Vim 插件，先把方向键禁用掉逼自己用 <code class="inline">hjkl</code>，一周就顺手了。想了解 Neovim、各种发行版和 <code class="inline">nano</code> 这类平替，见 <a href="#env">03 节末尾</a>。</p>
 
     <h3>13.3 VS Code：日常写代码就住在这儿</h3>
     <p>vim 是保底技能，但<strong>平时写作业没必要为难自己</strong>。日常主力直接上 <strong>VS Code</strong> 就行：免费、跨平台、装完就能用。更关键的是，前面讲的 shell、gcc、gdb、git 全都能在同一个窗口里完成——内置终端敲命令，扩展负责补全和断点，侧边栏直接看 diff。<strong>一个窗口干完所有事，不用来回切。</strong></p>
